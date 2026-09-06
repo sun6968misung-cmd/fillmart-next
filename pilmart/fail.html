@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 실패 — 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: '#1a3d8f', accent: '#e8001d' } } }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+
+<header class="bg-white shadow-sm">
+  <div class="max-w-lg mx-auto px-4 py-3">
+    <svg viewBox="0 0 240 52" class="h-9" xmlns="http://www.w3.org/2000/svg">
+      <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+      <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+      <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+      <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+    </svg>
+  </div>
+</header>
+
+<main class="flex-1 flex items-center justify-center px-4 py-16">
+  <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-10 max-w-md w-full text-center">
+
+    <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+      <i class="fas fa-times text-3xl text-accent"></i>
+    </div>
+
+    <h1 class="text-2xl font-black text-gray-800 mb-2">결제에 실패했습니다</h1>
+    <p class="text-gray-500 mb-6 text-sm" id="failMsg">결제 처리 중 오류가 발생했습니다.</p>
+
+    <div class="bg-red-50 rounded-xl p-4 text-left text-sm mb-6" id="errorBox" style="display:none">
+      <div class="flex justify-between mb-1">
+        <span class="text-gray-500">오류 코드</span>
+        <span class="font-mono font-semibold text-red-700" id="errorCode"></span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-500">메시지</span>
+        <span class="text-red-700 text-xs" id="errorMessage"></span>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <a href="checkout.html"
+         class="block w-full bg-accent text-white font-bold py-3.5 rounded-xl hover:bg-red-700 transition-colors">
+        <i class="fas fa-redo mr-2"></i>다시 시도하기
+      </a>
+      <a href="index.html"
+         class="block w-full border border-gray-300 text-gray-600 font-semibold py-3 rounded-xl hover:bg-gray-100 transition-colors text-sm">
+        <i class="fas fa-home mr-2"></i>홈으로 돌아가기
+      </a>
+    </div>
+
+    <p class="text-xs text-gray-400 mt-6">
+      문의: <a href="tel:054-473-2841" class="text-primary font-semibold">054-473-2841</a>
+    </p>
+  </div>
+</main>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code    = params.get('code');
+  const message = params.get('message');
+  if (code || message) {
+    document.getElementById('errorBox').style.display = 'block';
+    document.getElementById('errorCode').textContent    = code    || '-';
+    document.getElementById('errorMessage').textContent = message || '-';
+    if (code === 'PAY_PROCESS_CANCELED') {
+      document.getElementById('failMsg').textContent = '결제를 취소하셨습니다.';
+    }
+  }
+</script>
+
+</body>
+</html>

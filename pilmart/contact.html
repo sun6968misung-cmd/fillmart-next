@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1:1 문의 - 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary:'#1a3d8f', accent:'#e8001d', brand:{ light:'#e8f0fe', dark:'#0f2460' } } } }
+    }
+  </script>
+  <script src="js/store.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak]{display:none!important;}
+    body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;}
+  </style>
+</head>
+<body class="bg-[#f5f5f5]" x-data="contactApp()" x-cloak>
+
+<!-- 상단 공지 바 -->
+<div class="bg-accent text-white text-center text-sm py-2.5 font-semibold">
+  주문금액 제한없는 <strong>당일배송</strong>&nbsp;·&nbsp;구미 인동점
+  <i class="fas fa-phone-alt ml-3 mr-1 opacity-80 text-xs"></i>054-473-2841
+</div>
+
+<!-- 헤더 -->
+<header class="bg-white border-b border-gray-200">
+  <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="index.html" class="flex-shrink-0">
+      <svg viewBox="0 0 240 52" class="h-10" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+        <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+        <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+        <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+      </svg>
+    </a>
+    <div class="flex-1"></div>
+    <a href="index.html" class="text-sm text-gray-500 hover:text-accent transition-colors flex items-center gap-1">
+      <i class="fas fa-chevron-left text-xs"></i> 홈으로
+    </a>
+  </div>
+</header>
+
+<!-- 본문 -->
+<main class="max-w-screen-md mx-auto px-4 py-10">
+  <div class="mb-8">
+    <h1 class="text-2xl font-black text-gray-900 mb-1">1:1 문의</h1>
+    <p class="text-sm text-gray-400">궁금하신 점이나 불편사항을 남겨주세요. 빠르게 답변드리겠습니다.</p>
+  </div>
+
+  <!-- 문의 전 안내 -->
+  <div class="bg-brand-light rounded-2xl p-5 mb-6 flex items-start gap-3">
+    <i class="fas fa-info-circle text-primary mt-0.5"></i>
+    <div class="text-sm text-gray-600 leading-relaxed">
+      <p class="font-semibold text-primary mb-1">문의 전 확인해 주세요</p>
+      <p>자주하는 질문에서 이미 답변된 사항이 있을 수 있습니다. <a href="faq.html" class="text-primary font-semibold underline">FAQ 바로가기 →</a></p>
+      <p class="mt-1">긴급한 사항은 전화 <a href="tel:054-473-2841" class="text-accent font-bold">054-473-2841</a>로 연락해 주세요. (09:00 ~ 22:00)</p>
+    </div>
+  </div>
+
+  <!-- 문의 완료 화면 -->
+  <div x-show="submitted" class="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <i class="fas fa-check text-2xl text-green-500"></i>
+    </div>
+    <h2 class="text-xl font-black text-gray-800 mb-2">문의가 접수되었습니다</h2>
+    <p class="text-sm text-gray-500 mb-6">고객센터 운영시간(09:00 ~ 22:00) 내에 답변드리겠습니다.<br>긴급한 사항은 054-473-2841로 전화해 주세요.</p>
+    <button @click="submitted=false; form={name:'',phone:'',category:'배송',content:''}"
+            class="bg-primary text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark transition-colors">
+      새 문의 작성
+    </button>
+  </div>
+
+  <!-- 문의 폼 -->
+  <div x-show="!submitted" class="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8">
+    <div class="space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1.5">이름 <span class="text-accent">*</span></label>
+          <input type="text" x-model="form.name" placeholder="홍길동"
+                 class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1.5">연락처 <span class="text-accent">*</span></label>
+          <input type="tel" x-model="form.phone" placeholder="010-0000-0000"
+                 class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-semibold text-gray-700 block mb-1.5">문의 유형</label>
+        <select x-model="form.category"
+                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary bg-white">
+          <option>배송</option>
+          <option>주문/결제</option>
+          <option>상품/품질</option>
+          <option>회원/계정</option>
+          <option>기타</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-sm font-semibold text-gray-700 block mb-1.5">문의 내용 <span class="text-accent">*</span></label>
+        <textarea x-model="form.content" rows="6"
+                  placeholder="문의하실 내용을 자세히 작성해 주세요. (주문번호, 상품명 등을 함께 적어주시면 빠른 처리에 도움이 됩니다.)"
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+      </div>
+
+      <p x-show="errorMsg" class="text-accent text-sm font-medium" x-text="errorMsg"></p>
+
+      <button @click="submit()"
+              class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-brand-dark transition-colors">
+        문의 제출하기
+      </button>
+    </div>
+  </div>
+
+  <!-- 직접 연락 -->
+  <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <a href="tel:054-473-2841"
+       class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-colors group">
+      <div class="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+        <i class="fas fa-phone-alt text-primary group-hover:text-white"></i>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400 mb-0.5">전화 문의</p>
+        <p class="font-black text-gray-900 text-lg">054-473-2841</p>
+        <p class="text-xs text-gray-400">평일·주말 09:00 ~ 22:00</p>
+      </div>
+    </a>
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4">
+      <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+        <i class="fas fa-clock text-green-600"></i>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400 mb-0.5">답변 소요 시간</p>
+        <p class="font-bold text-gray-900">운영시간 내 당일 답변</p>
+        <p class="text-xs text-gray-400">09:00 ~ 22:00 접수 기준</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 푸터 -->
+<footer class="bg-white border-t border-gray-200 mt-10">
+  <div class="max-w-screen-xl mx-auto px-4 py-6 text-center text-xs text-gray-400">
+    Copyright © 2025 필마트 구미 인동점. All rights reserved.
+    <span class="mx-2">|</span>
+    <a href="terms.html" class="hover:text-accent">이용약관</a>
+    <span class="mx-2">|</span>
+    <a href="privacy.html" class="hover:text-accent">개인정보처리방침</a>
+  </div>
+</footer>
+
+<script>
+  function contactApp() {
+    return {
+      submitted: false,
+      errorMsg: '',
+      form: { name:'', phone:'', category:'배송', content:'' },
+      submit() {
+        if (!this.form.name.trim()) { this.errorMsg = '이름을 입력해 주세요.'; return; }
+        if (!this.form.phone.trim()) { this.errorMsg = '연락처를 입력해 주세요.'; return; }
+        if (!this.form.content.trim()) { this.errorMsg = '문의 내용을 입력해 주세요.'; return; }
+        this.errorMsg = '';
+        const inquiries = JSON.parse(localStorage.getItem('pilmart_inquiries') || '[]');
+        inquiries.unshift({
+          date: new Date().toISOString(),
+          name: this.form.name,
+          phone: this.form.phone,
+          category: this.form.category,
+          content: this.form.content,
+          status: '접수'
+        });
+        localStorage.setItem('pilmart_inquiries', JSON.stringify(inquiries.slice(0, 100)));
+        this.submitted = true;
+      }
+    };
+  }
+</script>
+</body>
+</html>

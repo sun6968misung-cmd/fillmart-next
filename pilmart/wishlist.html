@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나의 찜 — 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary:'#1a3d8f', accent:'#e8001d', brand:{ light:'#e8f0fe', dark:'#0f2460' } } } }
+    }
+  </script>
+  <script src="js/products.js"></script>
+  <script src="js/store.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <style>[x-cloak]{display:none!important;} body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;}</style>
+</head>
+<body class="bg-gray-50 min-h-screen" x-data="wishlistApp()" x-cloak>
+
+<header class="bg-white shadow-sm sticky top-0 z-40">
+  <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="index.html" class="text-primary hover:text-brand-dark">
+      <i class="fas fa-arrow-left text-lg"></i>
+    </a>
+    <a href="index.html">
+      <svg viewBox="0 0 240 52" class="h-9" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+        <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+        <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+        <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+      </svg>
+    </a>
+    <h1 class="text-lg font-bold text-gray-800 ml-1">나의 찜</h1>
+    <span class="text-sm text-gray-400" x-text="wishItems.length + '개'"></span>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-8">
+
+  <!-- 비어있을 때 -->
+  <div x-show="wishItems.length === 0" class="text-center py-24">
+    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+      <i class="fas fa-heart text-3xl text-gray-300"></i>
+    </div>
+    <p class="text-gray-500 font-medium mb-6">찜한 상품이 없습니다</p>
+    <a href="index.html"
+       class="inline-block bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-brand-dark transition-colors">
+      <i class="fas fa-store mr-2"></i>쇼핑 시작하기
+    </a>
+  </div>
+
+  <!-- 찜 목록 -->
+  <div x-show="wishItems.length > 0">
+    <div class="flex items-center justify-between mb-5">
+      <p class="text-sm text-gray-500">찜한 상품 <span class="font-bold text-gray-800" x-text="wishItems.length"></span>개</p>
+      <button @click="clearAll()" class="text-sm text-gray-400 hover:text-red-500 transition-colors">
+        <i class="fas fa-trash-alt mr-1"></i>전체 삭제
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <template x-for="p in wishItems" :key="p.id">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+
+          <!-- 이미지 -->
+          <div class="relative cursor-pointer" @click="location.href='product.html?id='+p.id"
+               style="position:relative;width:100%;padding-bottom:100%;overflow:hidden;background:#f8f8f8;">
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+              <img :src="imgUrl(p.id)" :alt="p.name" loading="lazy"
+                   style="width:100%;height:100%;object-fit:contain;"
+                   @error="$el.style.display='none';$el.nextElementSibling.style.display='flex'">
+              <div style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;align-items:center;justify-content:center;font-size:2.5rem;background:#f8f8f8;"
+                   x-text="p.emoji"></div>
+            </div>
+            <!-- 찜 해제 버튼 -->
+            <button @click.stop="removeWish(p.id)"
+                    style="position:absolute;top:8px;right:8px;width:32px;height:32px;background:rgba(232,0,29,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;">
+              <i class="fas fa-heart text-white" style="font-size:13px;"></i>
+            </button>
+            <!-- 할인 뱃지 -->
+            <span x-show="p.originalPrice"
+                  style="position:absolute;top:0;left:0;background:#e8001d;color:#fff;font-size:11px;font-weight:700;padding:3px 7px;"
+                  x-text="Math.round((1 - p.price/p.originalPrice)*100) + '%'"></span>
+          </div>
+
+          <!-- 정보 -->
+          <div class="p-3">
+            <p class="text-xs text-gray-700 mb-1 leading-snug line-clamp-2" x-text="p.name"></p>
+            <p x-show="p.originalPrice" class="text-xs text-gray-400 line-through" x-text="p.originalPrice?.toLocaleString('ko-KR') + '원'"></p>
+            <p class="text-sm font-black text-gray-900" x-text="p.price.toLocaleString('ko-KR') + '원'"></p>
+            <button @click="addCart(p)"
+                    class="mt-2 w-full bg-accent text-white text-xs font-bold py-2 rounded-lg hover:bg-red-700 transition-colors">
+              <i class="fas fa-shopping-cart mr-1"></i>담기
+            </button>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // WL_PRODUCTS / WL_IMAGES → js/products.js (PRODUCTS / PRODUCT_IMAGES)
+  const _wlUnused = [
+    { id:'sale1', name:'국내산 삼겹살 500g',   emoji:'🥩', price:9900,  originalPrice:13900 },
+    { id:'sale2', name:'양파 3kg',             emoji:'🧅', price:3900,  originalPrice:5900  },
+    { id:'sale3', name:'계란 30구 특란',        emoji:'🥚', price:8900,  originalPrice:10900 },
+    { id:'sale4', name:'닭가슴살 1kg',          emoji:'🍗', price:7900,  originalPrice:10500 },
+    { id:'sale5', name:'고등어 2마리',          emoji:'🐟', price:5900,  originalPrice:7900  },
+    { id:'sale6', name:'국산 두부 2개입',        emoji:'🟨', price:2900,  originalPrice:3900  },
+    { id:'veg1',  name:'양배추 1통',            emoji:'🥬', price:3500,  originalPrice:4500  },
+    { id:'veg2',  name:'대파 1단',              emoji:'🌿', price:1900,  originalPrice:2500  },
+    { id:'veg3',  name:'햇감자 2.5kg',          emoji:'🥔', price:5900,  originalPrice:7900  },
+    { id:'veg4',  name:'당근 1kg',              emoji:'🥕', price:2900,  originalPrice:3900  },
+    { id:'veg5',  name:'수박 (소) 1통',          emoji:'🍉', price:12900, originalPrice:16900 },
+    { id:'veg6',  name:'복숭아 1.5kg',          emoji:'🍑', price:8900,  originalPrice:11900 },
+    { id:'veg7',  name:'포도 2kg',              emoji:'🍇', price:9900,  originalPrice:13900 },
+    { id:'veg8',  name:'방울토마토 1kg',         emoji:'🍅', price:4900,  originalPrice:6900  },
+    { id:'meat1', name:'한우 불고기 300g',       emoji:'🥩', price:16900, originalPrice:21900 },
+    { id:'meat2', name:'돼지 목살 500g',         emoji:'🐷', price:7900,  originalPrice:9900  },
+    { id:'meat3', name:'닭볶음탕용 1kg',         emoji:'🍗', price:6900,  originalPrice:8900  },
+    { id:'fish1', name:'오징어 2마리',           emoji:'🦑', price:7900,  originalPrice:9900  },
+    { id:'fish2', name:'생새우 500g',            emoji:'🦐', price:12900, originalPrice:15900 },
+    { id:'fish3', name:'손질 고등어 4토막',       emoji:'🐠', price:6900,  originalPrice:8900  },
+    { id:'proc1', name:'신라면 멀티 5개입',       emoji:'🍜', price:4200,  originalPrice:5000  },
+    { id:'proc2', name:'부침두부 2개입',          emoji:'⬜', price:2500,  originalPrice:3200  },
+    { id:'proc3', name:'사각어묵 400g',           emoji:'🟡', price:3900,  originalPrice:4900  },
+    { id:'proc4', name:'스팸 클래식 340g',        emoji:'🥫', price:4900,  originalPrice:5900  },
+    { id:'proc5', name:'슬라이스 치즈 20장',      emoji:'🧀', price:5900,  originalPrice:7500  },
+    { id:'proc6', name:'떠먹는 요거트 3개입',     emoji:'🥛', price:3900,  originalPrice:4900  },
+  ];
+
+  const _wlUnusedImages = {
+    'sale1':'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&h=400&q=80',
+    'sale2':'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=400&h=400&q=80',
+    'sale3':'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?auto=format&fit=crop&w=400&h=400&q=80',
+    'sale4':'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&h=400&q=80',
+    'sale5':'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=400&h=400&q=80',
+    'sale6':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg1' :'https://images.unsplash.com/photo-1568158879083-c42860933ed7?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg2' :'https://images.unsplash.com/photo-1604866830893-c13cafa515d5?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg3' :'https://images.unsplash.com/photo-1518977822534-7049a61ee0c2?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg4' :'https://images.unsplash.com/photo-1447175008436-054170c2e979?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg5' :'https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg6' :'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg7' :'https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=400&h=400&q=80',
+    'veg8' :'https://images.unsplash.com/photo-1524593166156-312f362cada0?auto=format&fit=crop&w=400&h=400&q=80',
+    'meat1':'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=400&h=400&q=80',
+    'meat2':'https://images.unsplash.com/photo-1574691250077-03a929faece5?auto=format&fit=crop&w=400&h=400&q=80',
+    'meat3':'https://images.unsplash.com/photo-1481671703460-040cb8a2d909?auto=format&fit=crop&w=400&h=400&q=80',
+    'fish1':'https://images.unsplash.com/photo-1510130387422-82bed34b37e9?auto=format&fit=crop&w=400&h=400&q=80',
+    'fish2':'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=400&h=400&q=80',
+    'fish3':'https://images.unsplash.com/photo-1535473895227-bdecb20fb157?auto=format&fit=crop&w=400&h=400&q=80',
+    'proc1':'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&h=400&q=80',
+    'proc2':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&h=400&q=80',
+    'proc3':'https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=400&h=400&q=80',
+    'proc4':'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&h=400&q=80',
+    'proc5':'https://images.unsplash.com/photo-1552767059-ce182ead6c1b?auto=format&fit=crop&w=400&h=400&q=80',
+    'proc6':'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&h=400&q=80',
+  };
+
+  function wishlistApp() {
+    return {
+      wishItems: [],
+
+      init() {
+        this.refresh();
+      },
+
+      refresh() {
+        applyProductOverrides();
+        const ids = JSON.parse(localStorage.getItem('pilmart_wishlist') || '[]');
+        this.wishItems = ids.map(id => {
+          const base = PRODUCTS.find(p => p.id === id);
+          return base ? { ...base } : null;
+        }).filter(Boolean);
+      },
+
+      imgUrl(id) {
+        return getProductImage(id);
+      },
+
+      removeWish(id) {
+        Alpine.store('wishlist').ids = Alpine.store('wishlist').ids.filter(x => x !== id);
+        Alpine.store('wishlist').persist();
+        this.refresh();
+      },
+
+      addCart(p) {
+        Alpine.store('cart').addToCart(p);
+      },
+
+      clearAll() {
+        if (!confirm('찜 목록을 모두 삭제할까요?')) return;
+        Alpine.store('wishlist').ids = [];
+        Alpine.store('wishlist').persist();
+        this.wishItems = [];
+      }
+    };
+  }
+</script>
+</body>
+</html>

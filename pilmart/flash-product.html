@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>하루특가 상세 — 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1a3d8f',
+            accent:  '#e8001d',
+            brand:   { light: '#e8f0fe', dark: '#0f2460' }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="js/store.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak] { display: none !important; }
+    body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      align-items: start;
+      padding: 11px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.875rem;
+    }
+    .info-label { color: #888; }
+    .info-value  { color: #222; }
+
+    .qty-btn {
+      width: 32px; height: 32px;
+      border: 1px solid #ccc;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: #444;
+      background: #fff; cursor: pointer; user-select: none;
+    }
+    .qty-btn:hover:not(:disabled) { background: #f5f5f5; }
+    .qty-btn:disabled { color: #ccc; cursor: not-allowed; }
+    .qty-input {
+      width: 42px; height: 32px;
+      border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; border-left: none; border-right: none;
+      text-align: center; font-weight: 700; font-size: .95rem;
+    }
+
+    @media (min-width: 768px) { .img-sticky { position: sticky; top: 64px; } }
+
+    /* 판매 시간 외 잠금 오버레이 */
+    #lockOverlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 0.5rem;
+    }
+
+    @keyframes pulse-ring {
+      0%   { transform: scale(.9); opacity: 1; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+    .pulse-dot::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%; background: #22c55e;
+      animation: pulse-ring 1.2s ease-out infinite;
+    }
+  </style>
+</head>
+<body x-data x-cloak class="bg-white min-h-screen">
+
+<!-- ── 헤더 ── -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-4">
+    <button onclick="history.back()" class="text-gray-500 hover:text-primary transition-colors flex-shrink-0">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <a href="index.html" class="flex-shrink-0">
+      <svg viewBox="0 0 240 52" class="h-8" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+        <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+        <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+        <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+      </svg>
+    </a>
+    <span class="text-xs font-bold text-white bg-accent px-2 py-1 rounded-full flex items-center gap-1 flex-shrink-0">
+      <i class="fas fa-bolt text-[10px]"></i> 하루특가
+    </span>
+    <div class="flex-1"></div>
+    <button @click="$store.cart.open = true" class="relative text-gray-600 hover:text-primary transition-colors flex-shrink-0">
+      <i class="fas fa-shopping-cart text-xl"></i>
+      <span x-show="$store.cart.count > 0" x-text="$store.cart.count"
+            class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold leading-none"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ── 브레드크럼 ── -->
+<div class="max-w-5xl mx-auto px-4 py-2 text-xs text-gray-400 flex items-center gap-1 border-b border-gray-100">
+  <a href="index.html" class="hover:text-primary">홈</a>
+  <i class="fas fa-chevron-right text-[10px]"></i>
+  <a href="index.html#flash" class="hover:text-primary">⚡ 오늘 하루특가</a>
+  <i class="fas fa-chevron-right text-[10px]"></i>
+  <span id="breadcrumbName" class="text-gray-600 truncate max-w-xs"></span>
+</div>
+
+<main class="max-w-5xl mx-auto px-4 py-6 pb-32">
+
+  <!-- 상품 없음 -->
+  <div id="notFound" class="hidden text-center py-24">
+    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+      <i class="fas fa-bolt text-3xl text-gray-300"></i>
+    </div>
+    <p class="text-gray-500 font-medium mb-2">하루특가 상품을 찾을 수 없습니다</p>
+    <p class="text-xs text-gray-400 mb-6">등록된 하루특가 상품이 없거나 URL이 올바르지 않습니다.</p>
+    <a href="index.html" class="inline-block bg-primary text-white font-bold px-8 py-3 rounded-lg">홈으로 돌아가기</a>
+  </div>
+
+  <div id="productContent" class="hidden">
+
+    <!-- ── 판매 시간 배너 ── -->
+    <div id="flashBanner" class="mb-6 rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div class="flex items-center gap-3 flex-1">
+        <div id="bannerIcon" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-lg">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <div>
+          <p id="bannerTitle" class="font-bold text-sm"></p>
+          <p id="bannerSub" class="text-xs text-gray-500 mt-0.5"></p>
+        </div>
+      </div>
+      <div id="flashCountdown" class="text-lg font-black font-mono text-accent tabular-nums"></div>
+    </div>
+
+    <!-- ── 상단: 이미지 + 정보 ── -->
+    <div class="flex flex-col md:flex-row gap-8 mb-12">
+
+      <!-- 좌: 이미지 -->
+      <div class="md:w-[420px] flex-shrink-0 img-sticky self-start">
+        <div class="relative border border-gray-200 bg-white flex items-center justify-center overflow-hidden rounded-lg"
+             style="width:100%;aspect-ratio:1/1;">
+          <img id="prodImg" src="" alt=""
+               class="w-full h-full object-contain"
+               onerror="this.style.display='none'; document.getElementById('prodEmoji').style.display='flex'">
+          <div id="prodEmoji"
+               class="w-full h-full hidden items-center justify-center text-[7rem]"
+               style="background:linear-gradient(135deg,#fff8e1,#ffeeff)"></div>
+          <!-- 시간 외 잠금 오버레이 -->
+          <div id="lockOverlay" class="hidden">
+            <div class="text-center text-white">
+              <i class="fas fa-lock text-4xl mb-2 block opacity-90"></i>
+              <p class="text-sm font-bold opacity-90">판매 시간 외</p>
+            </div>
+          </div>
+          <!-- 할인율 배지 -->
+          <div id="discBadge" class="hidden absolute top-3 left-3 bg-accent text-white text-sm font-black px-2.5 py-1 rounded-lg shadow"></div>
+          <!-- 1인 한도 배지 -->
+          <div id="limitBadge" class="hidden absolute top-3 right-3 bg-yellow-400 text-yellow-900 text-xs font-black px-2 py-1 rounded-lg shadow"></div>
+        </div>
+      </div>
+
+      <!-- 우: 정보 -->
+      <div class="flex-1 min-w-0">
+
+        <!-- 상품명 -->
+        <div class="pb-4 border-b border-gray-200">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-bold text-white bg-accent px-2 py-0.5 rounded-full">⚡ 하루특가</span>
+          </div>
+          <h1 id="prodName" class="text-xl font-bold text-gray-900 leading-snug mt-2"></h1>
+        </div>
+
+        <!-- 가격 -->
+        <div class="py-5 border-b border-gray-100">
+          <p id="prodOriginal" class="text-sm text-gray-400 line-through mb-1"></p>
+          <div class="flex items-end gap-3">
+            <span id="prodPrice" class="text-[2rem] font-black text-gray-900 leading-none"></span>
+            <span id="discountPct" class="hidden text-base font-bold text-accent mb-0.5"></span>
+          </div>
+        </div>
+
+        <!-- 정보 행 -->
+        <div>
+          <div class="info-row">
+            <span class="info-label">특가 시간</span>
+            <span id="infoTime" class="info-value font-semibold text-accent"></span>
+          </div>
+          <div id="infoLimitRow" class="info-row hidden">
+            <span class="info-label">1인 구매 한도</span>
+            <span id="infoLimit" class="info-value font-semibold text-orange-500"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">배송비</span>
+            <span class="info-value">10만원 이상 구매 시 무료</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">배송방법</span>
+            <span class="info-value">
+              <span class="inline-block border border-primary text-primary text-[11px] font-bold px-1.5 py-0.5 rounded mr-1">당일배송</span>
+              구미 인동 지역
+            </span>
+          </div>
+          <div class="info-row" id="descRow" style="border-bottom:none">
+            <span class="info-label">상품설명</span>
+            <span id="infoDesc" class="info-value text-gray-500 leading-relaxed"></span>
+          </div>
+        </div>
+
+        <!-- 구매수량 -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="flex items-center gap-4 mb-4">
+            <span class="text-sm text-gray-500 w-[110px] flex-shrink-0">구매수량</span>
+            <div class="flex items-center">
+              <button id="qtyMinus" class="qty-btn">−</button>
+              <input id="qtyInput" class="qty-input" type="text" value="1" readonly>
+              <button id="qtyPlus" class="qty-btn">+</button>
+            </div>
+            <span id="qtyLimitHint" class="hidden text-xs text-orange-500 font-medium"></span>
+          </div>
+
+          <!-- 총금액 -->
+          <div class="flex items-center justify-between py-3 border-t border-b border-gray-200">
+            <span class="text-sm text-gray-500">총 <span id="qtyCount">1</span>개</span>
+            <span id="qtyTotal" class="text-2xl font-black text-gray-900"></span>
+          </div>
+        </div>
+
+        <!-- 액션 버튼 -->
+        <div class="flex gap-2 mt-4">
+          <button id="addCartBtn"
+                  class="flex-1 border-2 border-primary text-primary font-bold py-3.5 rounded-lg hover:bg-primary hover:text-white transition-colors text-sm">
+            <i class="fas fa-shopping-cart mr-1"></i>장바구니
+          </button>
+          <button id="buyNowBtn"
+                  class="flex-1 bg-accent text-white font-bold py-3.5 rounded-lg hover:bg-red-700 transition-colors text-sm">
+            바로구매
+          </button>
+        </div>
+
+        <p class="text-[11px] text-gray-400 mt-3 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          신선식품 특성상 단순 변심에 의한 교환·반품이 제한될 수 있습니다.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- ── 상품정보 섹션 ── -->
+    <div class="border-t-2 border-gray-200 pt-8">
+      <h2 class="text-base font-black text-gray-700 mb-4">상품 상세 정보</h2>
+      <div class="flex flex-col sm:flex-row gap-6 p-6 bg-gray-50 rounded-xl mb-6">
+        <div class="sm:w-40 flex-shrink-0">
+          <div class="w-full aspect-square bg-white border border-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+            <img id="detailImg" src="" alt="" class="w-full h-full object-contain"
+                 onerror="this.style.display='none'; document.getElementById('detailEmoji').style.display='flex'">
+            <div id="detailEmoji" class="w-full h-full hidden items-center justify-center text-5xl"
+                 style="background:linear-gradient(135deg,#fff8e1,#ffeeff)"></div>
+          </div>
+        </div>
+        <div class="flex-1">
+          <h3 id="detailName" class="text-base font-black text-gray-800 mb-2"></h3>
+          <p id="detailDesc" class="text-sm text-gray-600 leading-relaxed mb-4"></p>
+          <div class="flex items-baseline gap-3">
+            <span id="detailOriginal" class="text-sm text-gray-400 line-through"></span>
+            <span id="detailPrice" class="text-2xl font-black" style="color:#e8001d"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 안내 박스 -->
+      <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
+        <p class="font-bold mb-1"><i class="fas fa-exclamation-triangle mr-1"></i>하루특가 이용 안내</p>
+        <ul class="space-y-1 text-xs text-yellow-700 list-disc pl-4">
+          <li>하루특가 상품은 지정된 시간에만 구매 가능합니다.</li>
+          <li>1인당 구매 가능 수량이 제한될 수 있습니다.</li>
+          <li>특가는 당일 한정이며 조기 종료될 수 있습니다.</li>
+          <li>신선도 문제 발생 시 당일 고객센터(054-473-2841)로 연락 주세요.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /productContent -->
+</main>
+
+<!-- ── 장바구니 슬라이드오버 ── -->
+<div x-show="$store.cart.open" class="fixed inset-0 z-50 overflow-hidden" style="display:none">
+  <div x-show="$store.cart.open"
+       x-transition:enter="transition-opacity ease-out duration-300"
+       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition-opacity ease-in duration-200"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       @click="$store.cart.open = false"
+       class="absolute inset-0 bg-black/50"></div>
+  <div x-show="$store.cart.open"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+       class="absolute right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-primary text-white">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-shopping-cart"></i>
+        <h2 class="font-bold text-lg">장바구니</h2>
+        <span x-text="'(' + $store.cart.count + '개)'" class="text-sm text-blue-200"></span>
+      </div>
+      <button @click="$store.cart.open = false" class="p-1 rounded-full hover:bg-white/20 transition-colors">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <div x-show="$store.cart.count === 0" class="flex-1 flex flex-col items-center justify-center text-gray-400 gap-3">
+      <i class="fas fa-shopping-cart text-5xl text-gray-200"></i>
+      <p class="font-medium">장바구니가 비어 있습니다</p>
+      <button @click="$store.cart.open = false" class="text-sm text-primary font-semibold hover:underline">쇼핑 계속하기</button>
+    </div>
+    <div x-show="$store.cart.count > 0" class="flex-1 overflow-y-auto divide-y divide-gray-100 px-4 py-2">
+      <template x-for="item in $store.cart.items" :key="item.id">
+        <div class="flex items-center gap-3 py-3">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50 flex items-center justify-center text-2xl flex-shrink-0" x-text="item.emoji"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-800 truncate" x-text="item.name"></p>
+            <p class="text-sm font-bold text-accent" x-text="(item.price * item.qty).toLocaleString('ko-KR') + '원'"></p>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button @click="$store.cart.updateQty(item.id, -1)" class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 font-bold text-sm">−</button>
+            <span class="w-6 text-center text-sm font-bold" x-text="item.qty"></span>
+            <button @click="$store.cart.updateQty(item.id, 1)" class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 font-bold text-sm">+</button>
+          </div>
+          <button @click="$store.cart.removeItem(item.id)" class="p-1 text-gray-400 hover:text-accent transition-colors ml-1">
+            <i class="fas fa-trash-alt text-sm"></i>
+          </button>
+        </div>
+      </template>
+    </div>
+    <div x-show="$store.cart.count > 0" class="border-t border-gray-100 px-5 py-4 space-y-3 bg-gray-50">
+      <div class="flex justify-between items-center">
+        <span class="text-gray-600 font-medium">총 금액</span>
+        <span class="text-xl font-black text-primary" x-text="$store.cart.totalFormatted + '원'"></span>
+      </div>
+      <a href="checkout.html" class="block w-full bg-accent text-white text-center font-bold py-3.5 rounded-lg hover:bg-red-700 transition-colors shadow-md">
+        결제하기 <i class="fas fa-arrow-right ml-1"></i>
+      </a>
+      <button @click="$store.cart.open = false" class="w-full border border-gray-300 text-gray-600 font-semibold py-2.5 rounded-lg hover:bg-gray-100 transition-colors text-sm">
+        쇼핑 계속하기
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 플로팅 카트 (모바일) -->
+<button x-show="$store.cart.count > 0" @click="$store.cart.open = true"
+        class="fixed bottom-6 right-6 z-30 bg-accent text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center hover:bg-red-700 transition-colors md:hidden">
+  <div class="relative">
+    <i class="fas fa-shopping-cart text-xl"></i>
+    <span x-text="$store.cart.count" class="absolute -top-3 -right-3 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"></span>
+  </div>
+</button>
+
+<script>
+  let flashData = { startHour: 9, endHour: 22, products: [] };
+  let flashProduct = null;
+  let flashIdx = -1;
+  let qty = 1;
+  let _timer = null;
+
+  function fmtHour(h) {
+    if (h === 0) return '오전 12시';
+    if (h < 12) return `오전 ${h}시`;
+    if (h === 12) return '낮 12시';
+    return `오후 ${h - 12}시`;
+  }
+
+  function isFlashActive() {
+    const h = new Date().getHours();
+    return h >= flashData.startHour && h < flashData.endHour;
+  }
+
+  function getCartQty(itemId) {
+    try { return Alpine.store('cart').items.find(x => x.id === itemId)?.qty || 0; } catch { return 0; }
+  }
+
+  function flashCountdownSecs() {
+    const now  = new Date();
+    const h    = now.getHours();
+    const m    = now.getMinutes();
+    const s    = now.getSeconds();
+    const secsNow = h * 3600 + m * 60 + s;
+    if (h >= flashData.startHour && h < flashData.endHour) {
+      return flashData.endHour * 3600 - secsNow;
+    } else if (h < flashData.startHour) {
+      return flashData.startHour * 3600 - secsNow;
+    } else {
+      return 86400 - secsNow + flashData.startHour * 3600;
+    }
+  }
+
+  function padZ(n) { return String(n).padStart(2, '0'); }
+
+  function updatePageState() {
+    if (!flashProduct) return;
+    const active  = isFlashActive();
+    const itemId  = 'flash' + flashIdx;
+    const limit   = flashProduct.maxPerCustomer != null ? Number(flashProduct.maxPerCustomer) : null;
+    const cartQty = getCartQty(itemId);
+    const atLimit = limit !== null && cartQty >= limit;
+
+    // 잠금 오버레이
+    document.getElementById('lockOverlay').classList.toggle('hidden', active);
+
+    // 배너
+    const banner      = document.getElementById('flashBanner');
+    const bannerIcon  = document.getElementById('bannerIcon');
+    const bannerTitle = document.getElementById('bannerTitle');
+    const bannerSub   = document.getElementById('bannerSub');
+    const countdown   = document.getElementById('flashCountdown');
+
+    if (active) {
+      banner.className = 'mb-6 rounded-2xl border border-orange-200 bg-orange-50 p-4 flex flex-col sm:flex-row sm:items-center gap-3';
+      bannerIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-lg bg-accent text-white';
+      bannerTitle.className = 'font-bold text-sm text-gray-800';
+      bannerTitle.textContent = '⚡ 지금 특가 진행 중!';
+      bannerSub.textContent   = `${fmtHour(flashData.startHour)} ~ ${fmtHour(flashData.endHour)} 한정 특가`;
+    } else {
+      banner.className = 'mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4 flex flex-col sm:flex-row sm:items-center gap-3';
+      bannerIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-lg bg-gray-300 text-white';
+      bannerTitle.className = 'font-bold text-sm text-gray-500';
+      bannerTitle.textContent = '⏰ 특가 판매 준비 중';
+      bannerSub.textContent   = `특가 시작: ${fmtHour(flashData.startHour)} / 종료: ${fmtHour(flashData.endHour)}`;
+    }
+
+    // 카운트다운
+    const secs  = flashCountdownSecs();
+    const hh    = Math.floor(secs / 3600);
+    const mm    = Math.floor((secs % 3600) / 60);
+    const ss    = secs % 60;
+    countdown.textContent = active
+      ? `종료까지 ${padZ(hh)}:${padZ(mm)}:${padZ(ss)}`
+      : `시작까지 ${padZ(hh)}:${padZ(mm)}:${padZ(ss)}`;
+    countdown.style.color = active ? '#e8001d' : '#6b7280';
+
+    // 수량 버튼 한도 계산
+    const maxQty = limit !== null ? Math.max(0, limit - cartQty) : 999;
+
+    // 수량 힌트
+    const hint = document.getElementById('qtyLimitHint');
+    if (limit !== null) {
+      hint.textContent = `장바구니 ${cartQty}개 담김 · 최대 ${limit}개`;
+      hint.classList.remove('hidden');
+    } else {
+      hint.classList.add('hidden');
+    }
+
+    // qty가 maxQty 초과 시 조정
+    if (qty > maxQty && maxQty > 0) qty = maxQty;
+    if (qty < 1) qty = 1;
+    document.getElementById('qtyInput').value = qty;
+    document.getElementById('qtyCount').textContent = qty;
+    if (flashProduct) {
+      document.getElementById('qtyTotal').textContent =
+        (flashProduct.price * qty).toLocaleString('ko-KR') + '원';
+    }
+
+    // − + 버튼
+    const minusBtn = document.getElementById('qtyMinus');
+    const plusBtn  = document.getElementById('qtyPlus');
+    minusBtn.disabled = qty <= 1 || !active || atLimit;
+    plusBtn.disabled  = qty >= maxQty || !active || atLimit || maxQty <= 0;
+
+    // 담기 버튼 상태
+    const cartBtn = document.getElementById('addCartBtn');
+    const buyBtn  = document.getElementById('buyNowBtn');
+
+    if (!active) {
+      cartBtn.disabled = true;
+      cartBtn.className = 'flex-1 border-2 border-gray-200 text-gray-400 font-bold py-3.5 rounded-lg text-sm cursor-not-allowed bg-gray-50';
+      cartBtn.innerHTML = '<i class="fas fa-lock mr-1"></i>판매 시간 외';
+      buyBtn.disabled  = true;
+      buyBtn.className = 'flex-1 bg-gray-200 text-gray-400 font-bold py-3.5 rounded-lg text-sm cursor-not-allowed';
+      buyBtn.innerHTML = '<i class="fas fa-lock mr-1"></i>판매 시간 외';
+    } else if (atLimit) {
+      cartBtn.disabled = true;
+      cartBtn.className = 'flex-1 border-2 border-gray-200 bg-gray-100 text-gray-400 font-bold py-3.5 rounded-lg text-sm cursor-not-allowed';
+      cartBtn.innerHTML = `<i class="fas fa-check mr-1"></i>최대 ${limit}개 담김`;
+      buyBtn.disabled  = true;
+      buyBtn.className = 'flex-1 bg-gray-200 text-gray-400 font-bold py-3.5 rounded-lg text-sm cursor-not-allowed';
+      buyBtn.textContent = '한도 초과';
+    } else {
+      cartBtn.disabled = false;
+      cartBtn.className = 'flex-1 border-2 border-primary text-primary font-bold py-3.5 rounded-lg hover:bg-primary hover:text-white transition-colors text-sm';
+      cartBtn.innerHTML = limit
+        ? `<i class="fas fa-shopping-cart mr-1"></i>장바구니 <small>(${cartQty}/${limit})</small>`
+        : '<i class="fas fa-shopping-cart mr-1"></i>장바구니';
+      buyBtn.disabled  = false;
+      buyBtn.className = 'flex-1 bg-accent text-white font-bold py-3.5 rounded-lg hover:bg-red-700 transition-colors text-sm';
+      buyBtn.textContent = '바로구매';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // flash sale 데이터 로드
+    const saved = JSON.parse(localStorage.getItem('pilmart_flash_sale') || 'null');
+    if (saved) flashData = saved;
+
+    const params = new URLSearchParams(window.location.search);
+    flashIdx = parseInt(params.get('idx') ?? '-1');
+
+    if (isNaN(flashIdx) || flashIdx < 0 || flashIdx >= flashData.products.length) {
+      document.getElementById('notFound').classList.remove('hidden');
+      return;
+    }
+
+    flashProduct = flashData.products[flashIdx];
+    const p = flashProduct;
+    const fmtKRW = n => n.toLocaleString('ko-KR') + '원';
+
+    document.title = p.name + ' — 필마트 하루특가';
+    document.getElementById('breadcrumbName').textContent = p.name;
+
+    // 이미지
+    const imgEl = document.getElementById('prodImg');
+    if (p.imageUrl) {
+      imgEl.src = p.imageUrl;
+      imgEl.alt = p.name;
+      document.getElementById('detailImg').src = p.imageUrl;
+      document.getElementById('detailImg').alt = p.name;
+    } else {
+      imgEl.style.display = 'none';
+      document.getElementById('detailImg').style.display = 'none';
+    }
+    document.getElementById('prodEmoji').textContent   = p.emoji || '⚡';
+    document.getElementById('detailEmoji').textContent = p.emoji || '⚡';
+
+    // 상품명
+    document.getElementById('prodName').textContent    = p.name;
+    document.getElementById('detailName').textContent  = p.name;
+    document.getElementById('detailDesc').textContent  = p.desc || '';
+
+    // 가격
+    document.getElementById('prodPrice').textContent   = fmtKRW(p.price);
+    document.getElementById('detailPrice').textContent = fmtKRW(p.price);
+    if (p.originalPrice) {
+      document.getElementById('prodOriginal').textContent   = fmtKRW(p.originalPrice);
+      document.getElementById('detailOriginal').textContent = fmtKRW(p.originalPrice);
+      const disc = Math.round((1 - p.price / p.originalPrice) * 100);
+      const pct = document.getElementById('discountPct');
+      pct.textContent = disc + '% 할인';
+      pct.classList.remove('hidden');
+      const badge = document.getElementById('discBadge');
+      badge.textContent = disc + '%';
+      badge.classList.remove('hidden');
+    }
+
+    // 1인 한도 배지
+    if (p.maxPerCustomer != null) {
+      const lb = document.getElementById('limitBadge');
+      lb.textContent = '1인 최대 ' + p.maxPerCustomer + '개';
+      lb.classList.remove('hidden');
+    }
+
+    // 정보 행
+    document.getElementById('infoTime').textContent =
+      `${fmtHour(flashData.startHour)} ~ ${fmtHour(flashData.endHour)}`;
+
+    if (p.maxPerCustomer != null) {
+      document.getElementById('infoLimit').textContent = '최대 ' + p.maxPerCustomer + '개';
+      document.getElementById('infoLimitRow').classList.remove('hidden');
+    }
+
+    if (p.desc) {
+      document.getElementById('infoDesc').textContent = p.desc;
+    } else {
+      document.getElementById('descRow').style.display = 'none';
+    }
+
+    // 총금액 초기
+    document.getElementById('qtyTotal').textContent = fmtKRW(p.price);
+
+    // 수량 버튼
+    document.getElementById('qtyMinus').onclick = () => {
+      if (qty > 1) { qty--; updatePageState(); }
+    };
+    document.getElementById('qtyPlus').onclick = () => {
+      const limit   = p.maxPerCustomer != null ? Number(p.maxPerCustomer) : 999;
+      const cartQty = getCartQty('flash' + flashIdx);
+      const maxQty  = Math.max(0, limit - cartQty);
+      if (qty < maxQty) { qty++; updatePageState(); }
+    };
+
+    // 담기
+    document.getElementById('addCartBtn').onclick = () => {
+      if (!isFlashActive()) return;
+      const limit   = p.maxPerCustomer != null ? Number(p.maxPerCustomer) : null;
+      const cartQty = getCartQty('flash' + flashIdx);
+      if (limit !== null && cartQty >= limit) return;
+      const available = limit !== null ? Math.min(qty, limit - cartQty) : qty;
+      if (available <= 0) return;
+
+      const cartItem = {
+        id:    'flash' + flashIdx,
+        name:  p.name,
+        emoji: p.emoji || '⚡',
+        price: p.price
+      };
+      Alpine.store('cart').addToCart(cartItem);
+      if (available > 1) Alpine.store('cart').updateQty('flash' + flashIdx, available - 1);
+
+      qty = 1;
+      updatePageState();
+      Alpine.store('cart').open = true;
+    };
+
+    // 바로구매
+    document.getElementById('buyNowBtn').onclick = () => {
+      if (!isFlashActive()) return;
+      const limit   = p.maxPerCustomer != null ? Number(p.maxPerCustomer) : null;
+      const cartQty = getCartQty('flash' + flashIdx);
+      if (limit !== null && cartQty >= limit) return;
+      const available = limit !== null ? Math.min(qty, limit - cartQty) : qty;
+      if (available <= 0) return;
+
+      const cartItem = {
+        id:    'flash' + flashIdx,
+        name:  p.name,
+        emoji: p.emoji || '⚡',
+        price: p.price
+      };
+      Alpine.store('cart').addToCart(cartItem);
+      if (available > 1) Alpine.store('cart').updateQty('flash' + flashIdx, available - 1);
+      location.href = 'checkout.html';
+    };
+
+    document.getElementById('productContent').classList.remove('hidden');
+
+    // 상태 업데이트 시작 (Alpine 초기화 후)
+    document.addEventListener('alpine:initialized', () => {
+      updatePageState();
+      _timer = setInterval(updatePageState, 1000);
+    });
+    // Alpine이 이미 초기화된 경우 대비
+    setTimeout(() => {
+      updatePageState();
+      if (!_timer) _timer = setInterval(updatePageState, 1000);
+    }, 200);
+  });
+</script>
+
+</body>
+</html>

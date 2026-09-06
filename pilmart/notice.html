@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공지사항 - 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary:'#1a3d8f', accent:'#e8001d', brand:{ light:'#e8f0fe', dark:'#0f2460' } } } }
+    }
+  </script>
+  <script src="js/store.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak]{display:none!important;}
+    body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;}
+  </style>
+</head>
+<body class="bg-[#f5f5f5]" x-data="noticeApp()" x-cloak>
+
+<!-- 상단 공지 바 -->
+<div class="bg-accent text-white text-center text-sm py-2.5 font-semibold">
+  주문금액 제한없는 <strong>당일배송</strong>&nbsp;·&nbsp;구미 인동점
+  <i class="fas fa-phone-alt ml-3 mr-1 opacity-80 text-xs"></i>054-473-2841
+</div>
+
+<!-- 헤더 -->
+<header class="bg-white border-b border-gray-200">
+  <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="index.html" class="flex-shrink-0">
+      <svg viewBox="0 0 240 52" class="h-10" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+        <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+        <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+        <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+      </svg>
+    </a>
+    <div class="flex-1"></div>
+    <a href="index.html" class="text-sm text-gray-500 hover:text-accent transition-colors flex items-center gap-1">
+      <i class="fas fa-chevron-left text-xs"></i> 홈으로
+    </a>
+  </div>
+</header>
+
+<!-- 본문 -->
+<main class="max-w-screen-md mx-auto px-4 py-10">
+  <div class="mb-8">
+    <h1 class="text-2xl font-black text-gray-900 mb-1">공지사항</h1>
+    <p class="text-sm text-gray-400">필마트 구미 인동점의 새 소식을 알려드립니다</p>
+  </div>
+
+  <!-- 공지사항 없을 때 -->
+  <div x-show="filteredNotices().length === 0" class="bg-white rounded-2xl border border-gray-100 p-16 text-center">
+    <i class="fas fa-bullhorn text-4xl text-gray-200 mb-4 block"></i>
+    <p class="text-gray-400">등록된 공지사항이 없습니다</p>
+  </div>
+
+  <!-- 공지 목록 -->
+  <div x-show="filteredNotices().length > 0" class="space-y-2">
+    <template x-for="(notice, i) in filteredNotices()" :key="i">
+      <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <button @click="toggle(i)"
+                class="w-full flex items-start justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors gap-4">
+          <div class="flex items-start gap-3 flex-1 min-w-0">
+            <span x-show="notice.important"
+                  class="text-xs font-bold text-white bg-accent px-2 py-0.5 rounded flex-shrink-0 mt-0.5">중요</span>
+            <span x-show="!notice.important"
+                  class="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded flex-shrink-0 mt-0.5">일반</span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-gray-800 truncate" x-text="notice.title"></p>
+              <p class="text-xs text-gray-400 mt-0.5" x-text="fmtDate(notice.date)"></p>
+            </div>
+          </div>
+          <i class="fas fa-chevron-down text-xs text-gray-400 flex-shrink-0 mt-1 transition-transform duration-200"
+             :class="opened[i] ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="opened[i]"
+             x-transition:enter="transition ease-out duration-150"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="px-5 pb-5 border-t border-gray-50">
+          <p class="text-sm text-gray-600 leading-relaxed mt-3 whitespace-pre-line" x-text="notice.content"></p>
+        </div>
+      </div>
+    </template>
+  </div>
+</main>
+
+<!-- 푸터 -->
+<footer class="bg-white border-t border-gray-200 mt-10">
+  <div class="max-w-screen-xl mx-auto px-4 py-6 text-center text-xs text-gray-400">
+    Copyright © 2025 필마트 구미 인동점. All rights reserved.
+    <span class="mx-2">|</span>
+    <a href="terms.html" class="hover:text-accent">이용약관</a>
+    <span class="mx-2">|</span>
+    <a href="privacy.html" class="hover:text-accent">개인정보처리방침</a>
+  </div>
+</footer>
+
+<script>
+  function noticeApp() {
+    return {
+      opened: {},
+      notices: [],
+      init() {
+        const defaultNotices = [
+          { id:1, date:'2026-09-01', title:'이번 주 특가 상품 안내 (9/1 ~ 9/7)', important:true,
+            content:'이번 주 특가 상품을 안내드립니다.\n\n• 국내산 삼겹살 500g — 9,900원 (정가 13,900원)\n• 양파 3kg — 3,900원 (정가 5,900원)\n• 계란 30구 특란 — 8,900원 (정가 10,900원)\n\n특가 기간: 2026년 9월 1일 ~ 9월 7일\n재고 소진 시 조기 종료될 수 있으니 서둘러 주문해 주세요!' },
+          { id:2, date:'2026-08-28', title:'추석 연휴 배송 안내', important:true,
+            content:'추석 연휴 기간(2026.09.28 ~ 10.01) 배송 일정을 안내드립니다.\n\n• 9월 27일(토): 정상 배송\n• 9월 28일(일) ~ 10월 1일(수): 배송 중단\n• 10월 2일(목): 배송 재개\n\n연휴 기간 접수된 주문은 10월 2일부터 순서대로 배송됩니다.\n불편하시더라도 양해 부탁드립니다.' },
+          { id:3, date:'2026-08-15', title:'당일배송 서비스 지역 안내', important:false,
+            content:'당일배송 가능 지역을 안내드립니다.\n\n✅ 배송 가능 지역\n• 구미시 인동, 진미동, 양호동, 광평동 일대\n\n❌ 배송 불가 지역\n• 위 지역 외 구미시 전역 및 타 시/군\n\n배송 가능 여부가 궁금하신 경우 고객센터(054-473-2841)로 문의해 주세요.' },
+        ];
+        const saved = JSON.parse(localStorage.getItem('pilmart_notices') || 'null');
+        this.notices = saved || defaultNotices;
+      },
+      toggle(i) { this.opened[i] = !this.opened[i]; },
+      filteredNotices() { return this.notices; },
+      fmtDate(d) {
+        if (!d) return '';
+        const dt = new Date(d);
+        return dt.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+      }
+    };
+  }
+</script>
+</body>
+</html>

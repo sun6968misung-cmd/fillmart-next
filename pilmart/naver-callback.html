@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>네이버 로그인 처리 중...</title>
+  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"></script>
+</head>
+<body>
+<p style="font-family:sans-serif;text-align:center;margin-top:80px;color:#555;">
+  네이버 로그인 처리 중입니다...
+</p>
+<script>
+  // ⚙️ auth.html 과 동일한 NAVER_CLIENT_ID 입력
+  const NAVER_CLIENT_ID = '';
+
+  window.onload = function () {
+    try {
+      const naverLogin = new naver.LoginWithNaverId({
+        clientId: NAVER_CLIENT_ID,
+        callbackUrl: window.location.href.split('?')[0],
+        isPopup: true,
+        callbackHandle: true
+      });
+      naverLogin.init();
+      naverLogin.getLoginStatus(function (status) {
+        if (status) {
+          const u = naverLogin.user;
+          const session = {
+            id:       'NAVER_' + u.id,
+            name:     u.name || u.nickname || '네이버 사용자',
+            phone:    u.mobile || '',
+            email:    u.email  || '',
+            provider: 'naver',
+            avatar:   u.profile_image || '',
+            loginAt:  Date.now()
+          };
+          // 팝업이면 부모 창에 세션 전달 후 닫기
+          if (window.opener) {
+            window.opener.localStorage.setItem('pilmart_session', JSON.stringify(session));
+            const redirectUrl = localStorage.getItem('pilmart_naver_redirect') ||
+                                window.opener.localStorage.getItem('pilmart_naver_redirect') ||
+                                'index.html';
+            localStorage.removeItem('pilmart_naver_redirect');
+            window.opener.location.href = redirectUrl;
+            window.close();
+          } else {
+            localStorage.setItem('pilmart_session', JSON.stringify(session));
+            window.location.href = 'index.html';
+          }
+        } else {
+          document.body.innerHTML = '<p style="text-align:center;margin-top:80px;color:red;">로그인에 실패했습니다. 창을 닫고 다시 시도해 주세요.</p>';
+        }
+      });
+    } catch(e) {
+      document.body.innerHTML = '<p style="text-align:center;margin-top:80px;color:red;">오류: ' + e.message + '</p>';
+    }
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품 상세 — 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1a3d8f',
+            accent:  '#e8001d',
+            brand:   { light: '#e8f0fe', dark: '#0f2460' }
+          },
+          fontFamily: { sans: ['Noto Sans KR', 'Apple SD Gothic Neo', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="js/products.js"></script>
+  <script src="js/store.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak] { display: none !important; }
+
+    /* 정보 행 */
+    .info-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      align-items: start;
+      padding: 11px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.875rem;
+    }
+    .info-label { color: #888; }
+    .info-value { color: #222; }
+
+    /* 탭 */
+    .tab-btn { padding: 14px 24px; font-size: 0.9rem; color: #777; border-bottom: 2px solid transparent; transition: color .15s; }
+    .tab-btn.active { color: #e8001d; border-bottom-color: #e8001d; font-weight: 700; }
+    .tab-btn:hover:not(.active) { color: #333; }
+
+    /* 수량 버튼 */
+    .qty-btn {
+      width: 32px; height: 32px;
+      border: 1px solid #ccc;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: #444;
+      background: #fff; cursor: pointer; user-select: none;
+    }
+    .qty-btn:hover { background: #f5f5f5; }
+    .qty-input {
+      width: 42px; height: 32px;
+      border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; border-left: none; border-right: none;
+      text-align: center; font-weight: 700; font-size: .95rem;
+    }
+
+    /* 이미지 sticky */
+    @media (min-width: 768px) { .img-sticky { position: sticky; top: 64px; } }
+  </style>
+</head>
+<body x-data x-cloak class="bg-white font-sans min-h-screen">
+
+<!-- ── 헤더 ── -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-4">
+    <button onclick="history.back()" class="text-gray-500 hover:text-primary transition-colors flex-shrink-0">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <a href="index.html" class="flex-shrink-0">
+      <svg viewBox="0 0 240 52" class="h-8" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+        <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+        <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+        <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+      </svg>
+    </a>
+    <div class="flex-1"></div>
+    <button @click="$store.cart.open = true" class="relative text-gray-600 hover:text-primary transition-colors flex-shrink-0">
+      <i class="fas fa-shopping-cart text-xl"></i>
+      <span x-show="$store.cart.count > 0" x-text="$store.cart.count"
+            class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold leading-none"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ── 브레드크럼 ── -->
+<div class="max-w-5xl mx-auto px-4 py-2 text-xs text-gray-400 flex items-center gap-1 border-b border-gray-100">
+  <a href="index.html" class="hover:text-primary transition-colors">홈</a>
+  <i class="fas fa-chevron-right text-[10px]"></i>
+  <span id="breadcrumbName" class="text-gray-600 truncate max-w-xs"></span>
+</div>
+
+<main class="max-w-5xl mx-auto px-4 py-6 pb-32">
+
+  <!-- 상품 없음 -->
+  <div id="notFound" class="hidden text-center py-24">
+    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+      <i class="fas fa-search text-3xl text-gray-300"></i>
+    </div>
+    <p class="text-gray-500 font-medium mb-6">상품을 찾을 수 없습니다</p>
+    <a href="index.html" class="inline-block bg-primary text-white font-bold px-8 py-3 rounded-lg">홈으로 돌아가기</a>
+  </div>
+
+  <div id="productContent" class="hidden">
+
+    <!-- ════ 상단: 이미지 + 정보 ════ -->
+    <div class="flex flex-col md:flex-row gap-8 mb-12">
+
+      <!-- 좌: 이미지 -->
+      <div class="md:w-[440px] flex-shrink-0 img-sticky self-start">
+        <div class="border border-gray-200 bg-white flex items-center justify-center overflow-hidden"
+             style="width:100%;aspect-ratio:1/1;">
+          <img id="prodImg" src="" alt=""
+               class="w-full h-full object-contain"
+               onerror="this.style.display='none'; document.getElementById('prodEmoji').style.display='flex'">
+          <div id="prodEmoji"
+               class="w-full h-full hidden items-center justify-center text-[7rem]"
+               style="background:linear-gradient(135deg,#f0f4ff,#e8f5e9)"></div>
+        </div>
+      </div>
+
+      <!-- 우: 정보 -->
+      <div class="flex-1 min-w-0">
+
+        <!-- 상품명 + 단위 -->
+        <div class="pb-4 border-b border-gray-200">
+          <h1 id="prodName" class="text-xl font-bold text-gray-900 leading-snug mb-1"></h1>
+          <p id="prodUnit" class="text-xs text-gray-400"></p>
+        </div>
+
+        <!-- 가격 -->
+        <div class="py-5 border-b border-gray-100">
+          <p id="prodOriginal" class="text-sm text-gray-400 line-through mb-1"></p>
+          <div class="flex items-end gap-3">
+            <span id="prodPrice" class="text-[2rem] font-black text-gray-900 leading-none"></span>
+            <span id="discountPct" class="hidden text-sm font-bold text-accent mb-0.5"></span>
+          </div>
+        </div>
+
+        <!-- 정보 행들 -->
+        <div>
+          <div class="info-row">
+            <span class="info-label">적립혜택</span>
+            <span id="infoPoints" class="info-value"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">배송비</span>
+            <span class="info-value">10만원 이상 구매 시 무료</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">배송방법</span>
+            <span class="info-value">
+              <span class="inline-block border border-primary text-primary text-[11px] font-bold px-1.5 py-0.5 rounded mr-1">당일배송</span>
+              구미 인동 지역 · 오후 2시 이전 주문
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">원산지</span>
+            <span id="infoOrigin" class="info-value"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">카테고리</span>
+            <span id="infoCategory" class="info-value"></span>
+          </div>
+          <div class="info-row" style="border-bottom:none">
+            <span class="info-label">상품설명</span>
+            <span id="infoDesc" class="info-value text-gray-500 leading-relaxed"></span>
+          </div>
+        </div>
+
+        <!-- 구매수량 -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="flex items-center gap-4 mb-4">
+            <span class="text-sm text-gray-500 w-[100px] flex-shrink-0">구매수량</span>
+            <div class="flex items-center">
+              <button id="qtyMinus" class="qty-btn">−</button>
+              <input id="qtyInput" class="qty-input" type="text" value="1" readonly>
+              <button id="qtyPlus" class="qty-btn">+</button>
+            </div>
+          </div>
+
+          <!-- 총금액 -->
+          <div class="flex items-center justify-between py-3 border-t border-b border-gray-200">
+            <span class="text-sm text-gray-500">총 <span id="qtyCount">1</span>개</span>
+            <span id="qtyTotal" class="text-2xl font-black text-gray-900"></span>
+          </div>
+        </div>
+
+        <!-- 액션 버튼 -->
+        <div class="flex gap-2 mt-4">
+          <!-- 찜 -->
+          <button id="wishBtn"
+                  class="w-12 h-12 border-2 border-gray-300 rounded-full flex items-center justify-center text-gray-400 hover:border-accent hover:text-accent transition-colors flex-shrink-0">
+            <i class="far fa-heart text-lg"></i>
+          </button>
+          <!-- 장바구니 -->
+          <button id="addCartBtn"
+                  class="flex-1 border-2 border-primary text-primary font-bold py-3 rounded-lg hover:bg-primary hover:text-white transition-colors text-sm">
+            장바구니
+          </button>
+          <!-- 바로구매 -->
+          <button id="buyNowBtn"
+                  class="flex-1 bg-accent text-white font-bold py-3 rounded-lg hover:bg-red-700 transition-colors text-sm">
+            바로구매
+          </button>
+        </div>
+
+        <!-- 교환/반품 안내 -->
+        <p class="text-[11px] text-gray-400 mt-3 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          신선식품 특성상 단순 변심에 의한 교환·반품이 제한될 수 있습니다.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- ════ 탭 ════ -->
+    <div class="border-t-2 border-gray-200">
+      <div class="flex">
+        <button class="tab-btn active" data-tab="info">상품정보</button>
+        <button class="tab-btn" data-tab="review">상품평<span id="reviewCount">(0)</span></button>
+        <button class="tab-btn" data-tab="delivery">배송/교환/반품 안내</button>
+      </div>
+    </div>
+
+    <!-- 상품정보 탭 -->
+    <div id="tab-info" class="py-8">
+
+      <!-- 상품 하이라이트 이미지 영역 (장보자닷컴처럼 상품 상세 이미지 영역) -->
+      <div class="flex flex-col md:flex-row gap-6 mb-8 p-6 bg-gray-50 rounded-xl">
+        <div class="md:w-48 flex-shrink-0">
+          <div class="w-full aspect-square bg-white border border-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+            <img id="detailImg" src="" alt="" class="w-full h-full object-contain"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div id="detailEmoji" class="w-full h-full hidden items-center justify-center text-6xl"
+                 style="background:linear-gradient(135deg,#f0f4ff,#e8f5e9)"></div>
+          </div>
+        </div>
+        <div class="flex-1">
+          <h2 id="detailName" class="text-lg font-black text-gray-800 mb-2"></h2>
+          <p id="detailDesc" class="text-sm text-gray-600 leading-relaxed mb-4"></p>
+          <div class="flex items-baseline gap-3">
+            <span id="detailOriginal" class="text-sm text-gray-400 line-through"></span>
+            <span id="detailPrice" class="text-2xl font-black" style="color:#e8001d"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 상품정보 고시 테이블 -->
+      <h3 class="text-sm font-bold text-gray-700 mb-2">상품 정보 고시</h3>
+      <table class="w-full text-sm border border-gray-200 border-collapse">
+        <tbody id="prodInfoTable">
+        </tbody>
+      </table>
+      <p class="text-xs text-gray-400 mt-3">
+        * 상품 이미지는 실제 상품과 다소 차이가 있을 수 있습니다. 자세한 사항은 고객센터(054-473-2841)로 문의해 주세요.
+      </p>
+    </div>
+
+    <!-- 상품평 탭 -->
+    <div id="tab-review" class="hidden py-12 text-center">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="far fa-comment text-2xl text-gray-300"></i>
+      </div>
+      <p class="text-gray-400 font-medium">등록된 상품평이 없습니다.</p>
+      <p class="text-xs text-gray-300 mt-1">구매 후 상품평을 남겨주세요.</p>
+    </div>
+
+    <!-- 배송/교환/반품 탭 -->
+    <div id="tab-delivery" class="hidden py-8 space-y-8 text-sm text-gray-600">
+
+      <div>
+        <h3 class="font-bold text-gray-800 text-base mb-3 pb-2 border-b border-gray-200">주문 전 확인사항</h3>
+        <ul class="space-y-2 list-disc pl-5 text-gray-500">
+          <li>배송 방법에 따라 배송 정보/가격이 다를 수 있으므로, 로그인 후 확인해 주세요.</li>
+          <li>주문 상태가 상품 준비 중인 주문 건은 취소 및 주소 변경 처리가 제한될 수 있습니다.</li>
+          <li>결품 발생 시 유선 또는 문자 안내를 드리고 있으니 수신 부탁드립니다.</li>
+          <li>수령 즉시 모든 상품의 상품 이상 유무를 확인해 주세요.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-gray-800 text-base mb-3 pb-2 border-b border-gray-200">배송 안내</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border border-gray-200 text-center text-sm">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="border border-gray-200 px-4 py-2.5 font-bold text-gray-700">구분</th>
+                <th class="border border-gray-200 px-4 py-2.5 font-bold text-gray-700">배송지역</th>
+                <th class="border border-gray-200 px-4 py-2.5 font-bold text-gray-700">배송비</th>
+                <th class="border border-gray-200 px-4 py-2.5 font-bold text-gray-700">주문마감</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-200 px-4 py-2.5 font-bold text-primary">당일배송</td>
+                <td class="border border-gray-200 px-4 py-2.5">구미 인동 지역</td>
+                <td class="border border-gray-200 px-4 py-2.5 text-left text-xs leading-relaxed">
+                  10만원 이상 구매 시 무료<br><span style="font-size:11px;color:#e8001d;">최소 주문금액 100,000원</span>
+                </td>
+                <td class="border border-gray-200 px-4 py-2.5 text-xs">오후 2시 이전</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">* 일부 지역은 배송 요일/시간이 제한될 수 있습니다.</p>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-gray-800 text-base mb-3 pb-2 border-b border-gray-200">교환/반품 안내</h3>
+        <ul class="space-y-2 list-disc pl-5 text-gray-500">
+          <li>신선(채소, 과일, 정육, 수산) 상품의 경우 수령 후 <strong class="text-gray-700">24시간 이내</strong>에 문의하셔야 처리 가능합니다.</li>
+          <li>냉동/냉장 식품은 단순 변심에 의한 반품 및 교환이 절대 불가합니다.</li>
+          <li>상품을 임의로 훼손, 가공, 조리, 폐기하신 경우 반품 및 교환이 절대 불가합니다.</li>
+          <li>파손된 경우 포장 박스·상품 사진을 첨부하여 고객센터로 접수해 주세요.</li>
+          <li>접수 채널: 고객센터 <a href="tel:054-473-2841" class="text-primary font-semibold">054-473-2841</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div><!-- /productContent -->
+</main>
+
+<!-- ── 장바구니 슬라이드오버 ── -->
+<div x-show="$store.cart.open" class="fixed inset-0 z-50 overflow-hidden" style="display:none">
+  <div x-show="$store.cart.open"
+       x-transition:enter="transition-opacity ease-out duration-300"
+       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition-opacity ease-in duration-200"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       @click="$store.cart.open = false"
+       class="absolute inset-0 bg-black/50"></div>
+  <div x-show="$store.cart.open"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+       class="absolute right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-primary text-white">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-shopping-cart"></i>
+        <h2 class="font-bold text-lg">장바구니</h2>
+        <span x-text="'(' + $store.cart.count + '개)'" class="text-sm text-blue-200"></span>
+      </div>
+      <button @click="$store.cart.open = false" class="p-1 rounded-full hover:bg-white/20 transition-colors">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <div x-show="$store.cart.count === 0" class="flex-1 flex flex-col items-center justify-center text-gray-400 gap-3">
+      <i class="fas fa-shopping-cart text-5xl text-gray-200"></i>
+      <p class="font-medium">장바구니가 비어 있습니다</p>
+      <button @click="$store.cart.open = false" class="text-sm text-primary font-semibold hover:underline">쇼핑 계속하기</button>
+    </div>
+    <div x-show="$store.cart.count > 0" class="flex-1 overflow-y-auto divide-y divide-gray-100 px-4 py-2">
+      <template x-for="item in $store.cart.items" :key="item.id">
+        <div class="flex items-center gap-3 py-3">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center text-2xl flex-shrink-0" x-text="item.emoji"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-800 truncate" x-text="item.name"></p>
+            <p class="text-sm font-bold text-accent" x-text="(item.price * item.qty).toLocaleString('ko-KR') + '원'"></p>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button @click="$store.cart.updateQty(item.id, -1)" class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 font-bold text-sm">−</button>
+            <span class="w-6 text-center text-sm font-bold" x-text="item.qty"></span>
+            <button @click="$store.cart.updateQty(item.id, 1)" class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 font-bold text-sm">+</button>
+          </div>
+          <button @click="$store.cart.removeItem(item.id)" class="p-1 text-gray-400 hover:text-accent transition-colors ml-1">
+            <i class="fas fa-trash-alt text-sm"></i>
+          </button>
+        </div>
+      </template>
+    </div>
+    <div x-show="$store.cart.count > 0" class="border-t border-gray-100 px-5 py-4 space-y-3 bg-gray-50">
+      <div class="flex justify-between items-center">
+        <span class="text-gray-600 font-medium">총 금액</span>
+        <span class="text-xl font-black text-primary" x-text="$store.cart.totalFormatted + '원'"></span>
+      </div>
+      <a href="checkout.html" class="block w-full bg-accent text-white text-center font-bold py-3.5 rounded-lg hover:bg-red-700 transition-colors shadow-md">
+        결제하기 <i class="fas fa-arrow-right ml-1"></i>
+      </a>
+      <button @click="$store.cart.open = false" class="w-full border border-gray-300 text-gray-600 font-semibold py-2.5 rounded-lg hover:bg-gray-100 transition-colors text-sm">
+        쇼핑 계속하기
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 플로팅 카트 (모바일) -->
+<button x-show="$store.cart.count > 0" @click="$store.cart.open = true"
+        class="fixed bottom-6 right-6 z-30 bg-accent text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center hover:bg-red-700 transition-colors md:hidden">
+  <div class="relative">
+    <i class="fas fa-shopping-cart text-xl"></i>
+    <span x-text="$store.cart.count" class="absolute -top-3 -right-3 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"></span>
+  </div>
+</button>
+
+<script>
+  // PRODUCTS / PRODUCT_IMAGES → js/products.js 에서 로드됨
+  const _unused = [
+    { id:'sale1', name:'국내산 삼겹살 500g',   emoji:'🥩', price:9900,  originalPrice:13900, origin:'국내산 (경북)', category:'정육/축산', storage:'냉장보관',       unit:'500g',  desc:'국내산 한돈 직송. 두툼하고 쫄깃한 삼겹살.' },
+    { id:'sale2', name:'양파 3kg 망',           emoji:'🧅', price:4500,  originalPrice:6900,  origin:'국산',         category:'채소',     storage:'실온 서늘한 곳',  unit:'3kg',   desc:'청정 지역 농가 직송. 아삭하고 달콤한 양파.' },
+    { id:'sale3', name:'계란 30구 특란',         emoji:'🥚', price:8900,  originalPrice:10900, origin:'국내산',       category:'계란',     storage:'냉장보관',       unit:'30구',  desc:'국내산 신선 특란 30구. 단백질 가득.' },
+    { id:'sale4', name:'닭가슴살 1kg',           emoji:'🍗', price:7900,  originalPrice:10500, origin:'국내산',       category:'정육/축산', storage:'냉장보관',       unit:'1kg',   desc:'국내산 냉장 닭가슴살. 고단백 저지방.' },
+    { id:'sale5', name:'고등어 2마리',           emoji:'🐟', price:5900,  originalPrice:7900,  origin:'국산',         category:'수산',     storage:'냉장보관',       unit:'2마리', desc:'국산 당일 손질 고등어. 오메가-3 풍부.' },
+    { id:'sale6', name:'국산 두부 2개입',         emoji:'🟨', price:2900,  originalPrice:3900,  origin:'국산콩',       category:'두부/콩',  storage:'냉장보관',       unit:'2개입', desc:'국산콩 100% 부드러운 두부.' },
+    { id:'veg1',  name:'양배추 1통',             emoji:'🥬', price:3500,  originalPrice:4500,  origin:'국산',         category:'채소',     storage:'냉장보관',       unit:'1통',   desc:'아삭한 국산 양배추. 겉절이·볶음에 딱.' },
+    { id:'veg2',  name:'대파 1단',               emoji:'🌿', price:1900,  originalPrice:2500,  origin:'국산',         category:'채소',     storage:'냉장보관',       unit:'1단',   desc:'향긋한 국산 대파 한 단. 국물 요리 필수.' },
+    { id:'veg3',  name:'햇감자 2.5kg',           emoji:'🥔', price:5900,  originalPrice:7900,  origin:'국산',         category:'채소',     storage:'실온 서늘한 곳',  unit:'2.5kg', desc:'국산 햇감자. 포슬포슬 볶음·찜용.' },
+    { id:'veg4',  name:'당근 1kg',               emoji:'🥕', price:2900,  originalPrice:3900,  origin:'국산',         category:'채소',     storage:'냉장보관',       unit:'1kg',   desc:'달콤한 국산 당근. 샐러드·볶음밥 활용.' },
+    { id:'veg5',  name:'수박 (소) 1통',           emoji:'🍉', price:12900, originalPrice:16900, origin:'국내산',       category:'과일',     storage:'실온 또는 냉장', unit:'1통',   desc:'국내산 시원한 수박. 여름 제철 과일.' },
+    { id:'veg6',  name:'복숭아 1.5kg',           emoji:'🍑', price:8900,  originalPrice:11900, origin:'국내산',       category:'과일',     storage:'냉장보관',       unit:'1.5kg', desc:'국내산 달콤한 복숭아. 직송 신선함.' },
+    { id:'veg7',  name:'포도 2kg',               emoji:'🍇', price:9900,  originalPrice:13900, origin:'국내산',       category:'과일',     storage:'냉장보관',       unit:'2kg',   desc:'국내산 달달한 포도. 직송 신선함.' },
+    { id:'veg8',  name:'방울토마토 1kg',          emoji:'🍅', price:4900,  originalPrice:6900,  origin:'국내산',       category:'과일/채소', storage:'냉장보관',      unit:'1kg',   desc:'국내산 당도 높은 방울토마토. 간식·샐러드용.' },
+    { id:'meat1', name:'한우 불고기 300g',        emoji:'🥩', price:16900, originalPrice:21900, origin:'국내산 1등급↑', category:'정육/축산', storage:'냉장보관',      unit:'300g',  desc:'1등급 이상 한우 불고기. 달큰한 양념 직송.' },
+    { id:'meat2', name:'돼지 목살 500g',          emoji:'🐷', price:7900,  originalPrice:9900,  origin:'국내산',       category:'정육/축산', storage:'냉장보관',      unit:'500g',  desc:'국내산 냉장 목살. 삼겹살보다 쫄깃하고 담백.' },
+    { id:'meat3', name:'닭볶음탕용 1kg',          emoji:'🍗', price:6900,  originalPrice:8900,  origin:'국내산',       category:'정육/축산', storage:'냉장보관',      unit:'1kg',   desc:'국내산 닭볶음탕용. 매운 볶음탕 OK.' },
+    { id:'fish1', name:'오징어 2마리',            emoji:'🦑', price:7900,  originalPrice:9900,  origin:'국산',         category:'수산',     storage:'냉장/냉동 보관', unit:'2마리', desc:'국산 오징어 2마리. 볶음·찌개·덮밥 활용.' },
+    { id:'fish2', name:'생새우 500g',             emoji:'🦐', price:12900, originalPrice:15900, origin:'국산',         category:'수산',     storage:'냉장보관',       unit:'500g',  desc:'국산 생새우. 구이·볶음·전 최적.' },
+    { id:'fish3', name:'손질 고등어 4토막',        emoji:'🐠', price:6900,  originalPrice:8900,  origin:'국산',         category:'수산',     storage:'냉장보관',       unit:'4토막', desc:'국산 고등어 손질 완료 4토막. 바로 구이·조림.' },
+    { id:'proc1', name:'신라면 멀티 5개입',        emoji:'🍜', price:4200,  originalPrice:5000,  origin:'농심',         category:'라면/면류', storage:'실온보관',      unit:'5개입', desc:'국민 라면 신라면 5개 묶음. 얼큰한 맛.' },
+    { id:'proc2', name:'부침두부 2개입',           emoji:'⬜', price:2500,  originalPrice:3200,  origin:'국산콩',       category:'두부/콩',  storage:'냉장보관',       unit:'2개입', desc:'국산콩 부침두부 2모. 두부전·된장찌개 활용.' },
+    { id:'proc3', name:'사각어묵 400g',            emoji:'🟡', price:3900,  originalPrice:4900,  origin:'사조',         category:'냉장/냉동', storage:'냉장보관',      unit:'400g',  desc:'사조 사각어묵 400g. 떡볶이·어묵탕에 딱.' },
+    { id:'proc4', name:'스팸 클래식 340g',         emoji:'🥫', price:4900,  originalPrice:5900,  origin:'CJ',           category:'캔/통조림', storage:'실온보관',      unit:'340g',  desc:'CJ 스팸 클래식. 밥반찬·도시락 최강 조합.' },
+    { id:'proc5', name:'슬라이스 치즈 20장',       emoji:'🧀', price:5900,  originalPrice:7500,  origin:'서울우유',     category:'유제품',   storage:'냉장보관',       unit:'20장',  desc:'서울우유 슬라이스 치즈 20장. 샌드위치·버거용.' },
+    { id:'proc6', name:'떠먹는 요거트 3개입',      emoji:'🥛', price:3900,  originalPrice:4900,  origin:'빙그레',       category:'유제품',   storage:'냉장보관',       unit:'3개입', desc:'빙그레 떠먹는 요거트 3개 묶음. 아침 간편식.' },
+  ];
+
+  const _unusedImages = {
+    'sale1':'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&h=800&q=80',
+    'sale2':'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=800&h=800&q=80',
+    'sale3':'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?auto=format&fit=crop&w=800&h=800&q=80',
+    'sale4':'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&h=800&q=80',
+    'sale5':'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=800&h=800&q=80',
+    'sale6':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg1' :'https://images.unsplash.com/photo-1568158879083-c42860933ed7?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg2' :'https://images.unsplash.com/photo-1604866830893-c13cafa515d5?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg3' :'https://images.unsplash.com/photo-1518977822534-7049a61ee0c2?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg4' :'https://images.unsplash.com/photo-1447175008436-054170c2e979?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg5' :'https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg6' :'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg7' :'https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=800&h=800&q=80',
+    'veg8' :'https://images.unsplash.com/photo-1524593166156-312f362cada0?auto=format&fit=crop&w=800&h=800&q=80',
+    'meat1':'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=800&h=800&q=80',
+    'meat2':'https://images.unsplash.com/photo-1574691250077-03a929faece5?auto=format&fit=crop&w=800&h=800&q=80',
+    'meat3':'https://images.unsplash.com/photo-1481671703460-040cb8a2d909?auto=format&fit=crop&w=800&h=800&q=80',
+    'fish1':'https://images.unsplash.com/photo-1510130387422-82bed34b37e9?auto=format&fit=crop&w=800&h=800&q=80',
+    'fish2':'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&h=800&q=80',
+    'fish3':'https://images.unsplash.com/photo-1535473895227-bdecb20fb157?auto=format&fit=crop&w=800&h=800&q=80',
+    'proc1':'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&h=800&q=80',
+    'proc2':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&h=800&q=80',
+    'proc3':'https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=800&h=800&q=80',
+    'proc4':'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&h=800&q=80',
+    'proc5':'https://images.unsplash.com/photo-1552767059-ce182ead6c1b?auto=format&fit=crop&w=800&h=800&q=80',
+    'proc6':'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&h=800&q=80'
+  };
+
+  let qty = 1;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const id     = params.get('id');
+    const p      = PRODUCTS.find(x => x.id === id);
+
+    if (!p) {
+      document.getElementById('notFound').classList.remove('hidden');
+      return;
+    }
+
+    document.title = p.name + ' — 필마트';
+    document.getElementById('breadcrumbName').textContent = p.name;
+
+    // 이미지
+    const url = PRODUCT_IMAGES[p.id];
+    ['prodImg','detailImg'].forEach(imgId => {
+      const el = document.getElementById(imgId);
+      if (url) { el.src = url; el.alt = p.name; }
+      else el.style.display = 'none';
+    });
+    ['prodEmoji','detailEmoji'].forEach(id2 => {
+      document.getElementById(id2).textContent = p.emoji;
+    });
+
+    // 상품명·단위
+    document.getElementById('prodName').textContent   = p.name;
+    document.getElementById('prodUnit').textContent   = p.unit || '';
+    document.getElementById('detailName').textContent = p.name;
+    document.getElementById('detailDesc').textContent = p.desc || '';
+
+    // 가격
+    const fmtKRW = n => n.toLocaleString('ko-KR') + '원';
+    document.getElementById('prodPrice').textContent   = fmtKRW(p.price);
+    document.getElementById('detailPrice').textContent = fmtKRW(p.price);
+    if (p.originalPrice) {
+      document.getElementById('prodOriginal').textContent   = fmtKRW(p.originalPrice);
+      document.getElementById('detailOriginal').textContent = fmtKRW(p.originalPrice);
+      const disc = Math.round((1 - p.price / p.originalPrice) * 100);
+      const pct  = document.getElementById('discountPct');
+      pct.textContent = disc + '% 할인';
+      pct.classList.remove('hidden');
+    }
+
+    // 적립혜택 (가격의 1%)
+    document.getElementById('infoPoints').textContent =
+      '최대 ' + Math.round(p.price * 0.01).toLocaleString('ko-KR') + '원 적립';
+    document.getElementById('infoOrigin').textContent   = p.origin   || '-';
+    document.getElementById('infoCategory').textContent = p.category || '-';
+    document.getElementById('infoDesc').textContent     = p.desc     || '';
+
+    // 수량 + 총금액
+    const qtyInput   = document.getElementById('qtyInput');
+    const qtyCount   = document.getElementById('qtyCount');
+    const qtyTotalEl = document.getElementById('qtyTotal');
+
+    function updateTotal() {
+      qtyInput.value     = qty;
+      qtyCount.textContent = qty;
+      qtyTotalEl.textContent = fmtKRW(p.price * qty);
+    }
+    updateTotal();
+
+    document.getElementById('qtyMinus').onclick = () => { if (qty > 1) { qty--; updateTotal(); } };
+    document.getElementById('qtyPlus').onclick  = () => { qty++; updateTotal(); };
+
+    // 찜 토글 — Alpine wishlist 스토어와 동기화
+    function syncWishBtn() {
+      const wished = Alpine.store('wishlist').has(p.id);
+      const btn = document.getElementById('wishBtn');
+      btn.innerHTML = wished
+        ? '<i class="fas fa-heart text-lg text-accent"></i>'
+        : '<i class="far fa-heart text-lg"></i>';
+      btn.classList.toggle('border-accent', wished);
+    }
+    document.getElementById('wishBtn').onclick = () => {
+      Alpine.store('wishlist').toggle(p.id);
+      syncWishBtn();
+    };
+    // Alpine이 로드된 후 초기 상태 설정
+    document.addEventListener('alpine:initialized', syncWishBtn);
+
+    // 장바구니
+    document.getElementById('addCartBtn').onclick = () => {
+      Alpine.store('cart').addToCart(p);
+      if (qty > 1) Alpine.store('cart').updateQty(p.id, qty - 1);
+      const btn = document.getElementById('addCartBtn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ 담겼습니다';
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+    };
+
+    // 바로구매
+    document.getElementById('buyNowBtn').onclick = () => {
+      Alpine.store('cart').addToCart(p);
+      if (qty > 1) Alpine.store('cart').updateQty(p.id, qty - 1);
+      location.href = 'checkout.html';
+    };
+
+    // 상품정보 고시 테이블
+    const rows = [
+      ['품목 또는 명칭', p.name],
+      ['포장단위 / 내용량', p.unit || '-'],
+      ['원산지', p.origin || '-'],
+      ['카테고리', p.category || '-'],
+      ['보관방법', p.storage || '실온보관'],
+      ['판매가', fmtKRW(p.price)],
+      ['소비자상담 전화번호', '054-473-2841'],
+    ];
+    document.getElementById('prodInfoTable').innerHTML = rows.map(([label, val]) => `
+      <tr>
+        <td style="width:160px;background:#f9fafb;color:#6b7280;padding:10px 14px;border:1px solid #e5e7eb;font-weight:500">${label}</td>
+        <td style="color:#374151;padding:10px 14px;border:1px solid #e5e7eb">${val}</td>
+      </tr>`).join('');
+
+    // 탭 전환
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const t = btn.dataset.tab;
+        ['info','review','delivery'].forEach(k =>
+          document.getElementById('tab-' + k).classList.toggle('hidden', k !== t));
+      });
+    });
+
+    document.getElementById('productContent').classList.remove('hidden');
+  });
+</script>
+
+</body>
+</html>

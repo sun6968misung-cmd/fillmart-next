@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 / 회원가입 — 필마트</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary:'#1a3d8f', accent:'#e8001d', brand:{ light:'#e8f0fe', dark:'#0f2460' } } } }
+    }
+  </script>
+
+  <!-- 카카오 SDK -->
+  <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+  <!-- 네이버 SDK -->
+  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"></script>
+
+  <script src="js/store.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak]{display:none!important;}
+    body{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;}
+    .divider { display:flex; align-items:center; gap:12px; color:#aaa; font-size:12px; margin:20px 0; }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:#e5e7eb; }
+    .kakao-btn {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:14px; border-radius:12px; font-weight:700; font-size:15px;
+      background:#FEE500; color:#191919; border:none; cursor:pointer;
+      transition:filter .15s;
+    }
+    .kakao-btn:hover { filter:brightness(.95); }
+    .naver-btn {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:14px; border-radius:12px; font-weight:700; font-size:15px;
+      background:#03C75A; color:#fff; border:none; cursor:pointer;
+      transition:filter .15s;
+    }
+    .naver-btn:hover { filter:brightness(.9); }
+    /* 네이버 SDK가 생성하는 버튼 숨김 처리 */
+    #naver_id_login { display:none; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col" x-data="authApp()" x-cloak>
+
+<header class="bg-white border-b border-gray-200">
+  <div class="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
+    <a href="index.html" class="text-primary hover:text-brand-dark">
+      <i class="fas fa-arrow-left text-lg"></i>
+    </a>
+    <a href="index.html">
+      <svg viewBox="0 0 240 52" class="h-9" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#1a3d8f">FILL</text>
+        <circle cx="132" cy="26" r="21" fill="#e8001d"/>
+        <text x="132" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white">M</text>
+        <text x="156" y="41" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="#e8001d">ART</text>
+      </svg>
+    </a>
+  </div>
+</header>
+
+<main class="flex-1 flex items-center justify-center px-4 py-10">
+  <div class="w-full max-w-md">
+
+    <!-- 탭 -->
+    <div class="flex bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6 shadow-sm">
+      <button @click="tab='login'"
+              class="flex-1 py-3.5 text-sm font-bold transition-colors"
+              :class="tab==='login' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-50'">
+        로그인
+      </button>
+      <button @click="tab='register'"
+              class="flex-1 py-3.5 text-sm font-bold transition-colors"
+              :class="tab==='register' ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-50'">
+        회원가입
+      </button>
+    </div>
+
+    <!-- ══════════════ 로그인 ══════════════ -->
+    <div x-show="tab==='login'" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+
+      <div class="px-8 pt-8 pb-6">
+        <h2 class="text-xl font-black text-gray-800 mb-7 text-center">필마트 로그인</h2>
+
+        <!-- 소셜 로그인 -->
+        <button @click="kakaoLogin()" class="kakao-btn mb-3">
+          <!-- 카카오 말풍선 아이콘 -->
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M11 0C4.925 0 0 3.925 0 8.772c0 3.105 1.96 5.836 4.934 7.407L3.74 20.65a.414.414 0 00.601.462l5.44-3.609A13.1 13.1 0 0011 17.544c6.075 0 11-3.925 11-8.772S17.075 0 11 0z"
+              fill="#191919"/>
+          </svg>
+          카카오톡으로 로그인
+        </button>
+
+        <button @click="naverLogin()" class="naver-btn">
+          <!-- 네이버 N 로고 -->
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M10.27 9.27L7.2 4.5H4.5v9h3.23V8.73L10.8 13.5H13.5V4.5h-3.23v4.77z" fill="white"/>
+          </svg>
+          네이버로 로그인
+        </button>
+
+        <!-- 네이버 SDK 숨김 컨테이너 -->
+        <div id="naver_id_login"></div>
+
+        <div class="divider">또는 아이디로 로그인</div>
+
+        <!-- 아이디 로그인 폼 -->
+        <div class="space-y-3">
+          <input type="text" x-model="login.id" placeholder="아이디" @keydown.enter="doLogin()"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+          <input type="password" x-model="login.password" placeholder="비밀번호" @keydown.enter="doLogin()"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+
+        <p x-show="login.error" class="text-accent text-sm mt-2" x-text="login.error"></p>
+
+        <button @click="doLogin()"
+                class="w-full mt-4 bg-accent text-white font-bold py-3.5 rounded-xl hover:bg-red-700 transition-colors">
+          로그인
+        </button>
+
+        <div class="mt-4 text-center text-sm text-gray-500">
+          계정이 없으신가요?
+          <button @click="tab='register'" class="text-primary font-bold hover:underline ml-1">회원가입</button>
+        </div>
+      </div>
+
+      <!-- 소셜 로그인 안내 (API 키 미설정 시) -->
+      <div x-show="socialNote" class="bg-yellow-50 border-t border-yellow-100 px-6 py-4">
+        <p class="text-xs text-yellow-700 leading-relaxed" x-text="socialNote"></p>
+      </div>
+    </div>
+
+    <!-- ══════════════ 회원가입 ══════════════ -->
+    <div x-show="tab==='register'" class="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+      <h2 class="text-xl font-black text-gray-800 mb-6 text-center">필마트 회원가입</h2>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">아이디 <span class="text-accent">*</span></label>
+          <input type="text" x-model="reg.userId" placeholder="영문·숫자 4~20자"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">비밀번호 <span class="text-accent">*</span></label>
+          <input type="password" x-model="reg.password" placeholder="6자 이상"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">비밀번호 확인 <span class="text-accent">*</span></label>
+          <input type="password" x-model="reg.confirm" placeholder="비밀번호 재입력"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">이름 <span class="text-accent">*</span></label>
+          <input type="text" x-model="reg.name" placeholder="홍길동"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">휴대폰 번호 <span class="text-accent">*</span></label>
+          <input type="tel" x-model="reg.phone" placeholder="010-0000-0000" @keydown.enter="doRegister()"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">이메일 (선택)</label>
+          <input type="email" x-model="reg.email" placeholder="example@email.com"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+        </div>
+        <label class="flex items-start gap-2 cursor-pointer pt-1">
+          <input type="checkbox" x-model="reg.agree" class="mt-0.5 accent-primary">
+          <span class="text-sm text-gray-600">
+            <span class="text-primary font-semibold">이용약관</span> 및
+            <span class="text-primary font-semibold">개인정보처리방침</span>에 동의합니다 <span class="text-accent">*</span>
+          </span>
+        </label>
+      </div>
+
+      <p x-show="reg.error"   class="text-accent text-sm mt-3"   x-text="reg.error"></p>
+      <p x-show="reg.success" class="text-green-600 text-sm mt-3 font-medium" x-text="reg.success"></p>
+
+      <button @click="doRegister()"
+              class="w-full mt-5 bg-accent text-white font-bold py-3.5 rounded-xl hover:bg-red-700 transition-colors">
+        가입하기
+      </button>
+
+      <div class="mt-4 text-center text-sm text-gray-500">
+        이미 계정이 있으신가요?
+        <button @click="tab='login'" class="text-primary font-bold hover:underline ml-1">로그인</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // ══════════════════════════════════════════════════
+  // ⚙️  소셜 로그인 API 키 설정
+  //   카카오: https://developers.kakao.com → 앱 생성 → JavaScript 키
+  //   네이버: https://developers.naver.com → 앱 등록 → Client ID
+  // ══════════════════════════════════════════════════
+  const KAKAO_APP_KEY  = '';   // 예: 'a1b2c3d4e5f6...'
+  const NAVER_CLIENT_ID = '';  // 예: 'ABC123xyz'
+  // ══════════════════════════════════════════════════
+
+  let naverLogin = null;
+
+  async function hashPw(pw) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function authApp() {
+    return {
+      tab: 'login',
+      redirectUrl: 'index.html',
+      socialNote: '',
+
+      login:    { id:'', password:'', error:'' },
+      reg:      { userId:'', password:'', confirm:'', name:'', phone:'', email:'', agree:false, error:'', success:'' },
+
+      init() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('redirect')) this.redirectUrl = params.get('redirect');
+        if (params.get('tab') === 'register') this.tab = 'register';
+
+        // 이미 로그인 중이면 이동
+        const session = JSON.parse(localStorage.getItem('pilmart_session') || 'null');
+        if (session) { window.location.href = this.redirectUrl; return; }
+
+        // 카카오 SDK 초기화
+        if (KAKAO_APP_KEY) {
+          try { if (!Kakao.isInitialized()) Kakao.init(KAKAO_APP_KEY); } catch(e) {}
+        }
+
+        // 네이버 SDK 초기화
+        if (NAVER_CLIENT_ID) {
+          try {
+            const callbackUrl = window.location.origin +
+              window.location.pathname.replace('auth.html', 'naver-callback.html');
+            naverLogin = new naver.LoginWithNaverId({
+              clientId: NAVER_CLIENT_ID,
+              callbackUrl: callbackUrl,
+              isPopup: true,
+              loginButton: { color:'green', type:3, height:40 },
+              callbackHandle: true
+            });
+            naverLogin.init();
+          } catch(e) {}
+        }
+      },
+
+      // ── 카카오 로그인 ─────────────────────────────
+      kakaoLogin() {
+        if (!KAKAO_APP_KEY) {
+          this.socialNote = '⚠️ 카카오 로그인을 사용하려면 auth.html 상단의 KAKAO_APP_KEY를 입력해 주세요. (developers.kakao.com에서 앱 생성 후 JavaScript 키 발급)';
+          return;
+        }
+        this.socialNote = '';
+        try {
+          Kakao.Auth.login({
+            success: (authObj) => {
+              Kakao.API.request({
+                url: '/v2/user/me',
+                success: (res) => {
+                  const profile = res.kakao_account?.profile || {};
+                  const session = {
+                    id:       'KAKAO_' + res.id,
+                    name:     profile.nickname || '카카오 사용자',
+                    phone:    '',
+                    email:    res.kakao_account?.email || '',
+                    provider: 'kakao',
+                    avatar:   profile.thumbnail_image_url || '',
+                    loginAt:  Date.now()
+                  };
+                  localStorage.setItem('pilmart_session', JSON.stringify(session));
+                  window.location.href = this.redirectUrl;
+                },
+                fail: (err) => { this.socialNote = '카카오 프로필 조회 실패: ' + JSON.stringify(err); }
+              });
+            },
+            fail: (err) => {
+              if (err.error !== 'access_denied') {
+                this.socialNote = '카카오 로그인 실패: ' + JSON.stringify(err);
+              }
+            }
+          });
+        } catch(e) {
+          this.socialNote = '카카오 SDK 오류: ' + e.message;
+        }
+      },
+
+      // ── 네이버 로그인 ─────────────────────────────
+      naverLogin() {
+        if (!NAVER_CLIENT_ID) {
+          this.socialNote = '⚠️ 네이버 로그인을 사용하려면 auth.html 상단의 NAVER_CLIENT_ID를 입력해 주세요. (developers.naver.com에서 앱 등록 후 Client ID 발급)';
+          return;
+        }
+        this.socialNote = '';
+        try {
+          localStorage.setItem('pilmart_naver_redirect', this.redirectUrl);
+          // 네이버 SDK가 생성한 링크 클릭 트리거
+          const naverBtn = document.querySelector('#naver_id_login a');
+          if (naverBtn) naverBtn.click();
+          else { this.socialNote = '네이버 SDK 초기화 중입니다. 잠시 후 다시 시도해 주세요.'; }
+        } catch(e) {
+          this.socialNote = '네이버 SDK 오류: ' + e.message;
+        }
+      },
+
+      // ── 아이디 로그인 ──────────────────────────────
+      async doLogin() {
+        this.login.error = '';
+        const id = this.login.id.trim();
+        const pw = this.login.password;
+        if (!id || !pw) { this.login.error = '아이디와 비밀번호를 입력해 주세요.'; return; }
+
+        const hashed = await hashPw(pw);
+        const users  = JSON.parse(localStorage.getItem('pilmart_users') || '[]');
+        const user   = users.find(u => u.userId === id &&
+                         (u.passwordHash === hashed || u.password === pw));
+        if (!user) { this.login.error = '아이디 또는 비밀번호가 올바르지 않습니다.'; return; }
+
+        // 레거시 평문 비밀번호를 해시로 업그레이드
+        if (user.password && !user.passwordHash) {
+          user.passwordHash = hashed;
+          delete user.password;
+          localStorage.setItem('pilmart_users', JSON.stringify(users));
+        }
+
+        const session = { id: user.id, name: user.name, phone: user.phone, email: user.email, provider: 'id', loginAt: Date.now() };
+        localStorage.setItem('pilmart_session', JSON.stringify(session));
+        window.location.href = this.redirectUrl;
+      },
+
+      // ── 회원가입 ──────────────────────────────────
+      async doRegister() {
+        this.reg.error = ''; this.reg.success = '';
+        const { userId, password, confirm, name, phone, email, agree } = this.reg;
+
+        if (!userId.trim())        { this.reg.error = '아이디를 입력해 주세요.'; return; }
+        if (!/^[a-zA-Z0-9]{4,20}$/.test(userId)) { this.reg.error = '아이디는 영문·숫자 4~20자로 입력해 주세요.'; return; }
+        if (password.length < 6)   { this.reg.error = '비밀번호는 6자 이상이어야 합니다.'; return; }
+        if (password !== confirm)  { this.reg.error = '비밀번호가 일치하지 않습니다.'; return; }
+        if (!name.trim())          { this.reg.error = '이름을 입력해 주세요.'; return; }
+        if (!phone.trim())         { this.reg.error = '휴대폰 번호를 입력해 주세요.'; return; }
+        if (!agree)                { this.reg.error = '이용약관에 동의해 주세요.'; return; }
+
+        const users = JSON.parse(localStorage.getItem('pilmart_users') || '[]');
+        if (users.find(u => u.userId === userId)) { this.reg.error = '이미 사용 중인 아이디입니다.'; return; }
+
+        const passwordHash = await hashPw(password);
+        const newUser = { id:'U'+Date.now(), userId: userId.trim(), name: name.trim(), phone: phone.trim(), email: email.trim(), passwordHash };
+        users.push(newUser);
+        localStorage.setItem('pilmart_users', JSON.stringify(users));
+
+        const successMsg = '가입이 완료되었습니다! 로그인해 주세요.';
+        this.reg = { userId:'', password:'', confirm:'', name:'', phone:'', email:'', agree:false, error:'', success: successMsg };
+        setTimeout(() => { this.tab = 'login'; this.reg.success = ''; }, 1500);
+      }
+    };
+  }
+</script>
+</body>
+</html>
