@@ -8,22 +8,18 @@ import { toast } from 'sonner';
 // ── Cart ──────────────────────────────────────────────────────────────
 interface CartCtx {
   items: CartItem[];
-  isOpen: boolean;
   count: number;
   total: number;
   addItem: (product: Product) => void;
   updateQty: (id: string, delta: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
-  openCart: () => void;
-  closeCart: () => void;
   goCheckout: () => void;
 }
 const CartContext = createContext<CartCtx | null>(null);
 
 function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +32,8 @@ function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addItem = useCallback((product: Product) => {
+    const session = lsGet<Session | null>(KEYS.session, null);
+    if (!session) { router.push('/auth'); return; }
     setItems(prev => {
       const existing = prev.find(i => i.id === product.id);
       const next = existing
@@ -44,12 +42,17 @@ function CartProvider({ children }: { children: ReactNode }) {
       lsSet(KEYS.cart, next);
       return next;
     });
-    setIsOpen(true);
+    router.push('/cart');
     toast.success(`${product.name} 담았습니다`);
-  }, []);
+  }, [router]);
 
   const updateQty = useCallback((id: string, delta: number) => {
     setItems(prev => {
+      const item = prev.find(i => i.id === id);
+      if (item && delta > 0 && item.maxQty && item.qty >= item.maxQty) {
+        toast.error(`1인 최대 ${item.maxQty}개까지 구매 가능합니다.`);
+        return prev;
+      }
       const next = prev
         .map(i => i.id === id ? { ...i, qty: i.qty + delta } : i)
         .filter(i => i.qty > 0);
@@ -81,7 +84,6 @@ function CartProvider({ children }: { children: ReactNode }) {
     }
     const session = lsGet<Session | null>(KEYS.session, null);
     if (!session) { router.push('/auth?redirect=/checkout'); return; }
-    setIsOpen(false);
     router.push('/checkout');
   }, [items, router]);
 
@@ -90,10 +92,8 @@ function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider value={{
-      items, isOpen, count, total,
+      items, count, total,
       addItem, updateQty, removeItem, clearCart,
-      openCart: () => setIsOpen(true),
-      closeCart: () => setIsOpen(false),
       goCheckout,
     }}>
       {children}
@@ -112,18 +112,21 @@ const WishlistContext = createContext<WishlistCtx | null>(null);
 
 function WishlistProvider({ children }: { children: ReactNode }) {
   const [ids, setIds] = useState<string[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     setIds(lsGet<string[]>(KEYS.wishlist, []));
   }, []);
 
   const toggle = useCallback((id: string) => {
+    const session = lsGet<Session | null>(KEYS.session, null);
+    if (!session) { router.push('/auth'); return; }
     setIds(prev => {
       const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
       lsSet(KEYS.wishlist, next);
       return next;
     });
-  }, []);
+  }, [router]);
 
   return (
     <WishlistContext.Provider value={{ ids, count: ids.length, has: (id) => ids.includes(id), toggle }}>

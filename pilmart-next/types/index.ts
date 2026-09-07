@@ -25,6 +25,7 @@ export interface Order {
   method: string;
   createdAt: number;
   paymentKey?: string;
+  customerName?: string;
 }
 
 export interface Session {
@@ -76,4 +77,9 @@ export interface StoredUser {
   phone: string;
   name: string;
   passwordHash: string;
+  userType?: 'personal' | 'business';
+  businessNo?: string;
+  businessName?: string;
+  businessType?: string;
+  businessCategory?: string;
 }

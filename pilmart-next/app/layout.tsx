@@ -6,7 +6,6 @@ import { StoreProvider } from '@/context/StoreProvider';
 import { Toaster } from 'sonner';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { CartSheet } from '@/components/layout/CartSheet';
 
 const geist = Geist({ subsets: ['latin'] });
 
@@ -22,7 +21,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script src="https://js.tosspayments.com/v1/payment" strategy="beforeInteractive" />
         <StoreProvider>
           <Navbar />
-          <CartSheet />
           <main className="min-h-screen">{children}</main>
           <Footer />
           <Toaster richColors position="top-center" />

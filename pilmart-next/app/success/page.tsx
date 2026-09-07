@@ -19,7 +19,7 @@ function SuccessContent() {
     if (executed.current) return;
     executed.current = true;
 
-    const pending = lsGet<(Order & { address?: string }) | null>(KEYS.pendingOrder, null);
+    const pending = lsGet<(Order & { address?: string; customerName?: string }) | null>(KEYS.pendingOrder, null);
     if (!pending) return;
 
     const order: Order = {
@@ -29,6 +29,7 @@ function SuccessContent() {
       method: params.get('method') ?? pending.method,
       createdAt: Date.now(),
       paymentKey: params.get('paymentKey') ?? undefined,
+      customerName: pending.customerName,
     };
 
     const orders = lsGet<Order[]>(KEYS.orders, []);

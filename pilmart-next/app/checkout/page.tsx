@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
+import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,7 +14,15 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
-import { CreditCard, Banknote, Handshake } from 'lucide-react';
+import { CreditCard, Banknote, Handshake, Search } from 'lucide-react';
+
+declare global {
+  interface Window {
+    daum: {
+      Postcode: new (opts: { oncomplete: (data: { zonecode: string; roadAddress: string }) => void }) => { open: () => void };
+    };
+  }
+}
 
 const METHODS = [
   { value: '카드', label: '온라인 카드', icon: CreditCard, toss: true },
@@ -29,9 +38,24 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const [method, setMethod] = useState('카드');
-  const [address, setAddress] = useState('');
+  const [zonecode, setZonecode] = useState('');
+  const [roadAddress, setRoadAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
   const [memo, setMemo] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const address = roadAddress
+    ? `(${zonecode}) ${roadAddress}${detailAddress ? ' ' + detailAddress : ''}`
+    : '';
+
+  function openAddressSearch() {
+    new window.daum.Postcode({
+      oncomplete(data) {
+        setZonecode(data.zonecode);
+        setRoadAddress(data.roadAddress);
+      },
+    }).open();
+  }
   const orderId = useMemo(() => `pilmart_${Date.now()}`, []);
 
   useEffect(() => {
@@ -56,6 +80,7 @@ export default function CheckoutPage() {
       createdAt: Date.now(),
       address,
       memo,
+      customerName: user?.name,
     };
     lsSet(KEYS.pendingOrder, pendingOrder);
 
@@ -80,6 +105,8 @@ export default function CheckoutPage() {
   };
 
   return (
+    <>
+      <Script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="lazyOnload" />
     <div className="container mx-auto px-4 py-8 max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold">결제</h1>
 
@@ -104,8 +131,21 @@ export default function CheckoutPage() {
         <CardHeader><CardTitle>배송 정보</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="address">배송지 주소</Label>
-            <Input id="address" placeholder="주소를 입력해주세요" value={address} onChange={e => setAddress(e.target.value)} />
+            <Label>배송지 주소</Label>
+            <div className="flex gap-2">
+              <Input readOnly placeholder="우편번호" value={zonecode} className="w-32 bg-gray-50 cursor-default" />
+              <Button type="button" variant="outline" onClick={openAddressSearch} className="shrink-0 gap-1.5">
+                <Search className="h-4 w-4" />
+                주소 찾기
+              </Button>
+            </div>
+            <Input readOnly placeholder="도로명 주소" value={roadAddress} className="bg-gray-50 cursor-default" />
+            <Input
+              id="detail"
+              placeholder="상세 주소 (동/호수 등)"
+              value={detailAddress}
+              onChange={e => setDetailAddress(e.target.value)}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="memo">배송 메모 (선택)</Label>
@@ -134,5 +174,6 @@ export default function CheckoutPage() {
         {loading ? '처리 중...' : `${formatPrice(total)} 결제하기`}
       </Button>
     </div>
+    </>
   );
 }

@@ -1,32 +1,115 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { Product } from '@/types';
 import { ProductCard } from './ProductCard';
-import { CategoryFilter } from './CategoryFilter';
+
+const SECTION_ORDER = [
+  '이번주특가',
+  '야채/채소', '과일', '쌀/잡곡', '축산/계란', '수산/건어물', '견과',
+  '고추장/된장/간장류', '양념/소스/육수', '식용유/조미료', '밀가루/라면/면',
+  '유제품/냉장/냉동', '캔/통조림', '김/편의식/반찬', '생수/음료',
+  '커피믹스/티백', '빵/스낵/안주류', '헬스/건강식품', '반려동물용품',
+  '소모품/일회용품', '조리도구', '식기/밀폐용기', '주전자/프라이팬', '냄비/솥/찜기',
+  '주방잡화', '욕실잡화', '생활잡화', '캠핑용품', '사무/자동차용품',
+  '대용량 농산물', '대용량 축산물', '대용량 수산물', '대용량 장류/양념',
+  '대용량 냉장/냉동', '대용량 가공식품', '대용량 커피/음료', '대용량 소모품/세제', '대용량 식기/도구',
+];
 
 interface ProductGridProps {
   products: Product[];
-  title?: string;
 }
 
-export function ProductGrid({ products, title }: ProductGridProps) {
-  const [category, setCategory] = useState('전체');
+export function ProductGrid({ products }: ProductGridProps) {
+  const searchParams = useSearchParams();
+  const category = searchParams.get('cat') ?? '';
 
-  const filtered = useMemo(() =>
-    category === '전체' ? products : products.filter(p => p.category === category),
-  [products, category]);
+  const filtered = useMemo(() => {
+    if (!category || category === '전체') return products;
+    if (category === '이번주특가') return products.filter(p => p.section === 'sale');
+    return products.filter(p => p.category === category);
+  }, [products, category]);
 
-  return (
-    <section className="space-y-4">
-      {title && <h2 className="text-xl font-bold">{title}</h2>}
-      <CategoryFilter value={category} onChange={setCategory} />
-      {filtered.length === 0 ? (
-        <p className="text-center text-muted-foreground py-16">해당 카테고리 상품이 없습니다.</p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {filtered.map(p => <ProductCard key={p.id} product={p} />)}
+  const grouped = useMemo(() => {
+    const sections: Array<{ category: string; products: Product[] }> = [];
+
+    // 이번주특가 먼저
+    const saleItems = products.filter(p => p.section === 'sale');
+    if (saleItems.length > 0) {
+      sections.push({ category: '이번주특가', products: saleItems });
+    }
+
+    // 카테고리별 그룹핑
+    const map = new Map<string, Product[]>();
+    products.forEach(p => {
+      if (!map.has(p.category)) map.set(p.category, []);
+      map.get(p.category)!.push(p);
+    });
+
+    SECTION_ORDER.filter(c => c !== '이번주특가').forEach(cat => {
+      if (map.has(cat)) {
+        sections.push({ category: cat, products: map.get(cat)! });
+        map.delete(cat);
+      }
+    });
+
+    // 순서 목록에 없는 나머지 카테고리
+    map.forEach((prods, cat) => {
+      sections.push({ category: cat, products: prods });
+    });
+
+    return sections;
+  }, [products]);
+
+  // 카테고리 필터 뷰 (cat 파라미터 있을 때)
+  if (category && category !== '전체') {
+    return (
+      <section className="space-y-4">
+        <div className="flex items-center gap-2 border-b pb-3">
+          <h2 className="text-xl font-bold">{category}</h2>
+          {category === '이번주특가' && (
+            <span className="text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full">SALE</span>
+          )}
         </div>
-      )}
-    </section>
+        {filtered.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <p className="text-4xl mb-3">🔍</p>
+            <p>해당 카테고리 상품이 없습니다.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {filtered.map(p => <ProductCard key={p.id} product={p} />)}
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  // 전체 카테고리 섹션 뷰 (기본)
+  return (
+    <div className="space-y-14">
+      {grouped.map(({ category: cat, products: catProducts }) => (
+        <section key={cat}>
+          <div className="flex items-center justify-between border-b border-gray-200 pb-3 mb-5">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold">{cat}</h2>
+              {cat === '이번주특가' && (
+                <span className="text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full">SALE</span>
+              )}
+            </div>
+            <Link
+              href={`/?cat=${encodeURIComponent(cat)}`}
+              className="text-sm text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
+            >
+              더보기 <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {catProducts.map(p => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }

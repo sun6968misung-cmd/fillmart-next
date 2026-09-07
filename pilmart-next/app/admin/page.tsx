@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Settings, KeyRound,
   LogOut, Store, Trash2, Search, RotateCcw, Check, X, ChevronDown,
-  Bell, Zap, Plus,
+  Bell, Zap, Plus, Printer,
 } from 'lucide-react';
 import { KEYS, lsGet, lsSet } from '@/lib/storage';
 import { hashPassword } from '@/lib/crypto';
@@ -74,8 +74,7 @@ export default function AdminPage() {
   }, []);
 
   async function login() {
-    const rawStored = typeof window !== 'undefined' ? localStorage.getItem(KEYS.adminPw) : null;
-    const stored = rawStored ?? '1234';
+    const stored = lsGet<string>(KEYS.adminPw, '1234');
     const isHash = /^[0-9a-f]{64}$/.test(stored);
 
     let matches: boolean;
@@ -226,6 +225,85 @@ export default function AdminPage() {
     return new Date(ts).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   }
 
+  function printOrder(order: OrderWithStatus) {
+    const w = window.open('', '_blank', 'width=620,height=820');
+    if (!w) return;
+    const info = lsGet<{ name: string; phone: string; address: string }>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' });
+    const itemRows = (order.items ?? []).map(i => `
+      <tr>
+        <td>${i.emoji ?? ''} ${i.name}</td>
+        <td class="center">${i.unit ?? ''}</td>
+        <td class="center">${i.qty}</td>
+        <td class="right">${formatPrice(i.price)}</td>
+        <td class="right amount">${formatPrice(i.price * i.qty)}</td>
+      </tr>`).join('');
+
+    w.document.write(`<!DOCTYPE html><html lang="ko"><head>
+<meta charset="UTF-8">
+<title>주문서 · ${order.orderId}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif; padding: 32px; font-size: 13px; color: #222; }
+  h1 { text-align: center; font-size: 22px; font-weight: 900; margin-bottom: 2px; }
+  .store-sub { text-align: center; font-size: 11px; color: #888; margin-bottom: 24px; }
+  .section { margin-bottom: 20px; }
+  .section-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .05em;
+    border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-bottom: 10px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
+  .info-row { display: flex; gap: 8px; font-size: 12px; }
+  .info-label { color: #888; min-width: 60px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #f5f5f5; text-align: left; padding: 6px 8px; font-size: 11px; color: #555; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; }
+  td { padding: 7px 8px; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
+  .center { text-align: center; }
+  .right { text-align: right; }
+  .total-row td { border-top: 2px solid #222; border-bottom: none; font-weight: 700; font-size: 14px; padding-top: 10px; }
+  .amount { color: #c53030; font-weight: 600; }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700;
+    background: #ebf8ff; color: #2b6cb0; }
+  .footer { text-align: center; color: #aaa; font-size: 11px; margin-top: 28px; padding-top: 14px; border-top: 1px solid #eee; }
+  @media print { body { padding: 16px; } button { display: none; } }
+</style>
+</head><body>
+<div style="text-align:right;margin-bottom:12px">
+  <button onclick="window.print()" style="padding:6px 16px;background:#c53030;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700">🖨 인쇄</button>
+</div>
+<h1>${info.name}</h1>
+<p class="store-sub">${[info.phone, info.address].filter(Boolean).join(' · ') || '주문 확인서'}</p>
+
+<div class="section">
+  <div class="section-title">주문 정보</div>
+  <div class="info-grid">
+    <div class="info-row"><span class="info-label">주문번호</span><span style="font-size:11px;font-family:monospace">${order.orderId}</span></div>
+    <div class="info-row"><span class="info-label">결제상태</span><span class="status-badge">${order.status || '결제완료'}</span></div>
+    <div class="info-row"><span class="info-label">주문일시</span><span>${new Date(order.createdAt).toLocaleString('ko-KR')}</span></div>
+    <div class="info-row"><span class="info-label">결제수단</span><span>${METHOD[order.method] || order.method}</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">주문 상품</div>
+  <table>
+    <thead><tr>
+      <th>상품명</th><th class="center">규격</th><th class="center">수량</th>
+      <th class="right">단가</th><th class="right">금액</th>
+    </tr></thead>
+    <tbody>
+      ${itemRows}
+      <tr class="total-row">
+        <td colspan="4">합계</td>
+        <td class="right amount">${formatPrice(order.total)}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">${info.name} · 오전 주문 당일 배송 · 감사합니다 🙏</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+    w.document.close();
+  }
+
   const NAV: { id: Tab; icon: React.ReactNode; label: string }[] = [
     { id: 'dashboard', icon: <LayoutDashboard className="h-4 w-4" />, label: '대시보드' },
     { id: 'orders', icon: <Package className="h-4 w-4" />, label: '주문 관리' },
@@ -361,6 +439,7 @@ export default function AdminPage() {
                     <thead>
                       <tr className="text-xs text-gray-400 border-b border-gray-100">
                         <th className="text-left pb-2 font-medium">주문번호</th>
+                        <th className="text-left pb-2 font-medium">주문자</th>
                         <th className="text-left pb-2 font-medium">날짜</th>
                         <th className="text-left pb-2 font-medium">결제수단</th>
                         <th className="text-right pb-2 font-medium">금액</th>
@@ -371,6 +450,7 @@ export default function AdminPage() {
                       {orders.slice(0, 7).map(o => (
                         <tr key={o.orderId} className="border-b border-gray-50 hover:bg-gray-50">
                           <td className="py-2.5 font-mono text-xs text-gray-700">{o.orderId?.slice(0, 14)}…</td>
+                          <td className="py-2.5 text-xs text-gray-700 font-medium">{o.customerName || '-'}</td>
                           <td className="py-2.5 text-xs text-gray-500">{fmtDate(o.createdAt)}</td>
                           <td className="py-2.5 text-xs text-gray-500">{METHOD[o.method] || o.method}</td>
                           <td className="py-2.5 text-right font-bold text-primary">{formatPrice(o.total)}</td>
@@ -426,11 +506,13 @@ export default function AdminPage() {
                     <thead className="bg-gray-50 border-b border-gray-100">
                       <tr className="text-xs text-gray-500 font-medium">
                         <th className="text-left px-5 py-3">주문번호</th>
+                        <th className="text-left px-5 py-3">주문자</th>
                         <th className="text-left px-5 py-3">주문일시</th>
                         <th className="text-left px-5 py-3">결제수단</th>
                         <th className="text-right px-5 py-3">금액</th>
                         <th className="text-center px-5 py-3">상태</th>
                         <th className="text-center px-5 py-3">상품</th>
+                        <th className="text-center px-5 py-3">인쇄</th>
                         <th className="text-center px-5 py-3">삭제</th>
                       </tr>
                     </thead>
@@ -439,6 +521,7 @@ export default function AdminPage() {
                         <Fragment key={order.orderId}>
                           <tr className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                             <td className="px-5 py-3 font-mono text-xs text-gray-700">{order.orderId?.slice(0, 16)}…</td>
+                            <td className="px-5 py-3 text-xs text-gray-700 font-medium">{order.customerName || '-'}</td>
                             <td className="px-5 py-3 text-xs text-gray-500">{fmtDate(order.createdAt)}</td>
                             <td className="px-5 py-3 text-xs text-gray-600">{METHOD[order.method] || order.method}</td>
                             <td className="px-5 py-3 text-right font-bold text-primary">{formatPrice(order.total)}</td>
@@ -462,6 +545,12 @@ export default function AdminPage() {
                               ) : <span className="text-xs text-gray-300">-</span>}
                             </td>
                             <td className="px-5 py-3 text-center">
+                              <button onClick={() => printOrder(order)}
+                                className="text-gray-300 hover:text-blue-500 transition-colors" title="인쇄">
+                                <Printer className="h-3.5 w-3.5" />
+                              </button>
+                            </td>
+                            <td className="px-5 py-3 text-center">
                               <button onClick={() => deleteOrder(order.orderId)}
                                 className="text-gray-300 hover:text-red-500 transition-colors">
                                 <Trash2 className="h-3.5 w-3.5" />
@@ -470,7 +559,7 @@ export default function AdminPage() {
                           </tr>
                           {expanded[order.orderId] && order.items?.length > 0 && (
                             <tr className="bg-blue-50/30 border-b border-gray-50">
-                              <td colSpan={7} className="px-8 py-3">
+                              <td colSpan={9} className="px-8 py-3">
                                 <div className="flex flex-wrap gap-2">
                                   {order.items.map(item => (
                                     <div key={item.id} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-gray-100 text-xs">

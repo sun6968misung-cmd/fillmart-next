@@ -21,6 +21,8 @@ function AuthForm() {
 
   const [loginForm, setLoginForm] = useState({ phone: '', password: '' });
   const [signupForm, setSignupForm] = useState({ name: '', phone: '', password: '', confirm: '' });
+  const [userType, setUserType] = useState<'personal' | 'business'>('personal');
+  const [bizForm, setBizForm] = useState({ businessNo: '', businessName: '', businessType: '', businessCategory: '' });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,8 +61,19 @@ function AuthForm() {
       toast.error('이미 등록된 전화번호입니다.');
       return;
     }
+    if (userType === 'business' && (!bizForm.businessNo.trim() || !bizForm.businessName.trim())) {
+      toast.error('사업자 등록번호와 상호명을 입력해주세요.');
+      return;
+    }
     const passwordHash = await hashPassword(signupForm.password);
-    lsSet(KEYS.users, [...users, { phone: signupForm.phone, name: signupForm.name, passwordHash }]);
+    const newUser: import('@/types').StoredUser = {
+      phone: signupForm.phone,
+      name: signupForm.name,
+      passwordHash,
+      userType,
+      ...(userType === 'business' ? bizForm : {}),
+    };
+    lsSet(KEYS.users, [...users, newUser]);
     login({ name: signupForm.name, phone: signupForm.phone, loginAt: Date.now(), provider: 'local' });
     toast.success('회원가입이 완료되었습니다.');
     router.push(redirect);
@@ -97,6 +110,17 @@ function AuthForm() {
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4 mt-4">
                 <div className="space-y-2">
+                  <Label>회원 유형</Label>
+                  <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+                    {(['personal', 'business'] as const).map(t => (
+                      <button key={t} type="button" onClick={() => setUserType(t)}
+                        className={`flex-1 py-2 text-sm font-semibold transition-colors ${userType === t ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-50'}`}>
+                        {t === 'personal' ? '일반' : '사업자'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="signup-name">이름</Label>
                   <Input id="signup-name" placeholder="홍길동" value={signupForm.name} onChange={e => setSignupForm(p => ({ ...p, name: e.target.value }))} />
                 </div>
@@ -112,6 +136,27 @@ function AuthForm() {
                   <Label htmlFor="signup-confirm">비밀번호 확인</Label>
                   <Input id="signup-confirm" type="password" value={signupForm.confirm} onChange={e => setSignupForm(p => ({ ...p, confirm: e.target.value }))} />
                 </div>
+                {userType === 'business' && (
+                  <div className="space-y-3 pt-2 border-t border-gray-100">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">사업자 정보</p>
+                    <div className="space-y-2">
+                      <Label htmlFor="biz-no">사업자 등록번호</Label>
+                      <Input id="biz-no" placeholder="000-00-00000" value={bizForm.businessNo} onChange={e => setBizForm(p => ({ ...p, businessNo: e.target.value }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="biz-name">상호명</Label>
+                      <Input id="biz-name" placeholder="OO마트" value={bizForm.businessName} onChange={e => setBizForm(p => ({ ...p, businessName: e.target.value }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="biz-type">업종</Label>
+                      <Input id="biz-type" placeholder="도소매" value={bizForm.businessType} onChange={e => setBizForm(p => ({ ...p, businessType: e.target.value }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="biz-cat">업태</Label>
+                      <Input id="biz-cat" placeholder="식품" value={bizForm.businessCategory} onChange={e => setBizForm(p => ({ ...p, businessCategory: e.target.value }))} />
+                    </div>
+                  </div>
+                )}
                 <Button type="submit" className="w-full">회원가입</Button>
               </form>
             </TabsContent>
