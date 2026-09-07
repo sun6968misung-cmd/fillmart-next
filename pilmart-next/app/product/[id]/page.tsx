@@ -1,14 +1,26 @@
 'use client';
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Heart, Minus, Plus, Star } from 'lucide-react';
+import { ChevronRight, Heart, Minus, Plus, Star, Pencil, X, RotateCcw, ImageIcon } from 'lucide-react';
 import { getProducts, getProductImage } from '@/lib/products';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useAuth } from '@/hooks/useAuth';
 import { formatPrice } from '@/lib/utils';
+import { KEYS, lsGet, lsSet } from '@/lib/storage';
+import { ProductOverride } from '@/types';
+
+const CATEGORIES = [
+  '야채/채소','과일','쌀/잡곡','축산/계란','수산/건어물','유제품/냉장/냉동','견과',
+  '고추장/된장/간장류','양념/소스/육수','식용유/조미료','밀가루/라면/면',
+  '캔/통조림','김/편의식/반찬','생수/음료','커피믹스/티백','빵/스낵/안주류',
+  '헬스/건강식품','반려동물용품','소모품/일회용품','조리도구','식기/밀폐용기',
+  '주방잡화','욕실잡화','생활잡화','캠핑용품','사무/자동차용품',
+  '대용량 농산물','대용량 축산물','대용량 수산물','대용량 장류/양념',
+  '대용량 냉장/냉동','대용량 가공식품','대용량 커피/음료','대용량 소모품/세제','대용량 식기/도구',
+];
 
 type TabId = 'info' | 'review' | 'shipping';
 
@@ -33,6 +45,40 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState<TabId>('info');
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    name: product.name, price: String(product.price), original: String(product.originalPrice),
+    category: product.category, imageUrl: '', desc: product.desc ?? '',
+    unit: product.unit, origin: product.origin, storage: product.storage,
+  });
+
+  useEffect(() => {
+    setIsAdmin(lsGet<boolean>(KEYS.adminActive, false));
+    const ov = lsGet<Record<string, ProductOverride>>(KEYS.products, {})[product.id] ?? {};
+    setEditData(d => ({ ...d, imageUrl: ov.imageUrl ?? '' }));
+  }, [product.id]);
+
+  function saveProductEdit() {
+    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+    overrides[product.id] = {
+      name: editData.name, price: Number(editData.price), originalPrice: Number(editData.original),
+      imageUrl: editData.imageUrl || undefined, category: editData.category,
+      desc: editData.desc, unit: editData.unit, origin: editData.origin, storage: editData.storage,
+    };
+    lsSet(KEYS.products, overrides);
+    setEditOpen(false);
+    router.refresh();
+  }
+
+  function resetProductEdit() {
+    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+    delete overrides[product.id];
+    lsSet(KEYS.products, overrides);
+    setEditOpen(false);
+    router.refresh();
+  }
 
   const img = getProductImage(product.id);
   const discount = Math.round((1 - product.price / product.originalPrice) * 100);
@@ -82,8 +128,125 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-gray-600 truncate max-w-xs">{product.name}</span>
+          {isAdmin && (
+            <button onClick={() => setEditOpen(true)}
+              className="ml-auto flex items-center gap-1 bg-gray-800 text-white text-[10px] font-bold px-2.5 py-1 rounded-full hover:bg-gray-700 transition-colors shrink-0">
+              <Pencil className="h-2.5 w-2.5" /> 관리자 편집
+            </button>
+          )}
         </div>
       </div>
+
+      {/* 관리자 편집 모달 */}
+      {editOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+              <h2 className="font-bold text-gray-800">상품 수정</h2>
+              <button onClick={() => setEditOpen(false)} className="text-gray-400 hover:text-gray-700">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-5">
+              {/* 이미지 */}
+              <div className="flex gap-4 items-start">
+                <div className="w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-100">
+                  {(editData.imageUrl || img) ? (
+                    <img src={editData.imageUrl || img} alt="" className="w-full h-full object-cover"
+                      onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl">{product.emoji}</div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">이미지 URL</label>
+                  <div className="flex gap-2">
+                    <input value={editData.imageUrl} onChange={e => setEditData(d => ({ ...d, imageUrl: e.target.value }))}
+                      placeholder="https://example.com/image.jpg"
+                      className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                    {editData.imageUrl && (
+                      <button onClick={() => setEditData(d => ({ ...d, imageUrl: '' }))} className="text-gray-400 hover:text-red-500 px-2">
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-gray-400 flex items-center gap-1">
+                    <ImageIcon className="h-3 w-3" /> 비우면 기본 이미지로 복원됩니다
+                  </p>
+                </div>
+              </div>
+              {/* 상품명 + 카테고리 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">상품명</label>
+                  <input value={editData.name} onChange={e => setEditData(d => ({ ...d, name: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">카테고리</label>
+                  <select value={editData.category} onChange={e => setEditData(d => ({ ...d, category: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-white">
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+              {/* 가격 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">판매가 (원)</label>
+                  <input type="number" value={editData.price} onChange={e => setEditData(d => ({ ...d, price: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary text-right" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">정가 (원)</label>
+                  <input type="number" value={editData.original} onChange={e => setEditData(d => ({ ...d, original: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary text-right" />
+                </div>
+              </div>
+              {/* 단위/원산지/보관 */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">규격/단위</label>
+                  <input value={editData.unit} onChange={e => setEditData(d => ({ ...d, unit: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">원산지</label>
+                  <input value={editData.origin} onChange={e => setEditData(d => ({ ...d, origin: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500 block">보관방법</label>
+                  <input value={editData.storage} onChange={e => setEditData(d => ({ ...d, storage: e.target.value }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                </div>
+              </div>
+              {/* 설명 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 block">상품 설명</label>
+                <textarea value={editData.desc} onChange={e => setEditData(d => ({ ...d, desc: e.target.value }))}
+                  rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none" />
+              </div>
+            </div>
+            <div className="px-6 pb-6 flex items-center justify-between">
+              <button onClick={resetProductEdit}
+                className="flex items-center gap-1.5 text-orange-500 text-sm font-medium hover:text-orange-700">
+                <RotateCcw className="h-3.5 w-3.5" /> 기본값으로 초기화
+              </button>
+              <div className="flex gap-2">
+                <button onClick={() => setEditOpen(false)}
+                  className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50">
+                  취소
+                </button>
+                <button onClick={saveProductEdit}
+                  className="px-5 py-2 text-sm font-bold bg-primary text-white rounded-xl hover:bg-primary/90">
+                  저장
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 상품 메인 */}
       <div className="max-w-screen-xl mx-auto px-4 py-10">

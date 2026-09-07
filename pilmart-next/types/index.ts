@@ -70,7 +70,13 @@ export interface StoreInfo {
 export interface ProductOverride {
   name?: string;
   price?: number;
+  originalPrice?: number;
   imageUrl?: string;
+  category?: string;
+  desc?: string;
+  unit?: string;
+  origin?: string;
+  storage?: string;
 }
 
 export interface StoredUser {
