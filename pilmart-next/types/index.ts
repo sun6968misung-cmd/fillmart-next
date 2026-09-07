@@ -4,13 +4,14 @@ export interface Product {
   emoji: string;
   price: number;
   originalPrice: number;
-  section: 'sale' | 'veg' | 'meat' | 'proc';
+  section: string;
   origin: string;
-  category: '야채/채소' | '과일' | '축산/계란' | '수산/건어물' | '라면/면류' | '유제품/냉장/냉동' | '캔/통조림';
+  category: string;
   storage: string;
   unit: string;
   desc: string;
   imageUrl?: string;
+  maxQty?: number;
 }
 
 export interface CartItem extends Product {
@@ -44,6 +45,7 @@ export interface Notice {
 export interface FlashProduct {
   idx: number;
   name: string;
+  emoji?: string;
   price: number;
   originalPrice: number;
   imageUrl?: string;
@@ -68,4 +70,10 @@ export interface ProductOverride {
   name?: string;
   price?: number;
   imageUrl?: string;
+}
+
+export interface StoredUser {
+  phone: string;
+  name: string;
+  passwordHash: string;
 }

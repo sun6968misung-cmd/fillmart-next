@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,14 +32,13 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState('');
   const [memo, setMemo] = useState('');
   const [loading, setLoading] = useState(false);
+  const orderId = useMemo(() => `pilmart_${Date.now()}`, []);
 
   useEffect(() => {
     if (items.length === 0) router.push('/');
   }, [items.length, router]);
 
   if (items.length === 0) return null;
-
-  const orderId = `pilmart_${Date.now()}`;
 
   const handlePay = async () => {
     if (!address.trim()) { toast.error('배송지를 입력해주세요.'); return; }

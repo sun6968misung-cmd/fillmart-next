@@ -9,6 +9,7 @@ export const KEYS = {
   flashSale: 'pilmart_flash_sale',
   storeInfo: 'pilmart_store_info',
   adminPw: 'pilmart_admin_pw',
+  users: 'pilmart_users',
 } as const;
 
 export function lsGet<T>(key: string, fallback: T): T {

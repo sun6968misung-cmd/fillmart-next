@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import { hashPassword } from '@/lib/crypto';
+import { StoredUser } from '@/types';
+import { KEYS, lsGet, lsSet } from '@/lib/storage';
 
 function AuthForm() {
   const { login } = useAuth();
@@ -19,18 +22,45 @@ function AuthForm() {
   const [loginForm, setLoginForm] = useState({ phone: '', password: '' });
   const [signupForm, setSignupForm] = useState({ name: '', phone: '', password: '', confirm: '' });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginForm.phone || !loginForm.password) { toast.error('전화번호와 비밀번호를 입력해주세요.'); return; }
-    login({ name: loginForm.phone, phone: loginForm.phone, loginAt: Date.now(), provider: 'local' });
+    if (!loginForm.phone || !loginForm.password) {
+      toast.error('전화번호와 비밀번호를 입력해주세요.');
+      return;
+    }
+    const users = lsGet<StoredUser[]>(KEYS.users, []);
+    const stored = users.find(u => u.phone === loginForm.phone);
+    if (!stored) {
+      toast.error('전화번호 또는 비밀번호가 올바르지 않습니다.');
+      return;
+    }
+    const hash = await hashPassword(loginForm.password);
+    if (hash !== stored.passwordHash) {
+      toast.error('전화번호 또는 비밀번호가 올바르지 않습니다.');
+      return;
+    }
+    login({ name: stored.name, phone: stored.phone, loginAt: Date.now(), provider: 'local' });
     toast.success('로그인되었습니다.');
     router.push(redirect);
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signupForm.name || !signupForm.phone || !signupForm.password) { toast.error('모든 항목을 입력해주세요.'); return; }
-    if (signupForm.password !== signupForm.confirm) { toast.error('비밀번호가 일치하지 않습니다.'); return; }
+    if (!signupForm.name || !signupForm.phone || !signupForm.password) {
+      toast.error('모든 항목을 입력해주세요.');
+      return;
+    }
+    if (signupForm.password !== signupForm.confirm) {
+      toast.error('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    const users = lsGet<StoredUser[]>(KEYS.users, []);
+    if (users.find(u => u.phone === signupForm.phone)) {
+      toast.error('이미 등록된 전화번호입니다.');
+      return;
+    }
+    const passwordHash = await hashPassword(signupForm.password);
+    lsSet(KEYS.users, [...users, { phone: signupForm.phone, name: signupForm.name, passwordHash }]);
     login({ name: signupForm.name, phone: signupForm.phone, loginAt: Date.now(), provider: 'local' });
     toast.success('회원가입이 완료되었습니다.');
     router.push(redirect);

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
@@ -13,11 +13,11 @@ import Link from 'next/link';
 function SuccessContent() {
   const params = useSearchParams();
   const { clearCart } = useCart();
-  const [done, setDone] = useState(false);
+  const executed = useRef(false);
 
   useEffect(() => {
-    if (done) return;
-    setDone(true);
+    if (executed.current) return;
+    executed.current = true;
 
     const pending = lsGet<(Order & { address?: string }) | null>(KEYS.pendingOrder, null);
     if (!pending) return;
@@ -25,7 +25,7 @@ function SuccessContent() {
     const order: Order = {
       orderId: params.get('orderId') ?? pending.orderId,
       items: pending.items,
-      total: Number(params.get('amount') ?? pending.total),
+      total: pending.total,
       method: params.get('method') ?? pending.method,
       createdAt: Date.now(),
       paymentKey: params.get('paymentKey') ?? undefined,
@@ -35,7 +35,7 @@ function SuccessContent() {
     lsSet(KEYS.orders, [order, ...orders].slice(0, 30));
     lsRemove(KEYS.pendingOrder);
     clearCart();
-  }, []);
+  }, [params, clearCart]);
 
   const amount = params.get('amount');
 
