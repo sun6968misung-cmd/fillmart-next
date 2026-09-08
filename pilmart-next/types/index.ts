@@ -99,3 +99,24 @@ export interface StoredUser {
   businessType?: string;
   businessCategory?: string;
 }
+
+export type AdminRole = 'super' | 'product';
+
+export interface AdminAccount {
+  id: string;
+  username: string;
+  passwordHash: string;
+  role: AdminRole;
+  createdAt: number;
+  createdBy: string;
+  isActive: boolean;
+}
+
+export interface AuditLog {
+  id: string;
+  adminUsername: string;
+  action: string;
+  target: string;
+  detail: string;
+  timestamp: number;
+}

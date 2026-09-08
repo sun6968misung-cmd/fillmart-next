@@ -288,6 +288,19 @@ const PRODUCT_IMAGES: Record<string, string> = {
   'bulk11':'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=400&h=400&q=80',
 };
 
+const OVERRIDE_KEYS: (keyof ProductOverride)[] = [
+  'name', 'price', 'originalPrice', 'imageUrl', 'detailImageUrl',
+  'category', 'desc', 'unit', 'origin', 'storage',
+  'expiryDate', 'productInfo', 'customerServiceNo', 'hidden',
+];
+
+function applyOverride(p: Product, ov: ProductOverride | undefined): Product {
+  if (!ov) return p;
+  const result = { ...p };
+  OVERRIDE_KEYS.forEach(k => { if (k in ov) (result as Record<string, unknown>)[k] = ov[k]; });
+  return result;
+}
+
 export function getProductImage(id: string): string {
   const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
   return overrides[id]?.imageUrl ?? PRODUCT_IMAGES[id] ?? '';
@@ -296,15 +309,15 @@ export function getProductImage(id: string): string {
 export function getProducts(): Product[] {
   const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
   const custom = lsGet<Product[]>(KEYS.customProducts, []);
-  const base = PRODUCTS.map(p => ({ ...p, ...overrides[p.id] }));
-  const customMerged = custom.map(p => ({ ...p, ...overrides[p.id] }));
+  const base = PRODUCTS.map(p => applyOverride(p, overrides[p.id]));
+  const customMerged = custom.map(p => applyOverride(p, overrides[p.id]));
   return [...base, ...customMerged].filter(p => !p.hidden);
 }
 
 export function getAllProductsAdmin(): Product[] {
   const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
   const custom = lsGet<Product[]>(KEYS.customProducts, []);
-  const base = PRODUCTS.map(p => ({ ...p, ...overrides[p.id] }));
-  const customMerged = custom.map(p => ({ ...p, ...overrides[p.id] }));
+  const base = PRODUCTS.map(p => applyOverride(p, overrides[p.id]));
+  const customMerged = custom.map(p => applyOverride(p, overrides[p.id]));
   return [...base, ...customMerged];
 }

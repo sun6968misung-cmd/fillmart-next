@@ -121,7 +121,7 @@ export function Navbar() {
               placeholder="상품을 검색해보세요!"
               className="w-full border border-gray-300 rounded-full px-5 py-2.5 pr-12 text-sm focus:outline-none focus:border-primary transition-colors"
             />
-            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
+            <button type="submit" aria-label="검색" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
               <Search className="h-5 w-5" />
             </button>
           </form>

@@ -7,6 +7,8 @@ export const SHARED_KEYS = new Set([
   'pilmart_orders',
   'pilmart_admin_pw',
   'pilmart_users',
+  'pilmart_admin_accounts',
+  'pilmart_audit_logs',
 ]);
 
 export async function serverSet(key: string, value: unknown): Promise<void> {

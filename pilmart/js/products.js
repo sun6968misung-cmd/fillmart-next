@@ -58,9 +58,13 @@ const PRODUCT_IMAGES = {
 };
 
 // 관리자 override 반영 (가격·이름·이미지)
+const OVERRIDE_KEYS = ['name', 'price', 'originalPrice', 'imageUrl', 'category', 'desc', 'unit', 'origin', 'storage'];
 function applyProductOverrides() {
   const ov = JSON.parse(localStorage.getItem('pilmart_products') || '{}');
-  PRODUCTS.forEach(p => { if (ov[p.id]) Object.assign(p, ov[p.id]); });
+  PRODUCTS.forEach(p => {
+    if (!ov[p.id]) return;
+    OVERRIDE_KEYS.forEach(k => { if (k in ov[p.id]) p[k] = ov[p.id][k]; });
+  });
 }
 
 // 이미지 URL (override 우선)
