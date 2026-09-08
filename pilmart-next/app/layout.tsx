@@ -3,6 +3,7 @@ import Script from 'next/script';
 import { Geist } from 'next/font/google';
 import './globals.css';
 import { StoreProvider } from '@/context/StoreProvider';
+import { ServerSyncProvider } from '@/components/ServerSyncProvider';
 import { Toaster } from 'sonner';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -20,10 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={geist.className}>
         <Script src="https://js.tosspayments.com/v1/payment" strategy="beforeInteractive" />
         <StoreProvider>
-          <Navbar />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-          <Toaster richColors position="top-center" />
+          <ServerSyncProvider>
+            <Navbar />
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+            <Toaster richColors position="top-center" />
+          </ServerSyncProvider>
         </StoreProvider>
       </body>
     </html>

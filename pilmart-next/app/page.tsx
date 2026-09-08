@@ -2,12 +2,15 @@
 import { Suspense, useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { FlashSaleSection } from '@/components/home/FlashSaleSection';
+import { NoticePreview } from '@/components/home/NoticePreview';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductCard } from '@/components/product/ProductCard';
 import { getProducts } from '@/lib/products';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
 
 type SortKey = 'recommended' | 'price-asc' | 'price-desc' | 'discount';
 
@@ -41,7 +44,13 @@ function HomeContent() {
     setOnlyDiscount(false);
   }, [cat]);
 
-  const allProducts = useMemo(() => getProducts(), []);
+  const [productRev, setProductRev] = useState(0);
+  useEffect(() => {
+    const handler = () => setProductRev(r => r + 1);
+    window.addEventListener('pilmart:products-changed', handler);
+    return () => window.removeEventListener('pilmart:products-changed', handler);
+  }, []);
+  const allProducts = useMemo(() => getProducts(), [productRev]);
 
   // Base products for current category (before filters)
   const baseProducts = useMemo(() => {
@@ -76,6 +85,61 @@ function HomeContent() {
           <Link href="/" className="hover:text-primary transition-colors">홈</Link>
           <ChevronRight className="h-3.5 w-3.5 text-gray-300" />
           <span className="text-gray-800 font-medium">{cat}</span>
+        </div>
+
+        {/* 모바일 필터 버튼 */}
+        <div className="sm:hidden mb-4">
+          <Sheet>
+            <SheetTrigger render={<Button variant="outline" size="sm" className="flex items-center gap-2" />}>
+              <SlidersHorizontal className="h-4 w-4" />
+              필터
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 text-sm">
+              <SheetHeader>
+                <SheetTitle>필터</SheetTitle>
+              </SheetHeader>
+              <div className="mt-6 space-y-5">
+                {/* 카테고리 */}
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2 pb-1.5 border-b border-gray-200">카테고리</h3>
+                  <ul className="space-y-1.5">
+                    <li>
+                      <button onClick={() => { setPriceIdx(0); setOnlyDiscount(false); }} className="text-gray-500 hover:text-primary transition-colors">
+                        전체({baseProducts.length})
+                      </button>
+                    </li>
+                    <li className="text-primary font-bold">{cat}({baseProducts.length})</li>
+                  </ul>
+                </div>
+                {/* 혜택 */}
+                {discountTotal > 0 && (
+                  <div>
+                    <h3 className="font-bold text-gray-800 mb-2 pb-1.5 border-b border-gray-200">혜택</h3>
+                    <label className="flex items-center gap-2 text-gray-600 cursor-pointer hover:text-primary transition-colors">
+                      <input type="checkbox" checked={onlyDiscount} onChange={e => setOnlyDiscount(e.target.checked)} className="accent-primary" />
+                      할인상품({discountTotal})
+                    </label>
+                  </div>
+                )}
+                {/* 가격 */}
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2 pb-1.5 border-b border-gray-200">가격</h3>
+                  <ul className="space-y-1.5">
+                    {PRICE_RANGES.map((r, i) => (
+                      <li key={i}>
+                        <button
+                          onClick={() => setPriceIdx(i)}
+                          className={`transition-colors ${priceIdx === i ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary'}`}
+                        >
+                          {r.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
         <div className="flex gap-7">
@@ -189,11 +253,12 @@ function HomeContent() {
   return (
     <>
       <HeroBanner />
-      <div className="max-w-screen-xl mx-auto px-4 py-8 space-y-12">
+      <div className="max-w-screen-xl mx-auto px-4 py-8 space-y-10">
         <FlashSaleSection />
         <div id="products">
           <ProductGrid products={allProducts} />
         </div>
+        <NoticePreview />
       </div>
     </>
   );

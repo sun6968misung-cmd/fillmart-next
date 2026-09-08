@@ -77,17 +77,17 @@ export default function CartPage() {
                     <div className="flex items-center border border-gray-200 rounded overflow-hidden">
                       <button
                         onClick={() => updateQty(item.id, -1)}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        className="w-11 h-11 flex items-center justify-center hover:bg-gray-100 transition-colors"
                       >
                         <Minus className="h-3 w-3 text-gray-600" />
                       </button>
-                      <span className="w-10 h-8 flex items-center justify-center text-sm font-bold border-x border-gray-200">
+                      <span className="w-10 h-11 flex items-center justify-center text-sm font-bold border-x border-gray-200">
                         {item.qty}
                       </span>
                       <button
                         onClick={() => updateQty(item.id, 1)}
                         disabled={!!item.maxQty && item.qty >= item.maxQty}
-                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="w-11 h-11 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         <Plus className="h-3 w-3 text-gray-600" />
                       </button>

@@ -18,6 +18,23 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  /* ── 필마트 커스텀 색상 토큰 ── */
+  --color-sale: var(--sale);
+  --color-sale-foreground: var(--sale-foreground);
+  --color-flash: var(--flash);
+  --color-flash-foreground: var(--flash-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-status-paid: var(--status-paid);
+  --color-status-paid-foreground: var(--status-paid-foreground);
+  --color-status-preparing: var(--status-preparing);
+  --color-status-preparing-foreground: var(--status-preparing-foreground);
+  --color-status-shipping: var(--status-shipping);
+  --color-status-shipping-foreground: var(--status-shipping-foreground);
+  --color-status-done: var(--status-done);
+  --color-status-done-foreground: var(--status-done-foreground);
+  --color-status-cancel: var(--status-cancel);
+  --color-status-cancel-foreground: var(--status-cancel-foreground);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -73,6 +90,23 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
+  /* ── 필마트 커스텀 색상 변수 ── */
+  --sale: oklch(0.50 0.230 29.0);
+  --sale-foreground: oklch(1 0 0);
+  --flash: oklch(0.68 0.185 55.0);
+  --flash-foreground: oklch(0.15 0 0);
+  --success: oklch(0.55 0.160 148.0);
+  --success-foreground: oklch(1 0 0);
+  --status-paid: oklch(0.90 0.065 250.0);
+  --status-paid-foreground: oklch(0.28 0.100 250.0);
+  --status-preparing: oklch(0.93 0.075 80.0);
+  --status-preparing-foreground: oklch(0.35 0.130 70.0);
+  --status-shipping: oklch(0.88 0.100 220.0);
+  --status-shipping-foreground: oklch(0.25 0.120 220.0);
+  --status-done: oklch(0.88 0.100 148.0);
+  --status-done-foreground: oklch(0.28 0.120 148.0);
+  --status-cancel: oklch(0.92 0.030 0.0);
+  --status-cancel-foreground: oklch(0.45 0.060 0.0);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -107,6 +141,23 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
+  /* ── 필마트 커스텀 색상 변수 (dark) ── */
+  --sale: oklch(0.60 0.210 29.0);
+  --sale-foreground: oklch(0.10 0 0);
+  --flash: oklch(0.72 0.170 55.0);
+  --flash-foreground: oklch(0.10 0 0);
+  --success: oklch(0.62 0.150 148.0);
+  --success-foreground: oklch(0.10 0 0);
+  --status-paid: oklch(0.30 0.075 250.0);
+  --status-paid-foreground: oklch(0.80 0.065 250.0);
+  --status-preparing: oklch(0.32 0.085 80.0);
+  --status-preparing-foreground: oklch(0.85 0.070 80.0);
+  --status-shipping: oklch(0.28 0.095 220.0);
+  --status-shipping-foreground: oklch(0.80 0.080 220.0);
+  --status-done: oklch(0.28 0.095 148.0);
+  --status-done-foreground: oklch(0.78 0.090 148.0);
+  --status-cancel: oklch(0.28 0.025 0.0);
+  --status-cancel-foreground: oklch(0.65 0.040 0.0);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -127,4 +178,31 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ── 필마트 슬라이드 토큰 ── */
+:root {
+  --slide-veggie-bg:    #f5ede0;
+  --slide-sauce-bg:     #fef3e2;
+  --slide-meat-bg:      #fce8e6;
+  --slide-seafood-bg:   #e0f0f8;
+  --slide-grain-bg:     #e8f5e9;
+  --slide-promo-bg:     #fff8ed;
+
+  --slide-veggie-badge:  #eb3800;
+  --slide-sauce-badge:   #d97706;
+  --slide-meat-badge:    #dc2626;
+  --slide-seafood-badge: #0284c7;
+  --slide-grain-badge:   #16a34a;
+  --slide-promo-badge:   var(--primary);
+}
+
+.slide-gradient-overlay {
+  background: linear-gradient(
+    to right,
+    var(--slide-bg) 40%,
+    color-mix(in srgb, var(--slide-bg) 87%, transparent) 50%,
+    color-mix(in srgb, var(--slide-bg) 33%, transparent) 62%,
+    transparent 76%
+  );
 }

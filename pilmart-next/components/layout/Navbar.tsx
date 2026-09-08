@@ -143,7 +143,7 @@ export function Navbar() {
               <div className="relative">
                 <Heart className="h-5 w-5" />
                 {wishCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{wishCount}</span>
+                  <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{wishCount}</span>
                 )}
               </div>
               <span className="text-[10px]">나의 찜</span>

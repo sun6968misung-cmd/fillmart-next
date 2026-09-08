@@ -1,7 +1,7 @@
 import { Product, ProductOverride } from '@/types';
 import { KEYS, lsGet } from '@/lib/storage';
 
-export const PRODUCTS: Product[] = [
+const PRODUCTS: Product[] = [
   // ── 이번주특가 ────────────────────────────────────────────────
   { id:'sale1', name:'국내산 삼겹살 500g',  emoji:'🥩', price:9900,  originalPrice:13900, section:'sale', origin:'국내산 (경북)',    category:'축산/계란',          storage:'냉장보관', unit:'500g',     desc:'국내산 한돈 직송. 두툼하고 쫄깃한 삼겹살.' },
   { id:'sale2', name:'양파 3kg',            emoji:'🧅', price:3900,  originalPrice:5900,  section:'sale', origin:'국산',            category:'야채/채소',           storage:'상온보관', unit:'3kg',      desc:'청정 지역 농가 직송. 아삭하고 달콤한 양파.' },
@@ -166,7 +166,7 @@ export const PRODUCTS: Product[] = [
   { id:'bulk11', name:'종이컵 1000개',      emoji:'🥤', price:19900, originalPrice:26900, section:'bulk', origin:'국내산',          category:'대용량 식기/도구',   storage:'상온보관', unit:'1000개',   desc:'6.5온스 종이컵 1000개. 사무실·행사용.' },
 ];
 
-export const PRODUCT_IMAGES: Record<string, string> = {
+const PRODUCT_IMAGES: Record<string, string> = {
   // 이번주특가
   'sale1':'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&h=400&q=80',
   'sale2':'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=400&h=400&q=80',
@@ -295,5 +295,16 @@ export function getProductImage(id: string): string {
 
 export function getProducts(): Product[] {
   const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-  return PRODUCTS.map(p => ({ ...p, ...overrides[p.id] }));
+  const custom = lsGet<Product[]>(KEYS.customProducts, []);
+  const base = PRODUCTS.map(p => ({ ...p, ...overrides[p.id] }));
+  const customMerged = custom.map(p => ({ ...p, ...overrides[p.id] }));
+  return [...base, ...customMerged].filter(p => !p.hidden);
+}
+
+export function getAllProductsAdmin(): Product[] {
+  const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+  const custom = lsGet<Product[]>(KEYS.customProducts, []);
+  const base = PRODUCTS.map(p => ({ ...p, ...overrides[p.id] }));
+  const customMerged = custom.map(p => ({ ...p, ...overrides[p.id] }));
+  return [...base, ...customMerged];
 }

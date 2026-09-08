@@ -1,3 +1,5 @@
+import { SHARED_KEYS, serverSet } from '@/lib/serverSync';
+
 export const KEYS = {
   cart: 'pilmart_cart',
   wishlist: 'pilmart_wishlist',
@@ -11,6 +13,7 @@ export const KEYS = {
   adminPw: 'pilmart_admin_pw',
   adminActive: 'pilmart_admin_active',
   users: 'pilmart_users',
+  customProducts: 'pilmart_custom_products',
 } as const;
 
 export function lsGet<T>(key: string, fallback: T): T {
@@ -26,9 +29,15 @@ export function lsGet<T>(key: string, fallback: T): T {
 export function lsSet(key: string, value: unknown): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(key, JSON.stringify(value));
+  if (SHARED_KEYS.has(key)) {
+    serverSet(key, value).catch(() => {});
+  }
 }
 
 export function lsRemove(key: string): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(key);
+  if (SHARED_KEYS.has(key)) {
+    serverSet(key, null).catch(() => {});
+  }
 }

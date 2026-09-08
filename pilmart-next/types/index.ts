@@ -11,7 +11,12 @@ export interface Product {
   unit: string;
   desc: string;
   imageUrl?: string;
+  detailImageUrl?: string;
   maxQty?: number;
+  expiryDate?: string;
+  productInfo?: string;
+  customerServiceNo?: string;
+  hidden?: boolean;
 }
 
 export interface CartItem extends Product {
@@ -72,11 +77,16 @@ export interface ProductOverride {
   price?: number;
   originalPrice?: number;
   imageUrl?: string;
+  detailImageUrl?: string;
   category?: string;
   desc?: string;
   unit?: string;
   origin?: string;
   storage?: string;
+  expiryDate?: string;
+  productInfo?: string;
+  customerServiceNo?: string;
+  hidden?: boolean;
 }
 
 export interface StoredUser {

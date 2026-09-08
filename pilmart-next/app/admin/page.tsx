@@ -1,11 +1,12 @@
 'use client';
-import { useState, useEffect, useMemo, Fragment } from 'react';
+import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
 import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Settings, KeyRound,
   LogOut, Store, Trash2, Search, RotateCcw, X, ChevronDown,
-  Bell, Zap, Plus, Printer, ImageIcon,
+  Bell, Zap, Plus, Printer, ImageIcon, Upload, Download,
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 const CATEGORIES = [
   '야채/채소','과일','쌀/잡곡','축산/계란','수산/건어물','유제품/냉장/냉동','견과',
@@ -18,7 +19,7 @@ const CATEGORIES = [
 ];
 import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
 import { hashPassword } from '@/lib/crypto';
-import { getProducts, getProductImage } from '@/lib/products';
+import { getProducts, getAllProductsAdmin, getProductImage } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
 import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct } from '@/types';
 
@@ -55,7 +56,11 @@ export default function AdminPage() {
   const [orderFilter, setOrderFilter] = useState<'all' | 'online' | 'meet'>('all');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-  const [prodModal, setProdModal] = useState({ open: false, id: '', name: '', price: '', original: '', category: '', imageUrl: '', desc: '', unit: '', origin: '', storage: '' });
+  const [prodModal, setProdModal] = useState({ open: false, id: '', name: '', price: '', original: '', category: '', imageUrl: '', detailImageUrl: '', desc: '', unit: '', origin: '', storage: '', expiryDate: '', productInfo: '', customerServiceNo: '' });
+  const [showHidden, setShowHidden] = useState(false);
+  const excelInputRef = useRef<HTMLInputElement>(null);
+  const imgInputRef = useRef<HTMLInputElement>(null);
+  const detailImgInputRef = useRef<HTMLInputElement>(null);
   const [productSearch, setProductSearch] = useState('');
 
   const [newNotice, setNewNotice] = useState({ title: '', content: '' });
@@ -74,7 +79,7 @@ export default function AdminPage() {
   useEffect(() => {
     const raw = lsGet<OrderWithStatus[]>(KEYS.orders, []);
     setOrders([...raw].reverse());
-    setProducts(getProducts());
+    setProducts(getAllProductsAdmin());
     setNotices(lsGet<Notice[]>(KEYS.notices, []));
     setStoreInfo(lsGet<StoreInfo>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' }));
     setFlashSale(lsGet<FlashSaleConfig>(KEYS.flashSale, DEFAULT_FLASH));
@@ -83,13 +88,25 @@ export default function AdminPage() {
   async function login() {
     const stored = lsGet<string>(KEYS.adminPw, '1234');
     const isHash = /^[0-9a-f]{64}$/.test(stored);
+    const canHash = typeof crypto !== 'undefined' && !!crypto.subtle;
 
-    let matches: boolean;
-    if (isHash) {
-      matches = (await hashPassword(pw)) === stored;
-    } else {
+    let matches = false;
+
+    if (!isHash) {
+      // 평문 저장 — 직접 비교
       matches = pw === stored;
-      if (matches) lsSet(KEYS.adminPw, await hashPassword(pw));
+      // 보안 컨텍스트(localhost/HTTPS)에서만 해시로 업그레이드
+      if (matches && canHash) {
+        try { lsSet(KEYS.adminPw, await hashPassword(pw)); } catch { /* 무시 */ }
+      }
+    } else if (canHash) {
+      // 해시 저장 + 보안 컨텍스트 — 해시 비교
+      try { matches = (await hashPassword(pw)) === stored; } catch { matches = false; }
+    } else {
+      // 해시 저장 + HTTP(비보안 컨텍스트) — crypto.subtle 없음
+      // 이 기기 localStorage의 해시를 지우고 평문 기본값으로 리셋
+      lsRemove(KEYS.adminPw);
+      matches = pw === '1234';
     }
 
     if (matches) { setAuthed(true); setPwError(false); lsSet(KEYS.adminActive, true); }
@@ -111,9 +128,11 @@ export default function AdminPage() {
     return true;
   }), [orders, orderFilter, orderSearch]);
 
+  const visibleProducts = useMemo(() => products.filter(p => !p.hidden), [products]);
+  const hiddenProducts = useMemo(() => products.filter(p => p.hidden), [products]);
   const filteredProducts = useMemo(() =>
-    productSearch ? products.filter(p => p.name.includes(productSearch) || p.category.includes(productSearch)) : products,
-    [products, productSearch]);
+    productSearch ? visibleProducts.filter(p => p.name.includes(productSearch) || p.category.includes(productSearch)) : visibleProducts,
+    [visibleProducts, productSearch]);
 
   function updateStatus(orderId: string, status: OrderStatus) {
     const raw = lsGet<OrderWithStatus[]>(KEYS.orders, []);
@@ -133,8 +152,9 @@ export default function AdminPage() {
     const ov = overrides[p.id] ?? {};
     setProdModal({
       open: true, id: p.id, name: p.name, price: String(p.price), original: String(p.originalPrice),
-      category: p.category, imageUrl: ov.imageUrl ?? '',
+      category: p.category, imageUrl: ov.imageUrl ?? '', detailImageUrl: ov.detailImageUrl ?? p.detailImageUrl ?? '',
       desc: p.desc ?? '', unit: p.unit, origin: p.origin, storage: p.storage,
+      expiryDate: p.expiryDate ?? '', productInfo: p.productInfo ?? '', customerServiceNo: p.customerServiceNo ?? '',
     });
   }
 
@@ -143,20 +163,223 @@ export default function AdminPage() {
     const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
     overrides[prodModal.id] = {
       name: prodModal.name, price: Number(prodModal.price), originalPrice: Number(prodModal.original),
-      imageUrl: prodModal.imageUrl || undefined, category: prodModal.category,
+      imageUrl: prodModal.imageUrl || undefined, detailImageUrl: prodModal.detailImageUrl || undefined,
+      category: prodModal.category,
       desc: prodModal.desc, unit: prodModal.unit, origin: prodModal.origin, storage: prodModal.storage,
+      expiryDate: prodModal.expiryDate || undefined,
+      productInfo: prodModal.productInfo || undefined,
+      customerServiceNo: prodModal.customerServiceNo || undefined,
     };
     lsSet(KEYS.products, overrides);
-    setProducts(getProducts());
+    setProducts(getAllProductsAdmin());
+    notifyProductsChanged();
     setProdModal(m => ({ ...m, open: false }));
+  }
+
+  function downloadExcelTemplate() {
+    const headers = [
+      '상품ID', '상품명', '카테고리', '이모지', '판매가', '정가',
+      '규격/단위', '원산지', '보관방법', '소비기한', '상품고시', '소비자상담번호',
+      '상품설명', '이미지URL', '상세이미지URL', '섹션',
+    ];
+    const sample = [{
+      '상품ID': 'sample1', '상품명': '예시 상품', '카테고리': '야채/채소', '이모지': '🥬',
+      '판매가': 3900, '정가': 4900, '규격/단위': '1kg', '원산지': '국산',
+      '보관방법': '냉장보관', '소비기한': '제조일로부터 7일', '상품고시': '농산물',
+      '소비자상담번호': '1588-0000', '상품설명': '신선한 상품입니다', '이미지URL': '', '상세이미지URL': '', '섹션': 'fresh',
+    }];
+    const ws = XLSX.utils.json_to_sheet(sample, { header: headers });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '상품목록');
+    XLSX.writeFile(wb, '필마트_상품_템플릿.xlsx');
+  }
+
+  function downloadProductsExcel() {
+    const rows = products.map(p => ({
+      '상품ID': p.id, '상품명': p.name, '카테고리': p.category, '이모지': p.emoji,
+      '판매가': p.price, '정가': p.originalPrice, '규격/단위': p.unit,
+      '원산지': p.origin, '보관방법': p.storage,
+      '소비기한': p.expiryDate ?? '', '상품고시': p.productInfo ?? '',
+      '소비자상담번호': p.customerServiceNo ?? '', '상품설명': p.desc ?? '',
+      '이미지URL': p.imageUrl ?? '', '상세이미지URL': p.detailImageUrl ?? '', '섹션': p.section,
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '상품목록');
+    XLSX.writeFile(wb, '필마트_상품목록.xlsx');
+  }
+
+  async function handleExcelImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf);
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json<Record<string, string | number>>(ws);
+
+      const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+      const existingIds = new Set(products.map(p => p.id));
+      const newProducts: Product[] = [];
+
+      for (const row of rows) {
+        const id = String(row['상품ID'] ?? '').trim();
+        if (!id) continue;
+
+        const override: ProductOverride = {
+          name: String(row['상품명'] ?? '').trim() || undefined,
+          price: row['판매가'] ? Number(row['판매가']) : undefined,
+          originalPrice: row['정가'] ? Number(row['정가']) : undefined,
+          category: String(row['카테고리'] ?? '').trim() || undefined,
+          unit: String(row['규격/단위'] ?? '').trim() || undefined,
+          origin: String(row['원산지'] ?? '').trim() || undefined,
+          storage: String(row['보관방법'] ?? '').trim() || undefined,
+          expiryDate: String(row['소비기한'] ?? '').trim() || undefined,
+          productInfo: String(row['상품고시'] ?? '').trim() || undefined,
+          customerServiceNo: String(row['소비자상담번호'] ?? '').trim() || undefined,
+          desc: String(row['상품설명'] ?? '').trim() || undefined,
+          imageUrl: String(row['이미지URL'] ?? '').trim() || undefined,
+          detailImageUrl: String(row['상세이미지URL'] ?? '').trim() || undefined,
+        };
+
+        if (existingIds.has(id)) {
+          overrides[id] = { ...overrides[id], ...Object.fromEntries(Object.entries(override).filter(([, v]) => v !== undefined)) };
+        } else {
+          // 신규 상품
+          newProducts.push({
+            id,
+            name: String(row['상품명'] ?? '신규 상품'),
+            emoji: String(row['이모지'] ?? '📦'),
+            price: Number(row['판매가'] ?? 0),
+            originalPrice: Number(row['정가'] ?? 0),
+            section: String(row['섹션'] ?? 'fresh'),
+            origin: String(row['원산지'] ?? ''),
+            category: String(row['카테고리'] ?? '기타'),
+            storage: String(row['보관방법'] ?? ''),
+            unit: String(row['규격/단위'] ?? ''),
+            desc: String(row['상품설명'] ?? ''),
+            imageUrl: String(row['이미지URL'] ?? '') || undefined,
+            detailImageUrl: String(row['상세이미지URL'] ?? '') || undefined,
+            expiryDate: String(row['소비기한'] ?? '') || undefined,
+            productInfo: String(row['상품고시'] ?? '') || undefined,
+            customerServiceNo: String(row['소비자상담번호'] ?? '') || undefined,
+          });
+        }
+      }
+
+      lsSet(KEYS.products, overrides);
+      if (newProducts.length > 0) {
+        const existing = lsGet<Product[]>(KEYS.customProducts, []);
+        const merged = [...existing.filter(p => !newProducts.find(n => n.id === p.id)), ...newProducts];
+        lsSet(KEYS.customProducts, merged);
+      }
+      setProducts(getAllProductsAdmin());
+      notifyProductsChanged();
+      alert(`✅ 엑셀 가져오기 완료\n기존 상품 업데이트: ${rows.length - newProducts.length}개\n신규 상품 추가: ${newProducts.length}개`);
+    } catch {
+      alert('❌ 엑셀 파일을 읽는 중 오류가 발생했습니다. 형식을 확인해주세요.');
+    } finally {
+      if (excelInputRef.current) excelInputRef.current.value = '';
+    }
+  }
+
+  async function handleImageFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 500 * 1024) {
+      alert('이미지는 500KB 이하로 올려주세요. (localStorage 용량 제한)');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result as string;
+      setProdModal(m => ({ ...m, imageUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+    if (imgInputRef.current) imgInputRef.current.value = '';
+  }
+
+  async function handleDetailImageFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 500 * 1024) {
+      alert('이미지는 500KB 이하로 올려주세요. (localStorage 용량 제한)');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result as string;
+      setProdModal(m => ({ ...m, detailImageUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+    if (detailImgInputRef.current) detailImgInputRef.current.value = '';
   }
 
   function resetProduct(id: string) {
     const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
     delete overrides[id];
     lsSet(KEYS.products, overrides);
-    setProducts(getProducts());
+    // 엑셀로 추가된 커스텀 상품이면 목록에서 완전 삭제
+    const custom = lsGet<Product[]>(KEYS.customProducts, []);
+    if (custom.some(p => p.id === id)) {
+      lsSet(KEYS.customProducts, custom.filter(p => p.id !== id));
+    }
+    setProducts(getAllProductsAdmin());
+    notifyProductsChanged();
     setProdModal(m => ({ ...m, open: false }));
+  }
+
+  function notifyProductsChanged() {
+    window.dispatchEvent(new CustomEvent('pilmart:products-changed'));
+  }
+
+  function deleteProduct(id: string) {
+    if (!window.confirm('이 상품을 삭제할까요?')) return;
+    const custom = lsGet<Product[]>(KEYS.customProducts, []);
+    const isCustom = custom.some(p => p.id === id);
+    if (isCustom) {
+      lsSet(KEYS.customProducts, custom.filter(p => p.id !== id));
+      const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+      delete overrides[id];
+      lsSet(KEYS.products, overrides);
+    } else {
+      const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+      overrides[id] = { ...overrides[id], hidden: true };
+      lsSet(KEYS.products, overrides);
+    }
+    setProducts(getAllProductsAdmin());
+    notifyProductsChanged();
+  }
+
+  function deleteAllProducts() {
+    const visibleCount = products.filter(p => !p.hidden).length;
+    if (!window.confirm(`현재 표시 중인 상품 ${visibleCount}개를 모두 삭제할까요?`)) return;
+    const customIds = new Set(lsGet<Product[]>(KEYS.customProducts, []).map(p => p.id));
+    lsSet(KEYS.customProducts, []);
+    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+    products.filter(p => !p.hidden).forEach(p => {
+      if (customIds.has(p.id)) {
+        delete overrides[p.id];
+      } else {
+        overrides[p.id] = { ...overrides[p.id], hidden: true };
+      }
+    });
+    lsSet(KEYS.products, overrides);
+    setProducts(getAllProductsAdmin());
+    notifyProductsChanged();
+  }
+
+  function restoreProduct(id: string) {
+    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+    if (overrides[id]) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { hidden: _h, ...rest } = overrides[id];
+      if (Object.keys(rest).length === 0) delete overrides[id];
+      else overrides[id] = rest;
+    }
+    lsSet(KEYS.products, overrides);
+    setProducts(getAllProductsAdmin());
+    notifyProductsChanged();
   }
 
   function addNotice() {
@@ -237,14 +460,19 @@ export default function AdminPage() {
     return new Date(ts).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   }
 
+  function escapeHtml(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function printOrder(order: OrderWithStatus) {
     const w = window.open('', '_blank', 'width=620,height=820');
     if (!w) return;
     const info = lsGet<{ name: string; phone: string; address: string }>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' });
     const itemRows = (order.items ?? []).map(i => `
       <tr>
-        <td>${i.emoji ?? ''} ${i.name}</td>
-        <td class="center">${i.unit ?? ''}</td>
+        <td>${escapeHtml(i.emoji ?? '')} ${escapeHtml(i.name)}</td>
+        <td class="center">${escapeHtml(i.unit ?? '')}</td>
         <td class="center">${i.qty}</td>
         <td class="right">${formatPrice(i.price)}</td>
         <td class="right amount">${formatPrice(i.price * i.qty)}</td>
@@ -280,16 +508,16 @@ export default function AdminPage() {
 <div style="text-align:right;margin-bottom:12px">
   <button onclick="window.print()" style="padding:6px 16px;background:#c53030;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700">🖨 인쇄</button>
 </div>
-<h1>${info.name}</h1>
-<p class="store-sub">${[info.phone, info.address].filter(Boolean).join(' · ') || '주문 확인서'}</p>
+<h1>${escapeHtml(info.name)}</h1>
+<p class="store-sub">${escapeHtml([info.phone, info.address].filter(Boolean).join(' · ')) || '주문 확인서'}</p>
 
 <div class="section">
   <div class="section-title">주문 정보</div>
   <div class="info-grid">
-    <div class="info-row"><span class="info-label">주문번호</span><span style="font-size:11px;font-family:monospace">${order.orderId}</span></div>
-    <div class="info-row"><span class="info-label">결제상태</span><span class="status-badge">${order.status || '결제완료'}</span></div>
+    <div class="info-row"><span class="info-label">주문번호</span><span style="font-size:11px;font-family:monospace">${escapeHtml(order.orderId)}</span></div>
+    <div class="info-row"><span class="info-label">결제상태</span><span class="status-badge">${escapeHtml(order.status || '결제완료')}</span></div>
     <div class="info-row"><span class="info-label">주문일시</span><span>${new Date(order.createdAt).toLocaleString('ko-KR')}</span></div>
-    <div class="info-row"><span class="info-label">결제수단</span><span>${METHOD[order.method] || order.method}</span></div>
+    <div class="info-row"><span class="info-label">결제수단</span><span>${escapeHtml(METHOD[order.method] || order.method)}</span></div>
   </div>
 </div>
 
@@ -310,7 +538,7 @@ export default function AdminPage() {
   </table>
 </div>
 
-<div class="footer">${info.name} · 오전 주문 당일 배송 · 감사합니다 🙏</div>
+<div class="footer">${escapeHtml(info.name)} · 오전 주문 당일 배송 · 감사합니다 🙏</div>
 <script>window.onload=function(){window.print();}<\/script>
 </body></html>`);
     w.document.close();
@@ -393,7 +621,7 @@ export default function AdminPage() {
         </nav>
 
         <div className="p-3 border-t border-gray-100 space-y-0.5">
-          <Link href="/" target="_blank"
+          <Link href="/" target="_blank" onClick={() => lsRemove(KEYS.adminActive)}
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors">
             <Store className="h-4 w-4" /> 쇼핑몰 보기
           </Link>
@@ -598,6 +826,29 @@ export default function AdminPage() {
           {/* ── 상품 관리 ── */}
           {tab === 'products' && (
             <div className="p-8">
+              {/* 엑셀 업로드/다운로드 안내 */}
+              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5">
+                <p className="text-xs font-bold text-blue-700 mb-2 flex items-center gap-1.5">
+                  <Upload className="h-3.5 w-3.5" /> 엑셀로 상품 일괄 관리
+                </p>
+                <p className="text-xs text-blue-600 mb-3">템플릿을 다운로드하고, 상품 정보를 작성한 뒤 엑셀 업로드로 한번에 등록·수정합니다.</p>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={downloadExcelTemplate}
+                    className="flex items-center gap-1.5 text-xs font-semibold border border-blue-300 text-blue-700 bg-white px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">
+                    <Download className="h-3.5 w-3.5" /> 빈 템플릿 다운로드
+                  </button>
+                  <button onClick={downloadProductsExcel}
+                    className="flex items-center gap-1.5 text-xs font-semibold border border-blue-300 text-blue-700 bg-white px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">
+                    <Download className="h-3.5 w-3.5" /> 현재 상품 목록 다운로드
+                  </button>
+                  <label className="flex items-center gap-1.5 text-xs font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
+                    <Upload className="h-3.5 w-3.5" /> 엑셀 업로드 (가져오기)
+                    <input ref={excelInputRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleExcelImport} />
+                  </label>
+                </div>
+                <p className="text-[11px] text-blue-400 mt-2">※ 상품ID가 기존 상품과 일치하면 수정, 없으면 신규 등록됩니다. 이미지는 URL로 입력하세요.</p>
+              </div>
+
               <div className="flex items-center gap-3 mb-5">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
@@ -606,6 +857,12 @@ export default function AdminPage() {
                     className="border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-primary bg-white w-64" />
                 </div>
                 <span className="text-sm text-gray-400 ml-auto">{filteredProducts.length}개 상품</span>
+                {visibleProducts.length > 0 && (
+                  <button onClick={deleteAllProducts}
+                    className="flex items-center gap-1.5 text-xs font-semibold border border-red-200 text-red-500 bg-white px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                    <Trash2 className="h-3.5 w-3.5" /> 전체 삭제
+                  </button>
+                )}
               </div>
 
               <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
@@ -666,6 +923,10 @@ export default function AdminPage() {
                                   <RotateCcw className="h-3 w-3" />
                                 </button>
                               )}
+                              <button onClick={() => deleteProduct(p.id)} title="삭제"
+                                className="text-xs text-red-400 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
+                                <Trash2 className="h-3 w-3" />
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -674,6 +935,51 @@ export default function AdminPage() {
                   </tbody>
                 </table>
               </div>
+              {/* 숨겨진 상품 섹션 */}
+              {hiddenProducts.length > 0 && (
+                <div className="mt-4">
+                  <button
+                    onClick={() => setShowHidden(h => !h)}
+                    className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors py-2"
+                  >
+                    <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                    숨겨진 상품 {hiddenProducts.length}개
+                    <span className="text-xs text-gray-400">{showHidden ? '▲ 닫기' : '▼ 목록 보기'}</span>
+                  </button>
+                  {showHidden && (
+                    <div className="bg-red-50 border border-red-100 rounded-xl overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead className="bg-red-100 border-b border-red-200">
+                          <tr className="text-xs text-red-500 font-medium">
+                            <th className="text-left px-4 py-2.5">상품명</th>
+                            <th className="text-left px-4 py-2.5">카테고리</th>
+                            <th className="text-center px-4 py-2.5">복원</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {hiddenProducts.map(p => (
+                            <tr key={p.id} className="border-b border-red-100 last:border-0">
+                              <td className="px-4 py-2.5">
+                                <p className="text-gray-500 line-through truncate max-w-[200px]">{p.name}</p>
+                              </td>
+                              <td className="px-4 py-2.5">
+                                <span className="text-xs text-gray-400 bg-red-100 px-2 py-0.5 rounded-full">{p.category}</span>
+                              </td>
+                              <td className="px-4 py-2.5 text-center">
+                                <button onClick={() => restoreProduct(p.id)}
+                                  className="text-xs text-green-600 border border-green-200 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors font-semibold">
+                                  복원
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <p className="text-xs text-gray-400 mt-3 text-center">※ 변경된 내용은 쇼핑몰에 즉시 반영됩니다</p>
             </div>
           )}
@@ -1012,26 +1318,36 @@ export default function AdminPage() {
 
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h3 className="font-bold text-gray-800 mb-1">데이터 초기화</h3>
-                <p className="text-xs text-gray-400 mb-5">선택한 데이터를 삭제합니다. 복구할 수 없습니다.</p>
+                <p className="text-xs text-gray-400 mb-5">
+                  선택한 데이터를 삭제합니다. <span className="text-red-400 font-semibold">복구할 수 없습니다.</span>
+                </p>
                 <div className="divide-y divide-gray-50">
-                  {[
+                  {([
                     { label: '주문 내역 삭제', key: KEYS.orders, desc: `현재 ${orders.length}건`, onDelete: () => setOrders([]) },
-                    { label: '상품 가격 초기화', key: KEYS.products, desc: '수정된 가격을 원래대로', onDelete: () => setProducts(getProducts()) },
-                    { label: '회원 세션 초기화', key: KEYS.session, desc: '모든 로그인 세션 종료', onDelete: () => {} },
-                  ].map(item => (
+                    { label: '상품 수정 초기화', key: KEYS.products, desc: '수정·삭제된 상품 모두 원래대로', onDelete: () => { lsRemove(KEYS.customProducts); setProducts(getAllProductsAdmin()); notifyProductsChanged(); } },
+                    { label: '공지사항 삭제', key: KEYS.notices, desc: `현재 ${notices.length}건`, onDelete: () => setNotices([]) },
+                    { label: '오늘 특가 설정 초기화', key: KEYS.flashSale, desc: `특가 상품 ${flashSale.products.length}개 포함`, onDelete: () => setFlashSale(DEFAULT_FLASH) },
+                    { label: '매장 정보 초기화', key: KEYS.storeInfo, desc: '상호명·전화번호·주소 초기화', onDelete: () => setStoreInfo({ name: '필마트', phone: '', address: '' }) },
+                    { label: '회원 세션 종료', key: KEYS.session, desc: '현재 로그인 세션만 삭제', onDelete: () => {} },
+                    { label: '회원 계정 전체 삭제', key: KEYS.users, desc: '가입된 모든 회원 데이터 삭제', onDelete: () => {}, danger: true },
+                  ] as Array<{ label: string; key: string; desc: string; onDelete: () => void; danger?: boolean }>).map(item => (
                     <div key={item.key} className="flex items-center justify-between py-3">
                       <div>
-                        <p className="text-sm font-medium text-gray-700">{item.label}</p>
+                        <p className={`text-sm font-medium ${item.danger ? 'text-red-600' : 'text-gray-700'}`}>{item.label}</p>
                         <p className="text-xs text-gray-400">{item.desc}</p>
                       </div>
                       <button
                         onClick={() => {
-                          if (confirm(`${item.label} 하시겠습니까?`)) {
-                            localStorage.removeItem(item.key);
+                          if (confirm(`${item.label} 하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+                            lsRemove(item.key);
                             item.onDelete();
                           }
                         }}
-                        className="text-xs text-red-400 hover:text-red-600 font-medium border border-red-200 hover:border-red-400 px-3 py-1.5 rounded-lg transition-colors">
+                        className={`text-xs font-medium border px-3 py-1.5 rounded-lg transition-colors ${
+                          item.danger
+                            ? 'text-red-600 border-red-300 hover:bg-red-50 hover:border-red-500'
+                            : 'text-red-400 hover:text-red-600 border-red-200 hover:border-red-400'
+                        }`}>
                         초기화
                       </button>
                     </div>
@@ -1091,6 +1407,13 @@ export default function AdminPage() {
                     </button>
                   )}
                 </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <label className="flex items-center gap-1 text-[11px] text-primary font-semibold cursor-pointer hover:underline">
+                    <Upload className="h-3 w-3" /> 파일에서 업로드 (500KB 이하)
+                    <input ref={imgInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageFileUpload} />
+                  </label>
+                  <span className="text-[11px] text-gray-400">· 또는 URL 직접 입력</span>
+                </div>
                 <p className="text-[11px] text-gray-400 flex items-center gap-1">
                   <ImageIcon className="h-3 w-3" /> 비우면 기본 이미지로 복원됩니다
                 </p>
@@ -1146,12 +1469,73 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {/* 소비기한 / 소비자상담번호 */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 block">소비기한</label>
+                <input value={prodModal.expiryDate} onChange={e => setProdModal(m => ({ ...m, expiryDate: e.target.value }))}
+                  placeholder="예: 제조일로부터 7일"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 block">소비자상담 관련번호</label>
+                <input value={prodModal.customerServiceNo} onChange={e => setProdModal(m => ({ ...m, customerServiceNo: e.target.value }))}
+                  placeholder="예: 1588-0000"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+              </div>
+            </div>
+
+            {/* 상품고시 */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-500 block">상품고시 (제품 유형/정보 고시)</label>
+              <input value={prodModal.productInfo} onChange={e => setProdModal(m => ({ ...m, productInfo: e.target.value }))}
+                placeholder="예: 농산물 / 가공식품 / 축산물 등"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+            </div>
+
             {/* 상품 설명 */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-gray-500 block">상품 설명</label>
               <textarea value={prodModal.desc} onChange={e => setProdModal(m => ({ ...m, desc: e.target.value }))}
                 rows={3}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none" />
+            </div>
+
+            {/* 상세페이지 하단이미지 */}
+            <div className="space-y-1.5 border-t border-gray-100 pt-5">
+              <label className="text-xs font-semibold text-gray-500 block">상세페이지 하단이미지</label>
+              <p className="text-[11px] text-gray-400">상품정보 탭에 표시되는 상세 설명 이미지입니다. (긴 배너 이미지 권장)</p>
+              <div className="flex gap-2">
+                <input
+                  value={prodModal.detailImageUrl}
+                  onChange={e => setProdModal(m => ({ ...m, detailImageUrl: e.target.value }))}
+                  placeholder="https://example.com/detail.jpg"
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                />
+                {prodModal.detailImageUrl && (
+                  <button onClick={() => setProdModal(m => ({ ...m, detailImageUrl: '' }))}
+                    className="text-gray-400 hover:text-red-500 px-2">
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-1 text-[11px] text-primary font-semibold cursor-pointer hover:underline">
+                  <Upload className="h-3 w-3" /> 파일에서 업로드 (500KB 이하)
+                  <input ref={detailImgInputRef} type="file" accept="image/*" className="hidden" onChange={handleDetailImageFileUpload} />
+                </label>
+                <span className="text-[11px] text-gray-400">· 또는 URL 직접 입력</span>
+              </div>
+              {prodModal.detailImageUrl && (
+                <div className="mt-2 rounded-lg overflow-hidden border border-gray-100 max-h-48">
+                  <img
+                    src={prodModal.detailImageUrl}
+                    alt="상세이미지 미리보기"
+                    className="w-full object-contain"
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

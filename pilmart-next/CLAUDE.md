@@ -19,38 +19,69 @@ Stack: **Next.js 16 App Router · React 19 · Tailwind CSS v4 · shadcn/ui · Ty
 
 ## Architecture
 
-### No backend — localStorage only
+### Storage: localStorage + server-side JSON sync
 
-All data lives in `localStorage` via `lib/storage.ts`. Always use `lsGet<T>(key, fallback)` / `lsSet(key, val)` — never call `localStorage.getItem()` directly. `localStorage.getItem()` returns raw JSON with surrounding quotes; `lsGet` JSON-parses it correctly.
+All data lives in `localStorage` via `lib/storage.ts`. Always use `lsGet<T>(key, fallback)` / `lsSet(key, val)` / `lsRemove(key)` — never call `localStorage` directly.
 
-Keys defined in `KEYS`:
+**`lsSet` and `lsRemove` automatically sync shared keys to the server** (`/api/store`) via `lib/serverSync.ts`. This makes `localhost:3000` and `192.168.x.x:3000` share the same data. Never bypass `lsSet` for shared keys.
 
-| Key | Contents |
-|---|---|
-| `pilmart_cart` | `CartItem[]` |
-| `pilmart_wishlist` | `string[]` of product IDs |
-| `pilmart_session` | `Session` (30-day TTL) |
-| `pilmart_users` | `StoredUser[]` (registered accounts) |
-| `pilmart_orders` | Completed orders (last 30) |
-| `pilmart_pending_order` | Written before payment, cleared on success |
-| `pilmart_products` | `Record<id, ProductOverride>` — merged onto `PRODUCTS` at runtime |
-| `pilmart_notices` | `Notice[]` |
-| `pilmart_flash_sale` | `FlashSaleConfig` |
-| `pilmart_store_info` | `StoreInfo` |
-| `pilmart_admin_pw` | Admin password hash (default plaintext: `1234`) |
-| `pilmart_admin_active` | `boolean` — set on admin login, cleared on logout |
+On every page load, `components/ServerSyncProvider.tsx` (mounted in `app/layout.tsx`) fetches all shared keys from the server and overwrites localStorage, then dispatches `pilmart:products-changed` and `pilmart:store-synced` events so components re-render.
+
+#### Key categories
+
+| Key | Shared to server | Contents |
+|---|---|---|
+| `pilmart_cart` | ❌ | `CartItem[]` |
+| `pilmart_wishlist` | ❌ | `string[]` of product IDs |
+| `pilmart_session` | ❌ | `Session` (30-day TTL) |
+| `pilmart_pending_order` | ❌ | Written before payment, cleared on success |
+| `pilmart_admin_active` | ❌ | `boolean` — set on admin login |
+| `pilmart_products` | ✅ | `Record<id, ProductOverride>` — overrides + hidden flags |
+| `pilmart_custom_products` | ✅ | `Product[]` — products added via Excel |
+| `pilmart_users` | ✅ | `StoredUser[]` (registered accounts) |
+| `pilmart_orders` | ✅ | Completed orders (last 30) |
+| `pilmart_notices` | ✅ | `Notice[]` |
+| `pilmart_flash_sale` | ✅ | `FlashSaleConfig` |
+| `pilmart_store_info` | ✅ | `StoreInfo` |
+| `pilmart_admin_pw` | ✅ | Admin password hash (default plaintext: `1234`) |
+
+Server JSON files are stored in `data/` at the project root (created on first write).
 
 ### Products (`lib/products.ts`)
 
-`PRODUCTS` is a static array of ~60 items. `getProducts()` merges admin overrides from `pilmart_products`. Always call `getProducts()` — never reference `PRODUCTS` directly in components.
+`PRODUCTS` is a static array of ~60 items. Two exported functions:
 
-`getProductImage(id)` returns the current effective image URL (admin override first, then `PRODUCT_IMAGES[id]`).
+- **`getProducts()`** — for all store-facing components. Merges overrides, includes custom products, **filters out hidden products**.
+- **`getAllProductsAdmin()`** — for the admin page only. Same as above but **includes hidden products** so they can be restored.
 
-`ProductOverride` covers all editable fields: `name`, `price`, `originalPrice`, `imageUrl`, `category`, `desc`, `unit`, `origin`, `storage`. The spread `{ ...product, ...override }` in `getProducts()` applies them all.
+**`Product` fields added this session:** `detailImageUrl?`, `expiryDate?`, `productInfo?`, `customerServiceNo?`, `hidden?`
+
+`getProductImage(id)` returns the effective image URL (admin override first, then `PRODUCT_IMAGES[id]`).
+
+`ProductOverride` mirrors all editable fields including `hidden?: boolean`. The spread `{ ...product, ...override }` in both functions applies them all.
+
+### Cross-client UI refresh
+
+After any product mutation, call `notifyProductsChanged()` in the admin page. This dispatches `pilmart:products-changed`, which `app/page.tsx` listens to (via `productRev` state increment) to re-run `getProducts()`.
+
+Components that read flash sale / notices also listen for `pilmart:store-synced` (dispatched by `ServerSyncProvider` after server sync).
+
+### Admin page (`app/admin/page.tsx`)
+
+Renders with `fixed inset-0 z-[9999]` to overlay the entire site. No separate route.
+
+**Product management features:**
+- Edit modal: image, detail image (상세페이지 하단이미지), category, name, prices, unit, origin, storage, expiry, product info, customer service no., description
+- Excel import (`xlsx` library): download template → fill → upload → bulk upsert. New IDs go to `pilmart_custom_products`; existing IDs update overrides. Excel columns include `상세이미지URL`.
+- Delete: individual (trash icon per row) or bulk ("전체 삭제"). Custom products are fully removed; static base products get `hidden: true` in their override.
+- Restore: hidden products appear in a collapsible "숨겨진 상품" section below the table with "복원" buttons.
+- After every product mutation call `setProducts(getAllProductsAdmin()); notifyProductsChanged();`
+
+**Admin login on HTTP (192.168.x.x):** `crypto.subtle` is unavailable on non-HTTPS origins. The login function checks `canHash` and falls back to plaintext comparison, resetting any stored hash to `null` if needed.
 
 ### Global state (`context/StoreProvider.tsx`)
 
-Three nested providers: `AuthProvider` → `CartProvider` → `WishlistProvider`. All three are consumed via re-exported hooks:
+Three nested providers: `AuthProvider` → `CartProvider` → `WishlistProvider`. Consumed via:
 
 ```ts
 import { useCart }     from '@/hooks/useCart';
@@ -58,48 +89,36 @@ import { useWishlist } from '@/hooks/useWishlist';
 import { useAuth }     from '@/hooks/useAuth';
 ```
 
-**Auth enforcement is in the context, not the component:**
-- `addItem` — checks session, redirects to `/auth` if not logged in; on success navigates to `/cart`.
-- `toggle` (wishlist) — same auth check.
-- `goCheckout` — enforces 100,000원 minimum; navigates to `/checkout`.
+Auth enforcement is in the context: `addItem` / `toggle` redirect to `/auth` if not logged in; `goCheckout` enforces 100,000원 minimum.
 
 ### Auth (`app/auth/page.tsx`)
 
-Passwords are hashed with Web Crypto SHA-256 (`lib/crypto.ts`). Users stored in `pilmart_users` as `StoredUser[]`. `StoredUser` has optional business fields: `userType`, `businessNo`, `businessName`, `businessType`, `businessCategory`.
+Passwords hashed with Web Crypto SHA-256 (`lib/crypto.ts`). `StoredUser` has optional business fields: `userType`, `businessNo`, `businessName`, `businessType`, `businessCategory`.
 
-The admin password gate reads with `lsGet<string>(KEYS.adminPw, '1234')`. If the stored value is a 64-char hex string it compares hashes; otherwise compares plaintext and migrates to hash on first successful match.
-
-### Admin session (`pilmart_admin_active`)
-
-Set to `true` when admin logs in, removed on logout. Components can read `lsGet<boolean>(KEYS.adminActive, false)` to detect admin mode. Currently used by `app/product/[id]/page.tsx` to show the "관리자 편집" button in the breadcrumb.
-
-### Admin page (`app/admin/page.tsx`)
-
-Renders with `fixed inset-0 z-[9999]` to overlay the entire site. No separate route. Product editing uses a modal overlay (`z-[10001]`) that covers all fields: image URL (live preview), category, name, prices, unit, origin, storage, description. The product table shows thumbnails and an orange reset button only when an override exists for that product.
-
-`CartSheet` is a no-op stub — the cart is a full page at `/cart`.
+**Social login** — Kakao and Naver use OAuth 2.0 implicit grant. Keys in `.env.local`:
+```
+NEXT_PUBLIC_KAKAO_APP_KEY=
+NEXT_PUBLIC_NAVER_CLIENT_ID=
+```
+Callbacks: `app/kakao-callback/page.tsx`, `app/naver-callback/page.tsx`. Kakao app ID 1570390 has `http://localhost:3000` registered.
 
 ### Flash sale (`FlashSaleConfig`)
 
 Stored as `{ startHour, endHour, products: FlashProduct[] }` in `pilmart_flash_sale`.
+- Section hides entirely outside `startHour`–`endHour`.
+- `maxPerCustomer: 0` = unlimited; `> 0` stored on cart item as `maxQty`.
 
-- Section hides entirely outside `startHour`–`endHour` window.
-- `maxPerCustomer: 0` means unlimited. `> 0` means limited — stored on the cart item as `maxQty`.
-- `updateQty` blocks increment when `item.qty >= item.maxQty`.
+### Product detail page (`app/product/[id]/ProductPageClient.tsx`)
 
-### Category pages (`lib/categoryConfig.ts`)
+In the "상품정보" tab, shows `product.detailImageUrl` if set (상세페이지 하단이미지), otherwise falls back to the main product image. Set via the admin product edit modal or Excel `상세이미지URL` column.
 
-`CATEGORY_CONFIGS` maps slugs → display config. Valid slugs: `vegetables`, `sauce`, `meat`, `seafood`, `grain`. Each maps to a `category` string on `Product`. Extend this file to add new category pages.
-
-All valid `category` strings (35 total, also defined as `CATEGORIES` constant in admin and product pages):
-`야채/채소` `과일` `쌀/잡곡` `축산/계란` `수산/건어물` `유제품/냉장/냉동` `견과` `고추장/된장/간장류` `양념/소스/육수` `식용유/조미료` `밀가루/라면/면` `캔/통조림` `김/편의식/반찬` `생수/음료` `커피믹스/티백` `빵/스낵/안주류` `헬스/건강식품` `반려동물용품` `소모품/일회용품` `조리도구` `식기/밀폐용기` `주방잡화` `욕실잡화` `생활잡화` `캠핑용품` `사무/자동차용품` `대용량 농산물` `대용량 축산물` `대용량 수산물` `대용량 장류/양념` `대용량 냉장/냉동` `대용량 가공식품` `대용량 커피/음료` `대용량 소모품/세제` `대용량 식기/도구`
+상품 고시정보 table shows: 포장단위, 원산지, 보관방법, 소비기한(`expiryDate`), 상품구성, 소비자상담(`customerServiceNo`).
 
 ### Payment flow
 
-1. `checkout/page.tsx` collects address (Daum Postcode API: `window.daum.Postcode`) and writes `pilmart_pending_order` with `customerName`.
-2. Toss Payments SDK (`useTossPayment` hook) or direct redirect for 만나서 methods.
-3. `success/page.tsx` reads pending order, appends to `pilmart_orders`, calls `clearCart()`.
-4. `fail/page.tsx` handles Toss failure callbacks.
+1. `checkout/page.tsx` collects address (Daum Postcode) and writes `pilmart_pending_order`.
+2. Toss Payments SDK or direct redirect for 만나서 methods.
+3. `success/page.tsx` reads pending order, appends to `pilmart_orders` (auto-syncs to server via `lsSet`), calls `clearCart()`.
 
 Toss client key: `process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
 
@@ -108,21 +127,29 @@ Toss client key: `process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
 | Route | Purpose |
 |---|---|
 | `/` | Home: HeroBanner + FlashSaleSection + ProductGrid; `?cat=` shows filter sidebar |
-| `/product/[id]` | Product detail; shows "관리자 편집" button when `pilmart_admin_active` is set |
+| `/product/[id]` | Product detail with 상품정보/상품평/배송 tabs |
 | `/category/[slug]` | Category promo page |
 | `/flash-product/[idx]` | Flash sale product detail |
 | `/cart` | Full-page cart |
-| `/checkout` | Checkout with Daum Postcode address search |
+| `/checkout` | Checkout with Daum Postcode |
 | `/admin` | Admin dashboard (overlay) |
 | `/auth` | Login / register (일반 or 사업자) |
 | `/orders`, `/wishlist` | Order history, wishlist |
 | `/notice`, `/faq`, `/contact`, `/terms`, `/privacy` | Info pages |
 | `/success`, `/fail` | Toss payment callbacks |
-| `/naver-callback` | Naver OAuth callback (stub) |
+| `/kakao-callback`, `/naver-callback` | OAuth callbacks |
+| `/api/store` | GET/POST shared data (server-side JSON files in `data/`) |
 
-### Patterns to follow
+### Home page product grid (`app/page.tsx`)
 
-- Pages using `useSearchParams()` must be wrapped in `<Suspense>` — Next.js App Router requires it.
+`allProducts` is memoized with a `productRev` counter. To force a re-read after localStorage changes, dispatch `pilmart:products-changed`. The page already has a listener wired up.
+
+`ProductGrid` (`components/product/ProductGrid.tsx`) shows categories in `CATEGORY_ORDER` sequence, 4×2 (8 items) per section with "더보기 →" links.
+
+### Patterns
+
+- Pages using `useSearchParams()` must be wrapped in `<Suspense>`.
 - Use `cn()` from `lib/utils.ts` for conditional classNames.
-- Add shadcn/ui components with `pnpm dlx shadcn@latest add <component-name>`; they live in `components/ui/`.
-- When adding a new `KEYS` entry, add it to `lib/storage.ts` and update both this file and the admin "계정/데이터" tab's reset list if appropriate.
+- Add shadcn/ui: `pnpm dlx shadcn@latest add <name>`; components live in `components/ui/`.
+- New `KEYS` entry → add to `lib/storage.ts`, add to `SHARED_KEYS` in `lib/serverSync.ts` if cross-client, update admin "계정/데이터" reset list.
+- `crypto.subtle` is only available on HTTPS or `localhost`. Never assume it exists on HTTP LAN IPs.

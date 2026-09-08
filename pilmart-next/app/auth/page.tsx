@@ -13,6 +13,59 @@ import { hashPassword } from '@/lib/crypto';
 import { StoredUser } from '@/types';
 import { KEYS, lsGet, lsSet } from '@/lib/storage';
 
+function SocialLoginButtons() {
+  const handleKakao = () => {
+    const appKey = process.env.NEXT_PUBLIC_KAKAO_APP_KEY;
+    if (!appKey) {
+      toast.error('카카오 앱 키가 설정되지 않았습니다. (.env.local 확인)');
+      return;
+    }
+    const callbackUrl = `${window.location.origin}/kakao-callback`;
+    const url = `https://kauth.kakao.com/oauth/authorize?client_id=${appKey}&redirect_uri=${encodeURIComponent(callbackUrl)}&response_type=token`;
+    window.location.href = url;
+  };
+
+  const handleNaver = () => {
+    const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
+    if (!clientId) {
+      toast.error('네이버 클라이언트 ID가 설정되지 않았습니다. (.env.local 확인)');
+      return;
+    }
+    const callbackUrl = `${window.location.origin}/naver-callback`;
+    const state = Math.random().toString(36).slice(2);
+    const url = `https://nid.naver.com/oauth2.0/authorize?response_type=token&client_id=${clientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&state=${state}`;
+    window.location.href = url;
+  };
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-center text-muted-foreground mb-4">소셜 계정으로 간편 로그인</p>
+      <button
+        type="button"
+        onClick={handleKakao}
+        className="w-full flex items-center justify-center gap-3 h-12 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90 active:opacity-80"
+        style={{ backgroundColor: '#FEE500', color: '#191919' }}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 shrink-0">
+          <path d="M12 3C6.48 3 2 6.93 2 11.74c0 3.17 1.88 5.95 4.73 7.57L6 22l3.35-1.75c.85.19 1.73.3 2.65.3 5.52 0 10-3.93 10-8.74S17.52 3 12 3z" />
+        </svg>
+        카카오톡으로 계속하기
+      </button>
+      <button
+        type="button"
+        onClick={handleNaver}
+        className="w-full flex items-center justify-center gap-3 h-12 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90 active:opacity-80"
+        style={{ backgroundColor: '#03C75A', color: '#ffffff' }}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 shrink-0">
+          <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z" />
+        </svg>
+        네이버로 계속하기
+      </button>
+    </div>
+  );
+}
+
 function AuthForm() {
   const { login } = useAuth();
   const router = useRouter();
@@ -163,7 +216,7 @@ function AuthForm() {
           </Tabs>
 
           <Separator className="my-6" />
-          <p className="text-xs text-center text-muted-foreground">소셜 로그인은 준비 중입니다.</p>
+          <SocialLoginButtons />
         </CardContent>
       </Card>
     </div>
