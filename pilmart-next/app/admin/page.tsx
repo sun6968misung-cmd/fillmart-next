@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Settings, KeyRound,
   LogOut, Store, Trash2, Search, RotateCcw, X, ChevronDown,
-  Bell, Zap, Plus, Printer, ImageIcon, Upload, Download,
+  Bell, Zap, Plus, Printer, ImageIcon, Upload, Download, ClipboardList,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -21,13 +21,13 @@ import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
 import { hashPassword } from '@/lib/crypto';
 import { getProducts, getAllProductsAdmin, getProductImage } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
-import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole } from '@/types';
+import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole, AuditLog } from '@/types';
 
-type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account';
+type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account' | 'logs';
 type OrderStatus = '결제완료' | '준비중' | '배송중' | '완료' | '취소';
 
 const ROLE_TABS: Record<AdminRole, Tab[]> = {
-  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'account'],
+  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'account', 'logs'],
   product: ['dashboard', 'products', 'deals'],
   order:   ['dashboard', 'orders'],
 };
@@ -59,6 +59,8 @@ export default function AdminPage() {
   const [newAdminForm, setNewAdminForm] = useState<{ username: string; password: string; role: AdminRole; error: string }>(
     { username: '', password: '', role: 'product', error: '' }
   );
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [logFilter, setLogFilter] = useState('');
 
   const [orders, setOrders] = useState<OrderWithStatus[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -102,6 +104,7 @@ export default function AdminPage() {
     setFlashSale(lsGet<FlashSaleConfig>(KEYS.flashSale, DEFAULT_FLASH));
     setLogoUrl(localStorage.getItem(KEYS.logo) || '');
     setAdminAccounts(lsGet<AdminAccount[]>(KEYS.adminAccounts, []));
+    setAuditLogs(lsGet<AuditLog[]>(KEYS.auditLogs, []));
   }, []);
 
   async function login() {
@@ -120,6 +123,11 @@ export default function AdminPage() {
           matches = pw === account.passwordHash;
         }
         if (matches) {
+          const loginLog: AuditLog = { id: Date.now().toString(), adminUsername: account.username, action: '로그인', target: ROLE_LABEL[account.role], detail: '', timestamp: Date.now() };
+          const prevLogs = lsGet<AuditLog[]>(KEYS.auditLogs, []);
+          const nextLogs = [loginLog, ...prevLogs].slice(0, 500);
+          lsSet(KEYS.auditLogs, nextLogs);
+          setAuditLogs(nextLogs);
           setAuthed(true); setPwError(false); setCurrentAdmin(account);
           setAdminAccounts(accounts); lsSet(KEYS.adminActive, true);
           setTab(ROLE_TABS[account.role][0]);
@@ -148,6 +156,11 @@ export default function AdminPage() {
       matches = pw === '1234';
     }
     if (matches) {
+      const loginLog: AuditLog = { id: Date.now().toString(), adminUsername: 'admin', action: '로그인', target: '최고관리자', detail: '', timestamp: Date.now() };
+      const prevLogs = lsGet<AuditLog[]>(KEYS.auditLogs, []);
+      const nextLogs = [loginLog, ...prevLogs].slice(0, 500);
+      lsSet(KEYS.auditLogs, nextLogs);
+      setAuditLogs(nextLogs);
       setAuthed(true); setPwError(false); setCurrentAdmin(null);
       setAdminAccounts(accounts); lsSet(KEYS.adminActive, true);
     } else {
@@ -181,12 +194,14 @@ export default function AdminPage() {
     const next = raw.map(o => o.orderId === orderId ? { ...o, status } : o);
     lsSet(KEYS.orders, next);
     setOrders([...next].reverse());
+    addLog('주문 상태 변경', orderId, status);
   }
 
   function deleteOrder(orderId: string) {
     const next = lsGet<Order[]>(KEYS.orders, []).filter(o => o.orderId !== orderId);
     lsSet(KEYS.orders, next);
     setOrders([...next].reverse());
+    addLog('주문 삭제', orderId);
   }
 
   function startEdit(p: Product) {
@@ -215,6 +230,7 @@ export default function AdminPage() {
     lsSet(KEYS.products, overrides);
     setProducts(getAllProductsAdmin());
     notifyProductsChanged();
+    addLog('상품 수정', prodModal.id, prodModal.name);
     setProdModal(m => ({ ...m, open: false }));
   }
 
@@ -371,6 +387,19 @@ export default function AdminPage() {
     setProdModal(m => ({ ...m, open: false }));
   }
 
+  function addLog(action: string, target: string, detail = '') {
+    const entry: AuditLog = {
+      id: Date.now().toString(),
+      adminUsername: currentAdmin?.username ?? 'admin',
+      action, target, detail,
+      timestamp: Date.now(),
+    };
+    const prev = lsGet<AuditLog[]>(KEYS.auditLogs, []);
+    const next = [entry, ...prev].slice(0, 500);
+    lsSet(KEYS.auditLogs, next);
+    setAuditLogs(next);
+  }
+
   function notifyProductsChanged() {
     window.dispatchEvent(new CustomEvent('pilmart:products-changed'));
   }
@@ -379,6 +408,7 @@ export default function AdminPage() {
     if (!window.confirm('이 상품을 삭제할까요?')) return;
     const custom = lsGet<Product[]>(KEYS.customProducts, []);
     const isCustom = custom.some(p => p.id === id);
+    const name = products.find(p => p.id === id)?.name ?? id;
     if (isCustom) {
       lsSet(KEYS.customProducts, custom.filter(p => p.id !== id));
       const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
@@ -391,11 +421,13 @@ export default function AdminPage() {
     }
     setProducts(getAllProductsAdmin());
     notifyProductsChanged();
+    addLog('상품 삭제', id, name);
   }
 
   function deleteAllProducts() {
     const visibleCount = products.filter(p => !p.hidden).length;
     if (!window.confirm(`현재 표시 중인 상품 ${visibleCount}개를 모두 삭제할까요?`)) return;
+    addLog('상품 전체 삭제', `${visibleCount}개`);
     const customIds = new Set(lsGet<Product[]>(KEYS.customProducts, []).map(p => p.id));
     lsSet(KEYS.customProducts, []);
     const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
@@ -412,6 +444,7 @@ export default function AdminPage() {
   }
 
   function restoreProduct(id: string) {
+    const name = products.find(p => p.id === id)?.name ?? id;
     const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
     if (overrides[id]) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -422,6 +455,7 @@ export default function AdminPage() {
     lsSet(KEYS.products, overrides);
     setProducts(getAllProductsAdmin());
     notifyProductsChanged();
+    addLog('상품 복원', id, name);
   }
 
   function addNotice() {
@@ -430,17 +464,21 @@ export default function AdminPage() {
     const next = [n, ...notices];
     setNotices(next);
     lsSet(KEYS.notices, next);
+    addLog('공지사항 등록', newNotice.title);
     setNewNotice({ title: '', content: '' });
   }
 
   function removeNotice(id: string) {
+    const title = notices.find(n => n.id === id)?.title ?? id;
     const next = notices.filter(n => n.id !== id);
     setNotices(next);
     lsSet(KEYS.notices, next);
+    addLog('공지사항 삭제', title);
   }
 
   function saveFlashTime() {
     lsSet(KEYS.flashSale, flashSale);
+    addLog('오늘만 특가 시간 저장', `${flashSale.startHour}시~${flashSale.endHour}시`);
     setFlashSaved(true);
     setTimeout(() => setFlashSaved(false), 3000);
   }
@@ -486,6 +524,7 @@ export default function AdminPage() {
 
   function saveStoreInfo() {
     lsSet(KEYS.storeInfo, storeInfo);
+    addLog('매장 정보 저장', storeInfo.name);
     setSiteSaved(true);
     setTimeout(() => setSiteSaved(false), 2000);
   }
@@ -514,6 +553,7 @@ export default function AdminPage() {
     if (newPw.length < 4) return alert('4자 이상 입력해주세요');
     if (newPw !== newPwConfirm) return alert('비밀번호가 일치하지 않습니다');
     lsSet(KEYS.adminPw, await hashPassword(newPw));
+    addLog('최고관리자 비밀번호 변경', 'admin');
     setNewPw(''); setNewPwConfirm('');
     alert('비밀번호가 변경되었습니다');
   }
@@ -535,19 +575,24 @@ export default function AdminPage() {
     const next = [...adminAccounts, account];
     lsSet(KEYS.adminAccounts, next);
     setAdminAccounts(next);
+    addLog('관리자 계정 추가', u, ROLE_LABEL[newAdminForm.role]);
     setNewAdminForm({ username: '', password: '', role: 'product', error: '' });
   }
 
   function removeAdminAccount(id: string) {
+    const target = adminAccounts.find(a => a.id === id);
     const next = adminAccounts.filter(a => a.id !== id);
     lsSet(KEYS.adminAccounts, next);
     setAdminAccounts(next);
+    if (target) addLog('관리자 계정 삭제', target.username, ROLE_LABEL[target.role]);
   }
 
   function toggleAdminActive(id: string) {
+    const target = adminAccounts.find(a => a.id === id);
     const next = adminAccounts.map(a => a.id === id ? { ...a, isActive: !a.isActive } : a);
     lsSet(KEYS.adminAccounts, next);
     setAdminAccounts(next);
+    if (target) addLog('관리자 계정 상태 변경', target.username, target.isActive ? '비활성' : '활성');
   }
 
   function fmtDate(ts: number) {
@@ -649,12 +694,14 @@ export default function AdminPage() {
     { id: 'notices', icon: <Bell className="h-4 w-4" />, label: '공지사항' },
     { id: 'site', icon: <Store className="h-4 w-4" />, label: '사이트 설정' },
     { id: 'account', icon: <Settings className="h-4 w-4" />, label: '계정/데이터' },
+    { id: 'logs', icon: <ClipboardList className="h-4 w-4" />, label: '관리 로그' },
   ];
   const NAV = ALL_NAV.filter(n => allowedTabs.includes(n.id));
 
   const tabTitle: Record<Tab, string> = {
     dashboard: '대시보드', orders: '주문 관리', products: '상품 관리',
-    deals: '오늘만 특가', notices: '공지사항', site: '사이트 설정', account: '계정/데이터',
+    deals: '오늘만 특가', notices: '공지사항', site: '사이트 설정',
+    account: '계정/데이터', logs: '관리 로그',
   };
 
   /* ── 비밀번호 게이트 ── */
@@ -1600,6 +1647,7 @@ export default function AdminPage() {
                           if (confirm(`${item.label} 하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
                             lsRemove(item.key);
                             item.onDelete();
+                            addLog('데이터 초기화', item.label);
                           }
                         }}
                         className={`text-xs font-medium border px-3 py-1.5 rounded-lg transition-colors ${
@@ -1612,6 +1660,85 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── 관리 로그 ── */}
+          {tab === 'logs' && (
+            <div className="p-8 max-w-4xl">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-bold text-gray-800">관리 로그</h3>
+                    <p className="text-xs text-gray-400 mt-0.5">최근 500건 · 최고관리자만 열람 가능</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+                      <input
+                        type="text"
+                        value={logFilter}
+                        onChange={e => setLogFilter(e.target.value)}
+                        placeholder="관리자·작업 검색"
+                        className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-primary w-44"
+                      />
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (window.confirm('로그를 전체 삭제하시겠습니까?')) {
+                          lsRemove(KEYS.auditLogs);
+                          setAuditLogs([]);
+                        }
+                      }}
+                      className="text-xs text-red-400 border border-red-200 px-3 py-1.5 rounded-lg hover:text-red-600 hover:border-red-400 transition-colors">
+                      전체 삭제
+                    </button>
+                  </div>
+                </div>
+
+                {auditLogs.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-12">기록된 로그가 없습니다.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium whitespace-nowrap">시각</th>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium">관리자</th>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium">작업</th>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium">대상</th>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium">상세</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {auditLogs
+                          .filter(l =>
+                            !logFilter ||
+                            l.adminUsername.includes(logFilter) ||
+                            l.action.includes(logFilter) ||
+                            l.target.includes(logFilter) ||
+                            l.detail.includes(logFilter)
+                          )
+                          .map(l => (
+                            <tr key={l.id} className="hover:bg-gray-50/50">
+                              <td className="px-4 py-2.5 text-xs text-gray-400 whitespace-nowrap">
+                                {new Date(l.timestamp).toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' })}
+                              </td>
+                              <td className="px-4 py-2.5">
+                                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  l.adminUsername === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
+                                }`}>{l.adminUsername}</span>
+                              </td>
+                              <td className="px-4 py-2.5 text-xs font-medium text-gray-700">{l.action}</td>
+                              <td className="px-4 py-2.5 text-xs text-gray-500">{l.target}</td>
+                              <td className="px-4 py-2.5 text-xs text-gray-400">{l.detail}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
           )}
