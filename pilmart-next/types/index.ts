@@ -100,7 +100,7 @@ export interface StoredUser {
   businessCategory?: string;
 }
 
-export type AdminRole = 'super' | 'product';
+export type AdminRole = 'super' | 'product' | 'order';
 
 export interface AdminAccount {
   id: string;

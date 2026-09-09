@@ -21,10 +21,19 @@ import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
 import { hashPassword } from '@/lib/crypto';
 import { getProducts, getAllProductsAdmin, getProductImage } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
-import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct } from '@/types';
+import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole } from '@/types';
 
 type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account';
 type OrderStatus = '결제완료' | '준비중' | '배송중' | '완료' | '취소';
+
+const ROLE_TABS: Record<AdminRole, Tab[]> = {
+  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'account'],
+  product: ['dashboard', 'products', 'deals'],
+  order:   ['dashboard', 'orders'],
+};
+const ROLE_LABEL: Record<AdminRole, string> = {
+  super: '최고관리자', product: '상품등록관리자', order: '주문관리자',
+};
 type OrderWithStatus = Order & { status?: OrderStatus };
 
 const METHOD: Record<string, string> = {
@@ -42,8 +51,14 @@ const STATUS_STYLE: Record<string, string> = {
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState('');
+  const [loginUser, setLoginUser] = useState('');
   const [pwError, setPwError] = useState(false);
   const [tab, setTab] = useState<Tab>('dashboard');
+  const [currentAdmin, setCurrentAdmin] = useState<AdminAccount | null>(null);
+  const [adminAccounts, setAdminAccounts] = useState<AdminAccount[]>([]);
+  const [newAdminForm, setNewAdminForm] = useState<{ username: string; password: string; role: AdminRole; error: string }>(
+    { username: '', password: '', role: 'product', error: '' }
+  );
 
   const [orders, setOrders] = useState<OrderWithStatus[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -86,34 +101,58 @@ export default function AdminPage() {
     setStoreInfo(lsGet<StoreInfo>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' }));
     setFlashSale(lsGet<FlashSaleConfig>(KEYS.flashSale, DEFAULT_FLASH));
     setLogoUrl(localStorage.getItem(KEYS.logo) || '');
+    setAdminAccounts(lsGet<AdminAccount[]>(KEYS.adminAccounts, []));
   }, []);
 
   async function login() {
+    const canHash = typeof crypto !== 'undefined' && !!crypto.subtle;
+    const accounts = lsGet<AdminAccount[]>(KEYS.adminAccounts, []);
+
+    // 명명된 계정 로그인 (username이 있고 'admin'이 아닐 때)
+    const trimUser = loginUser.trim();
+    if (trimUser && trimUser !== 'admin') {
+      const account = accounts.find(a => a.username === trimUser && a.isActive);
+      if (account) {
+        let matches = false;
+        if (/^[0-9a-f]{64}$/.test(account.passwordHash) && canHash) {
+          try { matches = (await hashPassword(pw)) === account.passwordHash; } catch { matches = false; }
+        } else {
+          matches = pw === account.passwordHash;
+        }
+        if (matches) {
+          setAuthed(true); setPwError(false); setCurrentAdmin(account);
+          setAdminAccounts(accounts); lsSet(KEYS.adminActive, true);
+          setTab(ROLE_TABS[account.role][0]);
+        } else {
+          setPwError(true);
+        }
+        return;
+      }
+      setPwError(true);
+      return;
+    }
+
+    // 최고관리자 단일 비밀번호 로그인 (기존 방식)
     const stored = lsGet<string>(KEYS.adminPw, '1234');
     const isHash = /^[0-9a-f]{64}$/.test(stored);
-    const canHash = typeof crypto !== 'undefined' && !!crypto.subtle;
-
     let matches = false;
-
     if (!isHash) {
-      // 평문 저장 — 직접 비교
       matches = pw === stored;
-      // 보안 컨텍스트(localhost/HTTPS)에서만 해시로 업그레이드
       if (matches && canHash) {
         try { lsSet(KEYS.adminPw, await hashPassword(pw)); } catch { /* 무시 */ }
       }
     } else if (canHash) {
-      // 해시 저장 + 보안 컨텍스트 — 해시 비교
       try { matches = (await hashPassword(pw)) === stored; } catch { matches = false; }
     } else {
-      // 해시 저장 + HTTP(비보안 컨텍스트) — crypto.subtle 없음
-      // 이 기기 localStorage의 해시를 지우고 평문 기본값으로 리셋
       lsRemove(KEYS.adminPw);
       matches = pw === '1234';
     }
-
-    if (matches) { setAuthed(true); setPwError(false); lsSet(KEYS.adminActive, true); }
-    else setPwError(true);
+    if (matches) {
+      setAuthed(true); setPwError(false); setCurrentAdmin(null);
+      setAdminAccounts(accounts); lsSet(KEYS.adminActive, true);
+    } else {
+      setPwError(true);
+    }
   }
 
   const totalSales = useMemo(() => orders.reduce((s, o) => s + (o.total || 0), 0), [orders]);
@@ -479,6 +518,38 @@ export default function AdminPage() {
     alert('비밀번호가 변경되었습니다');
   }
 
+  async function addAdminAccount() {
+    const u = newAdminForm.username.trim();
+    if (!u) return setNewAdminForm(f => ({ ...f, error: '아이디를 입력해주세요' }));
+    if (u === 'admin') return setNewAdminForm(f => ({ ...f, error: "'admin'은 예약된 아이디입니다" }));
+    if (newAdminForm.password.length < 4) return setNewAdminForm(f => ({ ...f, error: '비밀번호는 4자 이상' }));
+    if (adminAccounts.find(a => a.username === u)) return setNewAdminForm(f => ({ ...f, error: '이미 존재하는 아이디입니다' }));
+    const canHash = typeof crypto !== 'undefined' && !!crypto.subtle;
+    let passwordHash = newAdminForm.password;
+    if (canHash) { try { passwordHash = await hashPassword(newAdminForm.password); } catch {} }
+    const account: AdminAccount = {
+      id: Date.now().toString(), username: u, passwordHash,
+      role: newAdminForm.role, createdAt: Date.now(),
+      createdBy: currentAdmin?.username ?? 'admin', isActive: true,
+    };
+    const next = [...adminAccounts, account];
+    lsSet(KEYS.adminAccounts, next);
+    setAdminAccounts(next);
+    setNewAdminForm({ username: '', password: '', role: 'product', error: '' });
+  }
+
+  function removeAdminAccount(id: string) {
+    const next = adminAccounts.filter(a => a.id !== id);
+    lsSet(KEYS.adminAccounts, next);
+    setAdminAccounts(next);
+  }
+
+  function toggleAdminActive(id: string) {
+    const next = adminAccounts.map(a => a.id === id ? { ...a, isActive: !a.isActive } : a);
+    lsSet(KEYS.adminAccounts, next);
+    setAdminAccounts(next);
+  }
+
   function fmtDate(ts: number) {
     return new Date(ts).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   }
@@ -567,7 +638,10 @@ export default function AdminPage() {
     w.document.close();
   }
 
-  const NAV: { id: Tab; icon: React.ReactNode; label: string }[] = [
+  const myRole: AdminRole = currentAdmin?.role ?? 'super';
+  const allowedTabs = ROLE_TABS[myRole];
+
+  const ALL_NAV: { id: Tab; icon: React.ReactNode; label: string }[] = [
     { id: 'dashboard', icon: <LayoutDashboard className="h-4 w-4" />, label: '대시보드' },
     { id: 'orders', icon: <Package className="h-4 w-4" />, label: '주문 관리' },
     { id: 'products', icon: <ShoppingBag className="h-4 w-4" />, label: '상품 관리' },
@@ -576,6 +650,7 @@ export default function AdminPage() {
     { id: 'site', icon: <Store className="h-4 w-4" />, label: '사이트 설정' },
     { id: 'account', icon: <Settings className="h-4 w-4" />, label: '계정/데이터' },
   ];
+  const NAV = ALL_NAV.filter(n => allowedTabs.includes(n.id));
 
   const tabTitle: Record<Tab, string> = {
     dashboard: '대시보드', orders: '주문 관리', products: '상품 관리',
@@ -592,20 +667,36 @@ export default function AdminPage() {
           </div>
           <h2 className="text-xl font-black text-gray-800 mb-1">관리자 로그인</h2>
           <p className="text-sm text-gray-400 mb-6">필마트 관리자 페이지</p>
-          <input
-            type="password"
-            value={pw}
-            onChange={e => setPw(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && login()}
-            placeholder="비밀번호 입력"
-            className="w-full border border-gray-300 rounded-xl px-4 py-3 text-center text-lg tracking-widest focus:outline-none focus:border-primary mb-3"
-            autoFocus
-          />
-          {pwError && <p className="text-red-500 text-sm mb-3">비밀번호가 올바르지 않습니다</p>}
+          <div className="space-y-3 text-left mb-3">
+            <div>
+              <label className="text-xs text-gray-500 font-medium block mb-1">아이디 <span className="text-gray-300">(최고관리자는 비워두세요)</span></label>
+              <input
+                type="text"
+                value={loginUser}
+                onChange={e => setLoginUser(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && login()}
+                placeholder="아이디 (선택)"
+                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 font-medium block mb-1">비밀번호</label>
+              <input
+                type="password"
+                value={pw}
+                onChange={e => setPw(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && login()}
+                placeholder="비밀번호 입력"
+                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+          </div>
+          {pwError && <p className="text-red-500 text-sm mb-3">아이디 또는 비밀번호가 올바르지 않습니다</p>}
           <button onClick={login} className="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 transition-colors">
             로그인
           </button>
-          <p className="text-xs text-gray-300 mt-4">초기 비밀번호: 1234</p>
+          <p className="text-xs text-gray-300 mt-4">최고관리자 초기 비밀번호: 1234</p>
         </div>
       </div>
     );
@@ -620,7 +711,14 @@ export default function AdminPage() {
       <aside className="w-56 bg-white border-r border-gray-100 flex flex-col shrink-0">
         <div className="px-5 py-5 border-b border-gray-100">
           <p className="text-xl font-extrabold text-primary">필마트</p>
-          <p className="text-xs text-gray-400 mt-0.5">관리자</p>
+          <p className="text-xs font-medium mt-1">
+            <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              myRole === 'super' ? 'bg-blue-100 text-blue-700' :
+              myRole === 'product' ? 'bg-green-100 text-green-700' :
+              'bg-orange-100 text-orange-700'
+            }`}>{ROLE_LABEL[myRole]}</span>
+            {currentAdmin && <span className="ml-1.5 text-gray-400">{currentAdmin.username}</span>}
+          </p>
         </div>
 
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
@@ -1350,6 +1448,110 @@ export default function AdminPage() {
           {/* ── 계정/데이터 ── */}
           {tab === 'account' && (
             <div className="p-8 max-w-2xl space-y-6">
+
+              {/* 관리자 계정 관리 (최고관리자 전용) */}
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h3 className="font-bold text-gray-800 mb-1">관리자 계정 관리</h3>
+                <p className="text-xs text-gray-400 mb-5">권한별 하위 관리자를 추가·삭제합니다.</p>
+
+                {/* 권한 안내 */}
+                <div className="grid grid-cols-3 gap-2 mb-5">
+                  {(['super','product','order'] as AdminRole[]).map(r => (
+                    <div key={r} className="border border-gray-100 rounded-xl p-3 text-center">
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mb-1 ${
+                        r === 'super' ? 'bg-blue-100 text-blue-700' :
+                        r === 'product' ? 'bg-green-100 text-green-700' :
+                        'bg-orange-100 text-orange-700'
+                      }`}>{ROLE_LABEL[r]}</span>
+                      <p className="text-[10px] text-gray-400 leading-tight">
+                        {r === 'super' ? '모든 권한' : r === 'product' ? '상품 등록·수정' : '주문 조회·수정'}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 계정 목록 */}
+                {adminAccounts.length > 0 && (
+                  <div className="border border-gray-100 rounded-xl overflow-hidden mb-4">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium">아이디</th>
+                          <th className="px-4 py-2.5 text-left text-xs text-gray-500 font-medium">권한</th>
+                          <th className="px-4 py-2.5 text-center text-xs text-gray-500 font-medium">상태</th>
+                          <th className="px-4 py-2.5 text-center text-xs text-gray-500 font-medium">삭제</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {adminAccounts.map(a => (
+                          <tr key={a.id}>
+                            <td className="px-4 py-3 font-medium text-gray-800">{a.username}</td>
+                            <td className="px-4 py-3">
+                              <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                a.role === 'super' ? 'bg-blue-100 text-blue-700' :
+                                a.role === 'product' ? 'bg-green-100 text-green-700' :
+                                'bg-orange-100 text-orange-700'
+                              }`}>{ROLE_LABEL[a.role]}</span>
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <button
+                                onClick={() => toggleAdminActive(a.id)}
+                                className={`text-[10px] font-bold px-2.5 py-1 rounded-full transition-colors ${
+                                  a.isActive ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                                }`}>
+                                {a.isActive ? '활성' : '비활성'}
+                              </button>
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <button onClick={() => removeAdminAccount(a.id)}
+                                className="text-gray-300 hover:text-red-500 transition-colors">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* 새 계정 추가 */}
+                <div className="border border-gray-100 rounded-xl p-4 space-y-3">
+                  <p className="text-xs font-bold text-gray-600">새 계정 추가</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-gray-500 block mb-1">아이디</label>
+                      <input type="text" value={newAdminForm.username}
+                        onChange={e => setNewAdminForm(f => ({ ...f, username: e.target.value, error: '' }))}
+                        placeholder="영문·숫자"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-500 block mb-1">비밀번호</label>
+                      <input type="password" value={newAdminForm.password}
+                        onChange={e => setNewAdminForm(f => ({ ...f, password: e.target.value, error: '' }))}
+                        placeholder="4자 이상"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 block mb-1">권한</label>
+                    <select value={newAdminForm.role}
+                      onChange={e => setNewAdminForm(f => ({ ...f, role: e.target.value as AdminRole }))}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary">
+                      <option value="product">상품등록관리자 — 상품 등록·수정만</option>
+                      <option value="order">주문관리자 — 주문 조회·수정만</option>
+                      <option value="super">최고관리자 — 모든 권한</option>
+                    </select>
+                  </div>
+                  {newAdminForm.error && <p className="text-red-500 text-xs">{newAdminForm.error}</p>}
+                  <button onClick={addAdminAccount}
+                    className="bg-primary text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                    추가
+                  </button>
+                </div>
+              </div>
+
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h3 className="font-bold text-gray-800 mb-1">관리자 비밀번호 변경</h3>
                 <p className="text-xs text-gray-400 mb-5">초기 비밀번호: 1234</p>
