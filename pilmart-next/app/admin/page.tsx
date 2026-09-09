@@ -1493,7 +1493,7 @@ export default function AdminPage() {
           )}
 
           {/* ── 계정/데이터 ── */}
-          {tab === 'account' && (
+          {tab === 'account' && myRole === 'super' && (
             <div className="p-8 max-w-2xl space-y-6">
 
               {/* 관리자 계정 관리 (최고관리자 전용) */}
@@ -1665,7 +1665,7 @@ export default function AdminPage() {
           )}
 
           {/* ── 관리 로그 ── */}
-          {tab === 'logs' && (
+          {tab === 'logs' && myRole === 'super' && (
             <div className="p-8 max-w-4xl">
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-center justify-between mb-4">
