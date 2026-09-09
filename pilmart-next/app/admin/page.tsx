@@ -65,6 +65,8 @@ export default function AdminPage() {
 
   const [newNotice, setNewNotice] = useState({ title: '', content: '' });
   const [siteSaved, setSiteSaved] = useState(false);
+  const [logoUrl, setLogoUrl] = useState('');
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   const DEFAULT_FLASH: FlashSaleConfig = { startHour: 9, endHour: 22, products: [] };
   const [flashSale, setFlashSale] = useState<FlashSaleConfig>(DEFAULT_FLASH);
@@ -83,6 +85,7 @@ export default function AdminPage() {
     setNotices(lsGet<Notice[]>(KEYS.notices, []));
     setStoreInfo(lsGet<StoreInfo>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' }));
     setFlashSale(lsGet<FlashSaleConfig>(KEYS.flashSale, DEFAULT_FLASH));
+    setLogoUrl(localStorage.getItem(KEYS.logo) || '');
   }, []);
 
   async function login() {
@@ -446,6 +449,26 @@ export default function AdminPage() {
     lsSet(KEYS.storeInfo, storeInfo);
     setSiteSaved(true);
     setTimeout(() => setSiteSaved(false), 2000);
+  }
+
+  function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const url = ev.target?.result as string;
+      localStorage.setItem(KEYS.logo, url);
+      setLogoUrl(url);
+      window.dispatchEvent(new Event('pilmart:logo-changed'));
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
+  function removeLogo() {
+    localStorage.removeItem(KEYS.logo);
+    setLogoUrl('');
+    window.dispatchEvent(new Event('pilmart:logo-changed'));
   }
 
   async function changeAdminPw() {
@@ -1254,7 +1277,41 @@ export default function AdminPage() {
 
           {/* ── 사이트 설정 ── */}
           {tab === 'site' && (
-            <div className="p-8 max-w-2xl">
+            <div className="p-8 max-w-2xl space-y-6">
+              {/* 로고 업로드 */}
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h3 className="font-bold text-gray-800 mb-1">쇼핑몰 로고</h3>
+                <p className="text-xs text-gray-400 mb-4">PNG·JPG·SVG 파일을 업로드하면 사이트 전체에 적용됩니다.</p>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={logoUrl || '/logo.png'}
+                    alt="로고 미리보기"
+                    className="h-12 w-12 object-contain rounded-lg border border-gray-100 bg-gray-50"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => logoInputRef.current?.click()}
+                      className="bg-primary text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-primary/90 transition-colors">
+                      파일 선택
+                    </button>
+                    <input
+                      ref={logoInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleLogoUpload}
+                    />
+                    {logoUrl && (
+                      <button
+                        onClick={removeLogo}
+                        className="text-sm font-medium text-red-400 border border-red-200 px-4 py-2 rounded-xl hover:text-red-600 hover:border-red-400 transition-colors">
+                        삭제
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h3 className="font-bold text-gray-800 mb-1">매장 정보</h3>
                 <p className="text-xs text-gray-400 mb-5">푸터에 표시되는 매장 정보입니다.</p>

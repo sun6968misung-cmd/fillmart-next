@@ -16,6 +16,7 @@ export const KEYS = {
   customProducts: 'pilmart_custom_products',
   adminAccounts: 'pilmart_admin_accounts',
   auditLogs: 'pilmart_audit_logs',
+  logo: 'pilmart_logo',
 } as const;
 
 export function lsGet<T>(key: string, fallback: T): T {

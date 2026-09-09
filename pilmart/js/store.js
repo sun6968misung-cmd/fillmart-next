@@ -125,6 +125,17 @@ function fmt(n) {
   return Number(n).toLocaleString('ko-KR') + '원';
 }
 
+function applyCustomLogo() {
+  const url = localStorage.getItem('pilmart_logo');
+  if (!url) return;
+  document.querySelectorAll('img[alt="FILLMART"]').forEach(img => {
+    img.src = url;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', applyCustomLogo);
+window.addEventListener('pilmart:logo-changed', applyCustomLogo);
+
 async function requestTossPayment(method, orderInfo) {
   const tossPayments = TossPayments(TOSS_CLIENT_KEY);
   const base = window.location.origin === 'null' ? 'http://localhost:8080' : window.location.origin;

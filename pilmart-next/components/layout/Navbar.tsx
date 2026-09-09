@@ -78,8 +78,19 @@ export function Navbar() {
   const { isLoggedIn, user, logout } = useAuth();
   const [catOpen, setCatOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [logoSrc, setLogoSrc] = useState('/logo.png');
   const catRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    function loadLogo() {
+      const stored = localStorage.getItem('pilmart_logo');
+      setLogoSrc(stored || '/logo.png');
+    }
+    loadLogo();
+    window.addEventListener('pilmart:logo-changed', loadLogo);
+    return () => window.removeEventListener('pilmart:logo-changed', loadLogo);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -108,9 +119,8 @@ export function Navbar() {
       {/* Row 2: 로고 + 검색바 + 아이콘 버튼 */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <img src="/logo.png" alt="필마트" width={36} height={36} className="rounded" />
-            <span className="text-xl font-bold text-primary hidden sm:block">필마트</span>
+          <Link href="/" className="shrink-0">
+            <img src={logoSrc} alt="필마트" className="h-24 w-auto rounded object-contain" />
           </Link>
 
           <form onSubmit={handleSearch} className="flex-1 relative">
