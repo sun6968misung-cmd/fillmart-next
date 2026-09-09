@@ -1,0 +1,194 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f1e5]:
+      - link [ref=f1e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f1e7]
+      - generic [ref=f1e8]:
+        - textbox "상품을 검색해보세요!" [ref=f1e9]
+        - button [ref=f1e10]
+      - generic [ref=f1e14]:
+        - link "나의 찜" [ref=f1e15] [cursor=pointer]:
+          - /url: /wishlist
+        - link "장바구니" [ref=f1e20] [cursor=pointer]:
+          - /url: /cart
+    - generic [ref=f1e30]:
+      - button "카테고리" [ref=f1e31]
+      - navigation [ref=f1e33]:
+        - link "홈" [ref=f1e34] [cursor=pointer]:
+          - /url: /
+        - link "이번주특가" [ref=f1e35] [cursor=pointer]:
+          - /url: /?cat=이번주특가
+  - main [ref=f1e36]:
+    - generic [ref=f1e37]:
+      - generic [ref=f1e38]:
+        - link "홈" [ref=f1e39] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f1e42]: 야채/채소
+      - button "필터" [ref=f1e44]
+      - generic [ref=f1e46]:
+        - generic [ref=f1e47]:
+          - heading "야채/채소" [level=1] [ref=f1e48]
+          - generic [ref=f1e49]:
+            - text: 총
+            - strong [ref=f1e50]: "7"
+            - text: 개 상품
+        - generic [ref=f1e51]:
+          - button "추천순" [ref=f1e52]
+          - button "낮은가격순" [ref=f1e53]
+          - button "높은가격순" [ref=f1e54]
+          - button "할인율순" [ref=f1e55]
+        - generic [ref=f1e56]:
+          - generic [ref=f1e57]:
+            - generic [ref=f1e58]:
+              - link "양파 3kg 34%" [ref=f1e59] [cursor=pointer]:
+                - /url: /product/sale2
+                - img "양파 3kg" [ref=f1e60]
+                - generic [ref=f1e61]: 34%
+              - button [ref=f1e62]
+              - button "담기" [ref=f1e66]
+            - link "양파 3kg 3kg · 국산 34% 5,900원 3,900원" [ref=f1e72] [cursor=pointer]:
+              - /url: /product/sale2
+              - paragraph [ref=f1e73]: 양파 3kg
+              - paragraph [ref=f1e74]: 3kg · 국산
+              - generic [ref=f1e75]:
+                - generic [ref=f1e76]: 34%
+                - generic [ref=f1e77]: 5,900원
+              - paragraph [ref=f1e78]: 3,900원
+          - generic [ref=f1e79]:
+            - generic [ref=f1e80]:
+              - link "양배추 1통 22%" [ref=f1e81] [cursor=pointer]:
+                - /url: /product/veg1
+                - img "양배추 1통" [ref=f1e82]
+                - generic [ref=f1e83]: 22%
+              - button [ref=f1e84]
+              - button "담기" [ref=f1e88]
+            - link "양배추 1통 1통 · 국산 22% 4,500원 3,500원" [ref=f1e94] [cursor=pointer]:
+              - /url: /product/veg1
+              - paragraph [ref=f1e95]: 양배추 1통
+              - paragraph [ref=f1e96]: 1통 · 국산
+              - generic [ref=f1e97]:
+                - generic [ref=f1e98]: 22%
+                - generic [ref=f1e99]: 4,500원
+              - paragraph [ref=f1e100]: 3,500원
+          - generic [ref=f1e101]:
+            - generic [ref=f1e102]:
+              - link "대파 1단 24%" [ref=f1e103] [cursor=pointer]:
+                - /url: /product/veg2
+                - img "대파 1단" [ref=f1e104]
+                - generic [ref=f1e105]: 24%
+              - button [ref=f1e106]
+              - button "담기" [ref=f1e110]
+            - link "대파 1단 1단 · 국산 24% 2,500원 1,900원" [ref=f1e116] [cursor=pointer]:
+              - /url: /product/veg2
+              - paragraph [ref=f1e117]: 대파 1단
+              - paragraph [ref=f1e118]: 1단 · 국산
+              - generic [ref=f1e119]:
+                - generic [ref=f1e120]: 24%
+                - generic [ref=f1e121]: 2,500원
+              - paragraph [ref=f1e122]: 1,900원
+          - generic [ref=f1e123]:
+            - generic [ref=f1e124]:
+              - link "햇감자 2.5kg 25%" [ref=f1e125] [cursor=pointer]:
+                - /url: /product/veg3
+                - img "햇감자 2.5kg" [ref=f1e126]
+                - generic [ref=f1e127]: 25%
+              - button [ref=f1e128]
+              - button "담기" [ref=f1e132]
+            - link "햇감자 2.5kg 2.5kg · 국산 25% 7,900원 5,900원" [ref=f1e138] [cursor=pointer]:
+              - /url: /product/veg3
+              - paragraph [ref=f1e139]: 햇감자 2.5kg
+              - paragraph [ref=f1e140]: 2.5kg · 국산
+              - generic [ref=f1e141]:
+                - generic [ref=f1e142]: 25%
+                - generic [ref=f1e143]: 7,900원
+              - paragraph [ref=f1e144]: 5,900원
+          - generic [ref=f1e145]:
+            - generic [ref=f1e146]:
+              - link "당근 1kg 26%" [ref=f1e147] [cursor=pointer]:
+                - /url: /product/veg4
+                - img "당근 1kg" [ref=f1e148]
+                - generic [ref=f1e149]: 26%
+              - button [ref=f1e150]
+              - button "담기" [ref=f1e154]
+            - link "당근 1kg 1kg · 국산 26% 3,900원 2,900원" [ref=f1e160] [cursor=pointer]:
+              - /url: /product/veg4
+              - paragraph [ref=f1e161]: 당근 1kg
+              - paragraph [ref=f1e162]: 1kg · 국산
+              - generic [ref=f1e163]:
+                - generic [ref=f1e164]: 26%
+                - generic [ref=f1e165]: 3,900원
+              - paragraph [ref=f1e166]: 2,900원
+          - generic [ref=f1e167]:
+            - generic [ref=f1e168]:
+              - link "방울토마토 1kg 29%" [ref=f1e169] [cursor=pointer]:
+                - /url: /product/veg8
+                - img "방울토마토 1kg" [ref=f1e170]
+                - generic [ref=f1e171]: 29%
+              - button [ref=f1e172]
+              - button "담기" [ref=f1e176]
+            - link "방울토마토 1kg 1kg · 국내산 29% 6,900원 4,900원" [ref=f1e182] [cursor=pointer]:
+              - /url: /product/veg8
+              - paragraph [ref=f1e183]: 방울토마토 1kg
+              - paragraph [ref=f1e184]: 1kg · 국내산
+              - generic [ref=f1e185]:
+                - generic [ref=f1e186]: 29%
+                - generic [ref=f1e187]: 6,900원
+              - paragraph [ref=f1e188]: 4,900원
+          - generic [ref=f1e189]:
+            - generic [ref=f1e190]:
+              - link "시금치 300g 34%" [ref=f1e191] [cursor=pointer]:
+                - /url: /product/veg9
+                - img "시금치 300g" [ref=f1e192]
+                - generic [ref=f1e193]: 34%
+              - button [ref=f1e194]
+              - button "담기" [ref=f1e198]
+            - link "시금치 300g 300g · 국산 34% 2,900원 1,900원" [ref=f1e204] [cursor=pointer]:
+              - /url: /product/veg9
+              - paragraph [ref=f1e205]: 시금치 300g
+              - paragraph [ref=f1e206]: 300g · 국산
+              - generic [ref=f1e207]:
+                - generic [ref=f1e208]: 34%
+                - generic [ref=f1e209]: 2,900원
+              - paragraph [ref=f1e210]: 1,900원
+  - contentinfo [ref=f1e211]:
+    - generic [ref=f1e212]:
+      - generic [ref=f1e213]:
+        - generic [ref=f1e214]:
+          - heading "필마트" [level=3] [ref=f1e215]
+          - paragraph [ref=f1e216]: 신선식품 당일배송고객 만족 최우선
+        - generic [ref=f1e217]:
+          - heading "고객지원" [level=3] [ref=f1e218]
+          - list [ref=f1e219]:
+            - listitem [ref=f1e220]:
+              - link "공지사항" [ref=f1e221] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f1e222]:
+              - link "자주 묻는 질문" [ref=f1e223] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f1e224]:
+              - link "고객문의" [ref=f1e225] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f1e226]:
+          - heading "약관" [level=3] [ref=f1e227]
+          - list [ref=f1e228]:
+            - listitem [ref=f1e229]:
+              - link "이용약관" [ref=f1e230] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f1e231]:
+              - link "개인정보처리방침" [ref=f1e232] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f1e233]:
+          - heading "주문" [level=3] [ref=f1e234]
+          - list [ref=f1e235]:
+            - listitem [ref=f1e236]:
+              - link "주문내역" [ref=f1e237] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f1e238]:
+              - link "찜 목록" [ref=f1e239] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f1e240]
+      - paragraph [ref=f1e241]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f1e247] [cursor=pointer]

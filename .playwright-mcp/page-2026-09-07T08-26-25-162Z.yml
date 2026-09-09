@@ -1,0 +1,80 @@
+- generic [active] [ref=f22e1]:
+  - banner [ref=f22e2]:
+    - generic [ref=f22e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f22e5]:
+      - link "필마트 필마트" [ref=f22e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f22e7]
+        - generic [ref=f22e8]: 필마트
+      - generic [ref=f22e9]:
+        - textbox "상품을 검색해보세요!" [ref=f22e10]
+        - button [ref=f22e11]
+      - generic [ref=f22e15]:
+        - link "로그인" [ref=f22e16] [cursor=pointer]:
+          - /url: /auth
+        - link "나의 찜" [ref=f22e21] [cursor=pointer]:
+          - /url: /wishlist
+        - button "장바구니" [ref=f22e26]
+    - generic [ref=f22e35]:
+      - generic [ref=f22e36]:
+        - button "카테고리" [ref=f22e37]
+        - navigation [ref=f22e39]:
+          - link "홈" [ref=f22e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f22e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f22e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f22e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f22e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f22e45]:
+        - link "로그인" [ref=f22e46] [cursor=pointer]:
+          - /url: /auth
+        - link "회원가입" [ref=f22e47] [cursor=pointer]:
+          - /url: /auth
+        - link "고객센터" [ref=f22e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f22e49]:
+    - generic [ref=f22e50]: 로딩 중...
+  - contentinfo [ref=f22e51]:
+    - generic [ref=f22e52]:
+      - generic [ref=f22e53]:
+        - generic [ref=f22e54]:
+          - heading "필마트" [level=3] [ref=f22e55]
+          - paragraph [ref=f22e56]: 신선식품 당일배송고객 만족 최우선
+        - generic [ref=f22e57]:
+          - heading "고객지원" [level=3] [ref=f22e58]
+          - list [ref=f22e59]:
+            - listitem [ref=f22e60]:
+              - link "공지사항" [ref=f22e61] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f22e62]:
+              - link "자주 묻는 질문" [ref=f22e63] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f22e64]:
+              - link "고객문의" [ref=f22e65] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f22e66]:
+          - heading "약관" [level=3] [ref=f22e67]
+          - list [ref=f22e68]:
+            - listitem [ref=f22e69]:
+              - link "이용약관" [ref=f22e70] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f22e71]:
+              - link "개인정보처리방침" [ref=f22e72] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f22e73]:
+          - heading "주문" [level=3] [ref=f22e74]
+          - list [ref=f22e75]:
+            - listitem [ref=f22e76]:
+              - link "주문내역" [ref=f22e77] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f22e78]:
+              - link "찜 목록" [ref=f22e79] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f22e80]
+      - paragraph [ref=f22e81]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f22e87] [cursor=pointer]

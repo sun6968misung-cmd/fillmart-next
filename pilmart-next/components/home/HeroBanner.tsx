@@ -65,7 +65,7 @@ const SLIDES = [
     badgeVar: 'var(--slide-promo-badge)',
     badge: '🎉 첫 구매 혜택',
     title: '첫 주문 고객에게\n5,000원 쿠폰 증정',
-    subtitle: '필마트 가입 후 첫 구매 시 자동 적용',
+    subtitle: '필식자재마마트 다사점 가입 후 첫 구매 시 자동 적용',
     cta: '쿠폰 받기',
     href: '/auth',
     imgSrc: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&h=420&q=80',

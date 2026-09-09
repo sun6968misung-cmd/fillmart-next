@@ -1,0 +1,99 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e7] [cursor=pointer]:
+    - button "Open issues overlay" [ref=e8]:
+      - generic [ref=e12]:
+        - generic [aria-hidden] [ref=e13]: "-1"
+        - generic [ref=e14]: "0"
+    - button "Collapse issues badge" [ref=e15]
+  - banner [ref=e18]:
+    - generic [ref=e19]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=e21]:
+      - link "필마트 필마트" [ref=e22] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=e23]
+        - generic [ref=e24]: 필마트
+      - generic [ref=e25]:
+        - textbox "상품을 검색해보세요!" [ref=e26]
+        - button [ref=e27]
+      - generic [ref=e31]:
+        - link "주문내역" [ref=e32] [cursor=pointer]:
+          - /url: /orders
+        - link "나의 찜" [ref=e38] [cursor=pointer]:
+          - /url: /wishlist
+        - link "장바구니" [ref=e43] [cursor=pointer]:
+          - /url: /cart
+    - generic [ref=e52]:
+      - generic [ref=e53]:
+        - button "카테고리" [ref=e54]
+        - navigation [ref=e56]:
+          - link "홈" [ref=e57] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=e58] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=e59] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=e60] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=e61] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=e62]:
+        - generic [ref=e63]: 테스트님
+        - button "로그아웃" [ref=e64]
+        - link "주문내역" [ref=e65] [cursor=pointer]:
+          - /url: /orders
+        - link "고객센터" [ref=e66] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - paragraph [ref=e69]: 🛒
+      - heading "페이지를 찾을 수 없어요" [level=1] [ref=e70]
+      - paragraph [ref=e71]: 요청하신 페이지가 존재하지 않거나 이동되었습니다.
+      - link "홈으로 돌아가기" [ref=e72] [cursor=pointer]:
+        - /url: /
+  - contentinfo [ref=e73]:
+    - generic [ref=e74]:
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - heading "필마트" [level=3] [ref=e77]
+          - generic [ref=e78]:
+            - paragraph [ref=e79]: 대구광역시 달성군 다사읍 달구벌대로 858
+            - paragraph [ref=e80]:
+              - link "053-593-8253" [ref=e81] [cursor=pointer]:
+                - /url: tel:0535938253
+            - paragraph [ref=e82]: 매일 08:00~22:00
+        - generic [ref=e83]:
+          - heading "고객지원" [level=3] [ref=e84]
+          - list [ref=e85]:
+            - listitem [ref=e86]:
+              - link "공지사항" [ref=e87] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=e88]:
+              - link "자주 묻는 질문" [ref=e89] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=e90]:
+              - link "고객문의" [ref=e91] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=e92]:
+          - heading "약관" [level=3] [ref=e93]
+          - list [ref=e94]:
+            - listitem [ref=e95]:
+              - link "이용약관" [ref=e96] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=e97]:
+              - link "개인정보처리방침" [ref=e98] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=e99]:
+          - heading "주문" [level=3] [ref=e100]
+          - list [ref=e101]:
+            - listitem [ref=e102]:
+              - link "주문내역" [ref=e103] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=e104]:
+              - link "찜 목록" [ref=e105] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=e106]
+      - generic [ref=e107]:
+        - paragraph [ref=e108]: 주식회사 필식자재마트 · 대표 서익준 · 사업자등록번호 702-85-01475
+        - paragraph [ref=e109]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - alert [ref=e110]

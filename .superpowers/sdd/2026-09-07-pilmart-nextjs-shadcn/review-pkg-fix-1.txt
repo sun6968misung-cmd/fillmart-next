@@ -1,0 +1,38 @@
+﻿616b891 fix: checkout redirect in useEffect + add 100k minimum check on page
+---DIFF---
+diff --git a/pilmart-next/app/checkout/page.tsx b/pilmart-next/app/checkout/page.tsx
+index ba9c21f..7dd5c37 100644
+--- a/pilmart-next/app/checkout/page.tsx
++++ b/pilmart-next/app/checkout/page.tsx
+@@ -1,5 +1,5 @@
+ 'use client';
+-import { useState } from 'react';
++import { useState, useEffect } from 'react';
+ import { useRouter } from 'next/navigation';
+ import { useCart } from '@/hooks/useCart';
+ import { useAuth } from '@/hooks/useAuth';
+@@ -33,15 +33,20 @@ export default function CheckoutPage() {
+   const [memo, setMemo] = useState('');
+   const [loading, setLoading] = useState(false);
+ 
+-  if (items.length === 0) {
+-    router.push('/');
+-    return null;
+-  }
++  useEffect(() => {
++    if (items.length === 0) router.push('/');
++  }, [items.length, router]);
++
++  if (items.length === 0) return null;
+ 
+   const orderId = `pilmart_${Date.now()}`;
+ 
+   const handlePay = async () => {
+     if (!address.trim()) { toast.error('배송지를 입력해주세요.'); return; }
++    if (total < 100000) {
++      toast.error(`최소 주문금액은 100,000원입니다. ${(100000 - total).toLocaleString('ko-KR')}원 더 담아주세요.`);
++      return;
++    }
+     setLoading(true);
+ 
+     const pendingOrder = {

@@ -1,0 +1,92 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - generic [ref=f6e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f6e5]:
+      - link "필마트 필마트" [ref=f6e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f6e7]
+        - generic [ref=f6e8]: 필마트
+      - generic [ref=f6e9]:
+        - textbox "상품을 검색해보세요!" [ref=f6e10]
+        - button [ref=f6e11]
+      - generic [ref=f6e15]:
+        - link "로그인" [ref=f6e16] [cursor=pointer]:
+          - /url: /auth
+        - link "나의 찜" [ref=f6e21] [cursor=pointer]:
+          - /url: /wishlist
+        - button "장바구니" [ref=f6e26]
+    - generic [ref=f6e35]:
+      - generic [ref=f6e36]:
+        - button "카테고리" [ref=f6e37]
+        - navigation [ref=f6e39]:
+          - link "홈" [ref=f6e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f6e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f6e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f6e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f6e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f6e45]:
+        - link "로그인" [ref=f6e46] [cursor=pointer]:
+          - /url: /auth
+        - link "회원가입" [ref=f6e47] [cursor=pointer]:
+          - /url: /auth
+        - link "고객센터" [ref=f6e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f6e49]:
+    - generic [ref=f6e50]:
+      - generic [ref=f6e53]:
+        - generic [ref=f6e54]: 🚚 당일배송
+        - heading "신선한 식재료를 당일배송으로" [level=1] [ref=f6e55]: 신선한 식재료를당일배송으로
+        - paragraph [ref=f6e56]: 농가 직송 야채·과일부터 신선 육류·수산물까지.오전 주문 시 당일 오후 배송.
+        - generic [ref=f6e57]:
+          - link [ref=f6e58] [cursor=pointer]:
+            - /url: "#products"
+            - button "지금 쇼핑하기" [ref=f6e59]
+          - link [ref=f6e60] [cursor=pointer]:
+            - /url: /notice
+            - button "공지사항" [ref=f6e61]
+      - generic [ref=f6e62]: 로딩 중...
+  - contentinfo [ref=f6e64]:
+    - generic [ref=f6e65]:
+      - generic [ref=f6e66]:
+        - generic [ref=f6e67]:
+          - heading "필마트" [level=3] [ref=f6e68]
+          - paragraph [ref=f6e69]: 신선식품 당일배송고객 만족 최우선
+        - generic [ref=f6e70]:
+          - heading "고객지원" [level=3] [ref=f6e71]
+          - list [ref=f6e72]:
+            - listitem [ref=f6e73]:
+              - link "공지사항" [ref=f6e74] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f6e75]:
+              - link "자주 묻는 질문" [ref=f6e76] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f6e77]:
+              - link "고객문의" [ref=f6e78] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f6e79]:
+          - heading "약관" [level=3] [ref=f6e80]
+          - list [ref=f6e81]:
+            - listitem [ref=f6e82]:
+              - link "이용약관" [ref=f6e83] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f6e84]:
+              - link "개인정보처리방침" [ref=f6e85] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f6e86]:
+          - heading "주문" [level=3] [ref=f6e87]
+          - list [ref=f6e88]:
+            - listitem [ref=f6e89]:
+              - link "주문내역" [ref=f6e90] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f6e91]:
+              - link "찜 목록" [ref=f6e92] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f6e93]
+      - paragraph [ref=f6e94]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f6e100] [cursor=pointer]

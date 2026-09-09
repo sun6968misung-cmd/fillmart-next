@@ -1,0 +1,727 @@
+- generic [active] [ref=f3e1]:
+  - banner [ref=f3e2]:
+    - generic [ref=f3e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f3e5]:
+      - link "필마트 필마트" [ref=f3e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f3e7]
+        - generic [ref=f3e8]: 필마트
+      - generic [ref=f3e9]:
+        - textbox "상품을 검색해보세요!" [ref=f3e10]
+        - button [ref=f3e11]
+      - generic [ref=f3e15]:
+        - link "로그인" [ref=f3e16] [cursor=pointer]:
+          - /url: /auth
+        - link "나의 찜" [ref=f3e21] [cursor=pointer]:
+          - /url: /wishlist
+        - link "장바구니" [ref=f3e26] [cursor=pointer]:
+          - /url: /cart
+    - generic [ref=f3e35]:
+      - generic [ref=f3e36]:
+        - button "카테고리" [ref=f3e37]
+        - navigation [ref=f3e39]:
+          - link "홈" [ref=f3e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f3e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f3e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f3e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f3e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f3e45]:
+        - link "로그인" [ref=f3e46] [cursor=pointer]:
+          - /url: /auth
+        - link "회원가입" [ref=f3e47] [cursor=pointer]:
+          - /url: /auth
+        - link "고객센터" [ref=f3e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f3e49]:
+    - generic [ref=f3e50]:
+      - generic [ref=f3e51]:
+        - link "🎉 첫 구매 혜택 — 첫 주문 고객에게 5,000원 쿠폰 증정 🎉 첫 구매 혜택 첫 주문 고객에게 5,000원 쿠폰 증정 필마트 가입 후 첫 구매 시 자동 적용 쿠폰 받기 →" [ref=f3e52] [cursor=pointer]:
+          - /url: /auth
+          - img "🎉 첫 구매 혜택 — 첫 주문 고객에게 5,000원 쿠폰 증정"
+          - generic [ref=f3e53]:
+            - generic [ref=f3e54]: 🎉 첫 구매 혜택
+            - heading "첫 주문 고객에게 5,000원 쿠폰 증정" [level=2] [ref=f3e55]
+            - paragraph [ref=f3e56]: 필마트 가입 후 첫 구매 시 자동 적용
+            - generic [ref=f3e57]: 쿠폰 받기 →
+        - link "🥬 이번주특가 — 신선한 야채·과일을 농가에서 직송 🥬 이번주특가 신선한 야채·과일을 농가에서 직송 산지 직거래로 더 신선하게, 더 저렴하게 특가 보기 →" [ref=f3e58] [cursor=pointer]:
+          - /url: /category/vegetables
+          - img "🥬 이번주특가 — 신선한 야채·과일을 농가에서 직송"
+          - generic [ref=f3e59]:
+            - generic [ref=f3e60]: 🥬 이번주특가
+            - heading "신선한 야채·과일을 농가에서 직송" [level=2] [ref=f3e61]
+            - paragraph [ref=f3e62]: 산지 직거래로 더 신선하게, 더 저렴하게
+            - generic [ref=f3e63]: 특가 보기 →
+        - link "🌶️ 양념/소스 특가 — 가게·업소용 소스·양념 한정 할인 🌶️ 양념/소스 특가 가게·업소용 소스·양념 한정 할인 고추장·된장·간장부터 업소용 대용량까지 지금 보기 →" [ref=f3e64] [cursor=pointer]:
+          - /url: /category/sauce
+          - img "🌶️ 양념/소스 특가 — 가게·업소용 소스·양념 한정 할인"
+          - generic [ref=f3e65]:
+            - generic [ref=f3e66]: 🌶️ 양념/소스 특가
+            - heading "가게·업소용 소스·양념 한정 할인" [level=2] [ref=f3e67]
+            - paragraph [ref=f3e68]: 고추장·된장·간장부터 업소용 대용량까지
+            - generic [ref=f3e69]: 지금 보기 →
+        - link "🥩 축산/계란 — 국내산 한우·삼겹살 당일 직송 🥩 축산/계란 국내산 한우·삼겹살 당일 직송 냉장 상태 그대로 오늘 주문, 오늘 배송 축산물 보기 →" [ref=f3e70] [cursor=pointer]:
+          - /url: /category/meat
+          - img "🥩 축산/계란 — 국내산 한우·삼겹살 당일 직송"
+          - generic [ref=f3e71]:
+            - generic [ref=f3e72]: 🥩 축산/계란
+            - heading "국내산 한우·삼겹살 당일 직송" [level=2] [ref=f3e73]
+            - paragraph [ref=f3e74]: 냉장 상태 그대로 오늘 주문, 오늘 배송
+            - generic [ref=f3e75]: 축산물 보기 →
+        - link "🐟 수산/건어물 — 싱싱한 수산물 산지 당일 직송 🐟 수산/건어물 싱싱한 수산물 산지 당일 직송 오전 주문 시 당일 오후 배송 보장 수산물 보기 →" [ref=f3e76] [cursor=pointer]:
+          - /url: /category/seafood
+          - img "🐟 수산/건어물 — 싱싱한 수산물 산지 당일 직송"
+          - generic [ref=f3e77]:
+            - generic [ref=f3e78]: 🐟 수산/건어물
+            - heading "싱싱한 수산물 산지 당일 직송" [level=2] [ref=f3e79]
+            - paragraph [ref=f3e80]: 오전 주문 시 당일 오후 배송 보장
+            - generic [ref=f3e81]: 수산물 보기 →
+        - link "🌾 쌀/잡곡 — 햇쌀·잡곡 대용량 특가 🌾 쌀/잡곡 햇쌀·잡곡 대용량 특가 충남 당진 농협 직송 햇쌀, 지금 특가 중 쌀/잡곡 보기 →" [ref=f3e82] [cursor=pointer]:
+          - /url: /category/grain
+          - img "🌾 쌀/잡곡 — 햇쌀·잡곡 대용량 특가"
+          - generic [ref=f3e83]:
+            - generic [ref=f3e84]: 🌾 쌀/잡곡
+            - heading "햇쌀·잡곡 대용량 특가" [level=2] [ref=f3e85]
+            - paragraph [ref=f3e86]: 충남 당진 농협 직송 햇쌀, 지금 특가 중
+            - generic [ref=f3e87]: 쌀/잡곡 보기 →
+        - link "🎉 첫 구매 혜택 — 첫 주문 고객에게 5,000원 쿠폰 증정 🎉 첫 구매 혜택 첫 주문 고객에게 5,000원 쿠폰 증정 필마트 가입 후 첫 구매 시 자동 적용 쿠폰 받기 →" [ref=f3e88] [cursor=pointer]:
+          - /url: /auth
+          - img "🎉 첫 구매 혜택 — 첫 주문 고객에게 5,000원 쿠폰 증정"
+          - generic [ref=f3e89]:
+            - generic [ref=f3e90]: 🎉 첫 구매 혜택
+            - heading "첫 주문 고객에게 5,000원 쿠폰 증정" [level=2] [ref=f3e91]
+            - paragraph [ref=f3e92]: 필마트 가입 후 첫 구매 시 자동 적용
+            - generic [ref=f3e93]: 쿠폰 받기 →
+        - link "🥬 이번주특가 — 신선한 야채·과일을 농가에서 직송 🥬 이번주특가 신선한 야채·과일을 농가에서 직송 산지 직거래로 더 신선하게, 더 저렴하게 특가 보기 →" [ref=f3e94] [cursor=pointer]:
+          - /url: /category/vegetables
+          - img "🥬 이번주특가 — 신선한 야채·과일을 농가에서 직송"
+          - generic [ref=f3e95]:
+            - generic [ref=f3e96]: 🥬 이번주특가
+            - heading "신선한 야채·과일을 농가에서 직송" [level=2] [ref=f3e97]
+            - paragraph [ref=f3e98]: 산지 직거래로 더 신선하게, 더 저렴하게
+            - generic [ref=f3e99]: 특가 보기 →
+      - button "이전" [ref=f3e100]
+      - button "다음" [ref=f3e103]
+      - generic [ref=f3e106]:
+        - button "정지" [ref=f3e107]
+        - generic [ref=f3e111]: 1/6
+        - link "더보기" [ref=f3e112] [cursor=pointer]:
+          - /url: /?cat=이번주특가
+      - generic [ref=f3e118]:
+        - button "슬라이드 1" [ref=f3e119]
+        - button "슬라이드 2" [ref=f3e121]
+        - button "슬라이드 3" [ref=f3e123]
+        - button "슬라이드 4" [ref=f3e125]
+        - button "슬라이드 5" [ref=f3e127]
+        - button "슬라이드 6" [ref=f3e129]
+    - generic [ref=f3e133]:
+      - generic [ref=f3e134]:
+        - generic [ref=f3e135]:
+          - generic [ref=f3e136]:
+            - heading "이번주특가" [level=2] [ref=f3e137]
+            - generic [ref=f3e138]: SALE
+          - link "더보기" [ref=f3e139] [cursor=pointer]:
+            - /url: /?cat=%EC%9D%B4%EB%B2%88%EC%A3%BC%ED%8A%B9%EA%B0%80
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e140]: →
+        - generic [ref=f3e141]:
+          - generic [ref=f3e142]:
+            - generic [ref=f3e143]:
+              - link "국내산 삼겹살 500g 29%" [ref=f3e144] [cursor=pointer]:
+                - /url: /product/sale1
+                - img "국내산 삼겹살 500g" [ref=f3e145]
+                - generic [ref=f3e146]: 29%
+              - button [ref=f3e147]
+              - button "담기" [ref=f3e151]
+            - link "국내산 삼겹살 500g 500g · 국내산 (경북) 29% 13,900원 9,900원" [ref=f3e157] [cursor=pointer]:
+              - /url: /product/sale1
+              - paragraph [ref=f3e158]: 국내산 삼겹살 500g
+              - paragraph [ref=f3e159]: 500g · 국내산 (경북)
+              - generic [ref=f3e160]:
+                - generic [ref=f3e161]: 29%
+                - generic [ref=f3e162]: 13,900원
+              - paragraph [ref=f3e163]: 9,900원
+          - generic [ref=f3e164]:
+            - generic [ref=f3e165]:
+              - link "양파 3kg 34%" [ref=f3e166] [cursor=pointer]:
+                - /url: /product/sale2
+                - img "양파 3kg" [ref=f3e167]
+                - generic [ref=f3e168]: 34%
+              - button [ref=f3e169]
+              - button "담기" [ref=f3e173]
+            - link "양파 3kg 3kg · 국산 34% 5,900원 3,900원" [ref=f3e179] [cursor=pointer]:
+              - /url: /product/sale2
+              - paragraph [ref=f3e180]: 양파 3kg
+              - paragraph [ref=f3e181]: 3kg · 국산
+              - generic [ref=f3e182]:
+                - generic [ref=f3e183]: 34%
+                - generic [ref=f3e184]: 5,900원
+              - paragraph [ref=f3e185]: 3,900원
+          - generic [ref=f3e186]:
+            - generic [ref=f3e187]:
+              - link "계란 30구 특란 18%" [ref=f3e188] [cursor=pointer]:
+                - /url: /product/sale3
+                - img "계란 30구 특란" [ref=f3e189]
+                - generic [ref=f3e190]: 18%
+              - button [ref=f3e191]
+              - button "담기" [ref=f3e195]
+            - link "계란 30구 특란 30구 · 국내산 18% 10,900원 8,900원" [ref=f3e201] [cursor=pointer]:
+              - /url: /product/sale3
+              - paragraph [ref=f3e202]: 계란 30구 특란
+              - paragraph [ref=f3e203]: 30구 · 국내산
+              - generic [ref=f3e204]:
+                - generic [ref=f3e205]: 18%
+                - generic [ref=f3e206]: 10,900원
+              - paragraph [ref=f3e207]: 8,900원
+          - generic [ref=f3e208]:
+            - generic [ref=f3e209]:
+              - link "닭가슴살 1kg 25%" [ref=f3e210] [cursor=pointer]:
+                - /url: /product/sale4
+                - img "닭가슴살 1kg" [ref=f3e211]
+                - generic [ref=f3e212]: 25%
+              - button [ref=f3e213]
+              - button "담기" [ref=f3e217]
+            - link "닭가슴살 1kg 1kg · 국내산 25% 10,500원 7,900원" [ref=f3e223] [cursor=pointer]:
+              - /url: /product/sale4
+              - paragraph [ref=f3e224]: 닭가슴살 1kg
+              - paragraph [ref=f3e225]: 1kg · 국내산
+              - generic [ref=f3e226]:
+                - generic [ref=f3e227]: 25%
+                - generic [ref=f3e228]: 10,500원
+              - paragraph [ref=f3e229]: 7,900원
+          - generic [ref=f3e230]:
+            - generic [ref=f3e231]:
+              - link "고등어 2마리 25%" [ref=f3e232] [cursor=pointer]:
+                - /url: /product/sale5
+                - img "고등어 2마리" [ref=f3e233]
+                - generic [ref=f3e234]: 25%
+              - button [ref=f3e235]
+              - button "담기" [ref=f3e239]
+            - link "고등어 2마리 2마리 · 국산 25% 7,900원 5,900원" [ref=f3e245] [cursor=pointer]:
+              - /url: /product/sale5
+              - paragraph [ref=f3e246]: 고등어 2마리
+              - paragraph [ref=f3e247]: 2마리 · 국산
+              - generic [ref=f3e248]:
+                - generic [ref=f3e249]: 25%
+                - generic [ref=f3e250]: 7,900원
+              - paragraph [ref=f3e251]: 5,900원
+          - generic [ref=f3e252]:
+            - generic [ref=f3e253]:
+              - link "국산 두부 2개입 26%" [ref=f3e254] [cursor=pointer]:
+                - /url: /product/sale6
+                - img "국산 두부 2개입" [ref=f3e255]
+                - generic [ref=f3e256]: 26%
+              - button [ref=f3e257]
+              - button "담기" [ref=f3e261]
+            - link "국산 두부 2개입 2모 · 국산콩 26% 3,900원 2,900원" [ref=f3e267] [cursor=pointer]:
+              - /url: /product/sale6
+              - paragraph [ref=f3e268]: 국산 두부 2개입
+              - paragraph [ref=f3e269]: 2모 · 국산콩
+              - generic [ref=f3e270]:
+                - generic [ref=f3e271]: 26%
+                - generic [ref=f3e272]: 3,900원
+              - paragraph [ref=f3e273]: 2,900원
+      - generic [ref=f3e274]:
+        - generic [ref=f3e275]:
+          - heading "야채/채소" [level=2] [ref=f3e277]
+          - link "더보기" [ref=f3e278] [cursor=pointer]:
+            - /url: /?cat=%EC%95%BC%EC%B1%84%2F%EC%B1%84%EC%86%8C
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e279]: →
+        - generic [ref=f3e280]:
+          - generic [ref=f3e281]:
+            - generic [ref=f3e282]:
+              - link "양파 3kg 34%" [ref=f3e283] [cursor=pointer]:
+                - /url: /product/sale2
+                - img "양파 3kg" [ref=f3e284]
+                - generic [ref=f3e285]: 34%
+              - button [ref=f3e286]
+              - button "담기" [ref=f3e290]
+            - link "양파 3kg 3kg · 국산 34% 5,900원 3,900원" [ref=f3e296] [cursor=pointer]:
+              - /url: /product/sale2
+              - paragraph [ref=f3e297]: 양파 3kg
+              - paragraph [ref=f3e298]: 3kg · 국산
+              - generic [ref=f3e299]:
+                - generic [ref=f3e300]: 34%
+                - generic [ref=f3e301]: 5,900원
+              - paragraph [ref=f3e302]: 3,900원
+          - generic [ref=f3e303]:
+            - generic [ref=f3e304]:
+              - link "양배추 1통 22%" [ref=f3e305] [cursor=pointer]:
+                - /url: /product/veg1
+                - img "양배추 1통" [ref=f3e306]
+                - generic [ref=f3e307]: 22%
+              - button [ref=f3e308]
+              - button "담기" [ref=f3e312]
+            - link "양배추 1통 1통 · 국산 22% 4,500원 3,500원" [ref=f3e318] [cursor=pointer]:
+              - /url: /product/veg1
+              - paragraph [ref=f3e319]: 양배추 1통
+              - paragraph [ref=f3e320]: 1통 · 국산
+              - generic [ref=f3e321]:
+                - generic [ref=f3e322]: 22%
+                - generic [ref=f3e323]: 4,500원
+              - paragraph [ref=f3e324]: 3,500원
+          - generic [ref=f3e325]:
+            - generic [ref=f3e326]:
+              - link "대파 1단 24%" [ref=f3e327] [cursor=pointer]:
+                - /url: /product/veg2
+                - img "대파 1단" [ref=f3e328]
+                - generic [ref=f3e329]: 24%
+              - button [ref=f3e330]
+              - button "담기" [ref=f3e334]
+            - link "대파 1단 1단 · 국산 24% 2,500원 1,900원" [ref=f3e340] [cursor=pointer]:
+              - /url: /product/veg2
+              - paragraph [ref=f3e341]: 대파 1단
+              - paragraph [ref=f3e342]: 1단 · 국산
+              - generic [ref=f3e343]:
+                - generic [ref=f3e344]: 24%
+                - generic [ref=f3e345]: 2,500원
+              - paragraph [ref=f3e346]: 1,900원
+          - generic [ref=f3e347]:
+            - generic [ref=f3e348]:
+              - link "햇감자 2.5kg 25%" [ref=f3e349] [cursor=pointer]:
+                - /url: /product/veg3
+                - img "햇감자 2.5kg" [ref=f3e350]
+                - generic [ref=f3e351]: 25%
+              - button [ref=f3e352]
+              - button "담기" [ref=f3e356]
+            - link "햇감자 2.5kg 2.5kg · 국산 25% 7,900원 5,900원" [ref=f3e362] [cursor=pointer]:
+              - /url: /product/veg3
+              - paragraph [ref=f3e363]: 햇감자 2.5kg
+              - paragraph [ref=f3e364]: 2.5kg · 국산
+              - generic [ref=f3e365]:
+                - generic [ref=f3e366]: 25%
+                - generic [ref=f3e367]: 7,900원
+              - paragraph [ref=f3e368]: 5,900원
+          - generic [ref=f3e369]:
+            - generic [ref=f3e370]:
+              - link "당근 1kg 26%" [ref=f3e371] [cursor=pointer]:
+                - /url: /product/veg4
+                - img "당근 1kg" [ref=f3e372]
+                - generic [ref=f3e373]: 26%
+              - button [ref=f3e374]
+              - button "담기" [ref=f3e378]
+            - link "당근 1kg 1kg · 국산 26% 3,900원 2,900원" [ref=f3e384] [cursor=pointer]:
+              - /url: /product/veg4
+              - paragraph [ref=f3e385]: 당근 1kg
+              - paragraph [ref=f3e386]: 1kg · 국산
+              - generic [ref=f3e387]:
+                - generic [ref=f3e388]: 26%
+                - generic [ref=f3e389]: 3,900원
+              - paragraph [ref=f3e390]: 2,900원
+          - generic [ref=f3e391]:
+            - generic [ref=f3e392]:
+              - link "방울토마토 1kg 29%" [ref=f3e393] [cursor=pointer]:
+                - /url: /product/veg8
+                - img "방울토마토 1kg" [ref=f3e394]
+                - generic [ref=f3e395]: 29%
+              - button [ref=f3e396]
+              - button "담기" [ref=f3e400]
+            - link "방울토마토 1kg 1kg · 국내산 29% 6,900원 4,900원" [ref=f3e406] [cursor=pointer]:
+              - /url: /product/veg8
+              - paragraph [ref=f3e407]: 방울토마토 1kg
+              - paragraph [ref=f3e408]: 1kg · 국내산
+              - generic [ref=f3e409]:
+                - generic [ref=f3e410]: 29%
+                - generic [ref=f3e411]: 6,900원
+              - paragraph [ref=f3e412]: 4,900원
+          - generic [ref=f3e413]:
+            - generic [ref=f3e414]:
+              - link "시금치 300g 34%" [ref=f3e415] [cursor=pointer]:
+                - /url: /product/veg9
+                - img "시금치 300g" [ref=f3e416]
+                - generic [ref=f3e417]: 34%
+              - button [ref=f3e418]
+              - button "담기" [ref=f3e422]
+            - link "시금치 300g 300g · 국산 34% 2,900원 1,900원" [ref=f3e428] [cursor=pointer]:
+              - /url: /product/veg9
+              - paragraph [ref=f3e429]: 시금치 300g
+              - paragraph [ref=f3e430]: 300g · 국산
+              - generic [ref=f3e431]:
+                - generic [ref=f3e432]: 34%
+                - generic [ref=f3e433]: 2,900원
+              - paragraph [ref=f3e434]: 1,900원
+      - generic [ref=f3e435]:
+        - generic [ref=f3e436]:
+          - heading "과일" [level=2] [ref=f3e438]
+          - link "더보기" [ref=f3e439] [cursor=pointer]:
+            - /url: /?cat=%EA%B3%BC%EC%9D%BC
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e440]: →
+        - generic [ref=f3e441]:
+          - generic [ref=f3e442]:
+            - generic [ref=f3e443]:
+              - link "수박 (소) 1통 24%" [ref=f3e444] [cursor=pointer]:
+                - /url: /product/veg5
+                - img "수박 (소) 1통" [ref=f3e445]
+                - generic [ref=f3e446]: 24%
+              - button [ref=f3e447]
+              - button "담기" [ref=f3e451]
+            - link "수박 (소) 1통 1통 · 국내산 24% 16,900원 12,900원" [ref=f3e457] [cursor=pointer]:
+              - /url: /product/veg5
+              - paragraph [ref=f3e458]: 수박 (소) 1통
+              - paragraph [ref=f3e459]: 1통 · 국내산
+              - generic [ref=f3e460]:
+                - generic [ref=f3e461]: 24%
+                - generic [ref=f3e462]: 16,900원
+              - paragraph [ref=f3e463]: 12,900원
+          - generic [ref=f3e464]:
+            - generic [ref=f3e465]:
+              - link "복숭아 1.5kg 25%" [ref=f3e466] [cursor=pointer]:
+                - /url: /product/veg6
+                - img "복숭아 1.5kg" [ref=f3e467]
+                - generic [ref=f3e468]: 25%
+              - button [ref=f3e469]
+              - button "담기" [ref=f3e473]
+            - link "복숭아 1.5kg 1.5kg · 국내산 25% 11,900원 8,900원" [ref=f3e479] [cursor=pointer]:
+              - /url: /product/veg6
+              - paragraph [ref=f3e480]: 복숭아 1.5kg
+              - paragraph [ref=f3e481]: 1.5kg · 국내산
+              - generic [ref=f3e482]:
+                - generic [ref=f3e483]: 25%
+                - generic [ref=f3e484]: 11,900원
+              - paragraph [ref=f3e485]: 8,900원
+          - generic [ref=f3e486]:
+            - generic [ref=f3e487]:
+              - link "포도 2kg 29%" [ref=f3e488] [cursor=pointer]:
+                - /url: /product/veg7
+                - img "포도 2kg" [ref=f3e489]
+                - generic [ref=f3e490]: 29%
+              - button [ref=f3e491]
+              - button "담기" [ref=f3e495]
+            - link "포도 2kg 2kg · 국내산 29% 13,900원 9,900원" [ref=f3e501] [cursor=pointer]:
+              - /url: /product/veg7
+              - paragraph [ref=f3e502]: 포도 2kg
+              - paragraph [ref=f3e503]: 2kg · 국내산
+              - generic [ref=f3e504]:
+                - generic [ref=f3e505]: 29%
+                - generic [ref=f3e506]: 13,900원
+              - paragraph [ref=f3e507]: 9,900원
+          - generic [ref=f3e508]:
+            - generic [ref=f3e509]:
+              - link "사과 5개입 22%" [ref=f3e510] [cursor=pointer]:
+                - /url: /product/fruit1
+                - img "사과 5개입" [ref=f3e511]
+                - generic [ref=f3e512]: 22%
+              - button [ref=f3e513]
+              - button "담기" [ref=f3e517]
+            - link "사과 5개입 5개 · 국내산 (경북) 22% 8,900원 6,900원" [ref=f3e523] [cursor=pointer]:
+              - /url: /product/fruit1
+              - paragraph [ref=f3e524]: 사과 5개입
+              - paragraph [ref=f3e525]: 5개 · 국내산 (경북)
+              - generic [ref=f3e526]:
+                - generic [ref=f3e527]: 22%
+                - generic [ref=f3e528]: 8,900원
+              - paragraph [ref=f3e529]: 6,900원
+          - generic [ref=f3e530]:
+            - generic [ref=f3e531]:
+              - link "딸기 500g 20%" [ref=f3e532] [cursor=pointer]:
+                - /url: /product/fruit2
+                - img "딸기 500g" [ref=f3e533]
+                - generic [ref=f3e534]: 20%
+              - button [ref=f3e535]
+              - button "담기" [ref=f3e539]
+            - link "딸기 500g 500g · 국내산 20% 9,900원 7,900원" [ref=f3e545] [cursor=pointer]:
+              - /url: /product/fruit2
+              - paragraph [ref=f3e546]: 딸기 500g
+              - paragraph [ref=f3e547]: 500g · 국내산
+              - generic [ref=f3e548]:
+                - generic [ref=f3e549]: 20%
+                - generic [ref=f3e550]: 9,900원
+              - paragraph [ref=f3e551]: 7,900원
+      - generic [ref=f3e552]:
+        - generic [ref=f3e553]:
+          - heading "축산/계란" [level=2] [ref=f3e555]
+          - link "더보기" [ref=f3e556] [cursor=pointer]:
+            - /url: /?cat=%EC%B6%95%EC%82%B0%2F%EA%B3%84%EB%9E%80
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e557]: →
+        - generic [ref=f3e558]:
+          - generic [ref=f3e559]:
+            - generic [ref=f3e560]:
+              - link "국내산 삼겹살 500g 29%" [ref=f3e561] [cursor=pointer]:
+                - /url: /product/sale1
+                - img "국내산 삼겹살 500g" [ref=f3e562]
+                - generic [ref=f3e563]: 29%
+              - button [ref=f3e564]
+              - button "담기" [ref=f3e568]
+            - link "국내산 삼겹살 500g 500g · 국내산 (경북) 29% 13,900원 9,900원" [ref=f3e574] [cursor=pointer]:
+              - /url: /product/sale1
+              - paragraph [ref=f3e575]: 국내산 삼겹살 500g
+              - paragraph [ref=f3e576]: 500g · 국내산 (경북)
+              - generic [ref=f3e577]:
+                - generic [ref=f3e578]: 29%
+                - generic [ref=f3e579]: 13,900원
+              - paragraph [ref=f3e580]: 9,900원
+          - generic [ref=f3e581]:
+            - generic [ref=f3e582]:
+              - link "계란 30구 특란 18%" [ref=f3e583] [cursor=pointer]:
+                - /url: /product/sale3
+                - img "계란 30구 특란" [ref=f3e584]
+                - generic [ref=f3e585]: 18%
+              - button [ref=f3e586]
+              - button "담기" [ref=f3e590]
+            - link "계란 30구 특란 30구 · 국내산 18% 10,900원 8,900원" [ref=f3e596] [cursor=pointer]:
+              - /url: /product/sale3
+              - paragraph [ref=f3e597]: 계란 30구 특란
+              - paragraph [ref=f3e598]: 30구 · 국내산
+              - generic [ref=f3e599]:
+                - generic [ref=f3e600]: 18%
+                - generic [ref=f3e601]: 10,900원
+              - paragraph [ref=f3e602]: 8,900원
+          - generic [ref=f3e603]:
+            - generic [ref=f3e604]:
+              - link "닭가슴살 1kg 25%" [ref=f3e605] [cursor=pointer]:
+                - /url: /product/sale4
+                - img "닭가슴살 1kg" [ref=f3e606]
+                - generic [ref=f3e607]: 25%
+              - button [ref=f3e608]
+              - button "담기" [ref=f3e612]
+            - link "닭가슴살 1kg 1kg · 국내산 25% 10,500원 7,900원" [ref=f3e618] [cursor=pointer]:
+              - /url: /product/sale4
+              - paragraph [ref=f3e619]: 닭가슴살 1kg
+              - paragraph [ref=f3e620]: 1kg · 국내산
+              - generic [ref=f3e621]:
+                - generic [ref=f3e622]: 25%
+                - generic [ref=f3e623]: 10,500원
+              - paragraph [ref=f3e624]: 7,900원
+          - generic [ref=f3e625]:
+            - generic [ref=f3e626]:
+              - link "한우 불고기 300g 23%" [ref=f3e627] [cursor=pointer]:
+                - /url: /product/meat1
+                - img "한우 불고기 300g" [ref=f3e628]
+                - generic [ref=f3e629]: 23%
+              - button [ref=f3e630]
+              - button "담기" [ref=f3e634]
+            - link "한우 불고기 300g 300g · 국내산 (1등급↑) 23% 21,900원 16,900원" [ref=f3e640] [cursor=pointer]:
+              - /url: /product/meat1
+              - paragraph [ref=f3e641]: 한우 불고기 300g
+              - paragraph [ref=f3e642]: 300g · 국내산 (1등급↑)
+              - generic [ref=f3e643]:
+                - generic [ref=f3e644]: 23%
+                - generic [ref=f3e645]: 21,900원
+              - paragraph [ref=f3e646]: 16,900원
+          - generic [ref=f3e647]:
+            - generic [ref=f3e648]:
+              - link "돼지 목살 500g 20%" [ref=f3e649] [cursor=pointer]:
+                - /url: /product/meat2
+                - img "돼지 목살 500g" [ref=f3e650]
+                - generic [ref=f3e651]: 20%
+              - button [ref=f3e652]
+              - button "담기" [ref=f3e656]
+            - link "돼지 목살 500g 500g · 국내산 20% 9,900원 7,900원" [ref=f3e662] [cursor=pointer]:
+              - /url: /product/meat2
+              - paragraph [ref=f3e663]: 돼지 목살 500g
+              - paragraph [ref=f3e664]: 500g · 국내산
+              - generic [ref=f3e665]:
+                - generic [ref=f3e666]: 20%
+                - generic [ref=f3e667]: 9,900원
+              - paragraph [ref=f3e668]: 7,900원
+          - generic [ref=f3e669]:
+            - generic [ref=f3e670]:
+              - link "닭볶음탕용 1kg 22%" [ref=f3e671] [cursor=pointer]:
+                - /url: /product/meat3
+                - img "닭볶음탕용 1kg" [ref=f3e672]
+                - generic [ref=f3e673]: 22%
+              - button [ref=f3e674]
+              - button "담기" [ref=f3e678]
+            - link "닭볶음탕용 1kg 1kg · 국내산 22% 8,900원 6,900원" [ref=f3e684] [cursor=pointer]:
+              - /url: /product/meat3
+              - paragraph [ref=f3e685]: 닭볶음탕용 1kg
+              - paragraph [ref=f3e686]: 1kg · 국내산
+              - generic [ref=f3e687]:
+                - generic [ref=f3e688]: 22%
+                - generic [ref=f3e689]: 8,900원
+              - paragraph [ref=f3e690]: 6,900원
+          - generic [ref=f3e691]:
+            - generic [ref=f3e692]:
+              - link "오리 훈제 슬라이스 200g 21%" [ref=f3e693] [cursor=pointer]:
+                - /url: /product/meat4
+                - img "오리 훈제 슬라이스 200g" [ref=f3e694]
+                - generic [ref=f3e695]: 21%
+              - button [ref=f3e696]
+              - button "담기" [ref=f3e700]
+            - link "오리 훈제 슬라이스 200g 200g · 국내산 21% 7,500원 5,900원" [ref=f3e706] [cursor=pointer]:
+              - /url: /product/meat4
+              - paragraph [ref=f3e707]: 오리 훈제 슬라이스 200g
+              - paragraph [ref=f3e708]: 200g · 국내산
+              - generic [ref=f3e709]:
+                - generic [ref=f3e710]: 21%
+                - generic [ref=f3e711]: 7,500원
+              - paragraph [ref=f3e712]: 5,900원
+      - generic [ref=f3e713]:
+        - generic [ref=f3e714]:
+          - heading "대용량 농산물" [level=2] [ref=f3e716]
+          - link "더보기" [ref=f3e717] [cursor=pointer]:
+            - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EB%86%8D%EC%82%B0%EB%AC%BC
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e718]: →
+        - generic [ref=f3e719]:
+          - generic [ref=f3e720]:
+            - generic [ref=f3e721]:
+              - link "양파 10kg 32%" [ref=f3e722] [cursor=pointer]:
+                - /url: /product/bulk1
+                - img "양파 10kg" [ref=f3e723]
+                - generic [ref=f3e724]: 32%
+              - button [ref=f3e725]
+              - button "담기" [ref=f3e729]
+            - link "양파 10kg 10kg · 국산 32% 18,900원 12,900원" [ref=f3e735] [cursor=pointer]:
+              - /url: /product/bulk1
+              - paragraph [ref=f3e736]: 양파 10kg
+              - paragraph [ref=f3e737]: 10kg · 국산
+              - generic [ref=f3e738]:
+                - generic [ref=f3e739]: 32%
+                - generic [ref=f3e740]: 18,900원
+              - paragraph [ref=f3e741]: 12,900원
+          - generic [ref=f3e742]:
+            - generic [ref=f3e743]:
+              - link "감자 10kg 26%" [ref=f3e744] [cursor=pointer]:
+                - /url: /product/bulk2
+                - img "감자 10kg" [ref=f3e745]
+                - generic [ref=f3e746]: 26%
+              - button [ref=f3e747]
+              - button "담기" [ref=f3e751]
+            - link "감자 10kg 10kg · 국산 26% 26,900원 19,900원" [ref=f3e757] [cursor=pointer]:
+              - /url: /product/bulk2
+              - paragraph [ref=f3e758]: 감자 10kg
+              - paragraph [ref=f3e759]: 10kg · 국산
+              - generic [ref=f3e760]:
+                - generic [ref=f3e761]: 26%
+                - generic [ref=f3e762]: 26,900원
+              - paragraph [ref=f3e763]: 19,900원
+      - generic [ref=f3e764]:
+        - generic [ref=f3e765]:
+          - heading "대용량 축산물" [level=2] [ref=f3e767]
+          - link "더보기" [ref=f3e768] [cursor=pointer]:
+            - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%B6%95%EC%82%B0%EB%AC%BC
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e769]: →
+        - generic [ref=f3e770]:
+          - generic [ref=f3e771]:
+            - generic [ref=f3e772]:
+              - link "삼겹살 2kg 23%" [ref=f3e773] [cursor=pointer]:
+                - /url: /product/bulk3
+                - img "삼겹살 2kg" [ref=f3e774]
+                - generic [ref=f3e775]: 23%
+              - button [ref=f3e776]
+              - button "담기" [ref=f3e780]
+            - link "삼겹살 2kg 2kg · 국내산 23% 42,900원 32,900원" [ref=f3e786] [cursor=pointer]:
+              - /url: /product/bulk3
+              - paragraph [ref=f3e787]: 삼겹살 2kg
+              - paragraph [ref=f3e788]: 2kg · 국내산
+              - generic [ref=f3e789]:
+                - generic [ref=f3e790]: 23%
+                - generic [ref=f3e791]: 42,900원
+              - paragraph [ref=f3e792]: 32,900원
+          - generic [ref=f3e793]:
+            - generic [ref=f3e794]:
+              - link "닭가슴살 3kg 26%" [ref=f3e795] [cursor=pointer]:
+                - /url: /product/bulk4
+                - img "닭가슴살 3kg" [ref=f3e796]
+                - generic [ref=f3e797]: 26%
+              - button [ref=f3e798]
+              - button "담기" [ref=f3e802]
+            - link "닭가슴살 3kg 3kg · 국내산 26% 26,900원 19,900원" [ref=f3e808] [cursor=pointer]:
+              - /url: /product/bulk4
+              - paragraph [ref=f3e809]: 닭가슴살 3kg
+              - paragraph [ref=f3e810]: 3kg · 국내산
+              - generic [ref=f3e811]:
+                - generic [ref=f3e812]: 26%
+                - generic [ref=f3e813]: 26,900원
+              - paragraph [ref=f3e814]: 19,900원
+      - generic [ref=f3e815]:
+        - generic [ref=f3e816]:
+          - heading "대용량 장류/양념" [level=2] [ref=f3e818]
+          - link "더보기" [ref=f3e819] [cursor=pointer]:
+            - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%9E%A5%EB%A5%98%2F%EC%96%91%EB%85%90
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e820]: →
+        - generic [ref=f3e822]:
+          - generic [ref=f3e823]:
+            - link "고추장 3kg 24%" [ref=f3e824] [cursor=pointer]:
+              - /url: /product/bulk6
+              - img "고추장 3kg" [ref=f3e825]
+              - generic [ref=f3e826]: 24%
+            - button [ref=f3e827]
+            - button "담기" [ref=f3e831]
+          - link "고추장 3kg 3kg · 국내산 24% 24,900원 18,900원" [ref=f3e837] [cursor=pointer]:
+            - /url: /product/bulk6
+            - paragraph [ref=f3e838]: 고추장 3kg
+            - paragraph [ref=f3e839]: 3kg · 국내산
+            - generic [ref=f3e840]:
+              - generic [ref=f3e841]: 24%
+              - generic [ref=f3e842]: 24,900원
+            - paragraph [ref=f3e843]: 18,900원
+      - generic [ref=f3e844]:
+        - generic [ref=f3e845]:
+          - heading "대용량 가공식품" [level=2] [ref=f3e847]
+          - link "더보기" [ref=f3e848] [cursor=pointer]:
+            - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EA%B0%80%EA%B3%B5%EC%8B%9D%ED%92%88
+            - text: 더보기
+            - generic [aria-hidden] [ref=f3e849]: →
+        - generic [ref=f3e851]:
+          - generic [ref=f3e852]:
+            - link "라면 30개입 박스 24%" [ref=f3e853] [cursor=pointer]:
+              - /url: /product/bulk8
+              - img "라면 30개입 박스" [ref=f3e854]
+              - generic [ref=f3e855]: 24%
+            - button [ref=f3e856]
+            - button "담기" [ref=f3e860]
+          - link "라면 30개입 박스 30개 · 국내산 24% 32,900원 24,900원" [ref=f3e866] [cursor=pointer]:
+            - /url: /product/bulk8
+            - paragraph [ref=f3e867]: 라면 30개입 박스
+            - paragraph [ref=f3e868]: 30개 · 국내산
+            - generic [ref=f3e869]:
+              - generic [ref=f3e870]: 24%
+              - generic [ref=f3e871]: 32,900원
+            - paragraph [ref=f3e872]: 24,900원
+  - contentinfo [ref=f3e873]:
+    - generic [ref=f3e874]:
+      - generic [ref=f3e875]:
+        - generic [ref=f3e876]:
+          - heading "필마트" [level=3] [ref=f3e877]
+          - generic [ref=f3e878]:
+            - paragraph [ref=f3e879]: 대구광역시 달성군 다사읍 달구벌대로 858
+            - paragraph [ref=f3e880]:
+              - link "053-593-8253" [ref=f3e881] [cursor=pointer]:
+                - /url: tel:0535938253
+            - paragraph [ref=f3e882]: 매일 08:00~22:00
+        - generic [ref=f3e883]:
+          - heading "고객지원" [level=3] [ref=f3e884]
+          - list [ref=f3e885]:
+            - listitem [ref=f3e886]:
+              - link "공지사항" [ref=f3e887] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f3e888]:
+              - link "자주 묻는 질문" [ref=f3e889] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f3e890]:
+              - link "고객문의" [ref=f3e891] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f3e892]:
+          - heading "약관" [level=3] [ref=f3e893]
+          - list [ref=f3e894]:
+            - listitem [ref=f3e895]:
+              - link "이용약관" [ref=f3e896] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f3e897]:
+              - link "개인정보처리방침" [ref=f3e898] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f3e899]:
+          - heading "주문" [level=3] [ref=f3e900]
+          - list [ref=f3e901]:
+            - listitem [ref=f3e902]:
+              - link "주문내역" [ref=f3e903] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f3e904]:
+              - link "찜 목록" [ref=f3e905] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f3e906]
+      - generic [ref=f3e907]:
+        - paragraph [ref=f3e908]: 주식회사 필식자재마트 · 대표 서익준 · 사업자등록번호 702-85-01475
+        - paragraph [ref=f3e909]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"

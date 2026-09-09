@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>필마트 LA갈비 사전예약 POP</title>
+  <meta name="hz:slide-selector" content=".poster" />
+  <meta name="hz:canvas-width" content="1123" />
+  <meta name="hz:canvas-height" content="1587" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+    }
+
+    .poster {
+      position: relative;
+      width: 297mm;
+      height: 420mm;
+      background: #0d0804;
+      overflow: hidden;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* ── Background ── */
+    .bg-radial {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 38%, #2e1506 0%, #0d0804 70%);
+    }
+
+    /* ── Top red ribbon ── */
+    .top-ribbon {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 13mm;
+      background: #C0392B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4mm;
+    }
+    .top-ribbon-dot {
+      width: 1.5mm; height: 1.5mm;
+      background: rgba(255,220,100,0.6);
+      border-radius: 50%;
+    }
+    .top-ribbon-text {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 17pt;
+      color: #FFE066;
+      letter-spacing: 7mm;
+      padding-left: 7mm; /* compensate for letter-spacing on last char */
+    }
+
+    /* ── Subtitle tag ── */
+    .sub-tag {
+      position: absolute;
+      top: 16mm;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 0.8px solid #B8922A;
+      color: #B8922A;
+      font-size: 8pt;
+      font-weight: 400;
+      letter-spacing: 3.5mm;
+      padding: 1.5mm 6mm 1.5mm 9.5mm;
+      white-space: nowrap;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* ── Hero image ── */
+    .hero-wrap {
+      position: absolute;
+      top: 26mm; left: 0; right: 0;
+      height: 163mm;
+      overflow: hidden;
+    }
+    .hero-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+    }
+    /* gradient fades image into dark bg */
+    .hero-fade-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 18mm;
+      background: linear-gradient(#0d0804, transparent);
+    }
+    .hero-fade-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 70mm;
+      background: linear-gradient(transparent, #0d0804);
+    }
+
+    /* ── Main headline ── */
+    .headline-block {
+      position: absolute;
+      top: 170mm;
+      left: 0; right: 0;
+      text-align: center;
+    }
+    .headline-en {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 300;
+      font-size: 9pt;
+      color: #C4923A;
+      letter-spacing: 6mm;
+      padding-left: 6mm;
+      margin-bottom: 1mm;
+    }
+    .headline-kr {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 80pt;
+      color: #FFFFFF;
+      letter-spacing: 5mm;
+      padding-left: 5mm;
+      line-height: 0.95;
+      text-shadow: 0 4px 32px rgba(0,0,0,0.9), 0 0 80px rgba(200,90,0,0.25);
+    }
+
+    /* ── Gold rule ── */
+    .gold-rule {
+      position: absolute;
+      top: 237mm;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60mm;
+      height: 0.4mm;
+      background: linear-gradient(to right, transparent, #C4923A 30%, #C4923A 70%, transparent);
+    }
+
+    /* ── Price block ── */
+    .price-block {
+      position: absolute;
+      top: 242mm;
+      left: 0; right: 0;
+      text-align: center;
+    }
+    .price-label {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #F0DEB0;
+      letter-spacing: 2mm;
+      margin-bottom: 1.5mm;
+    }
+    .price-amount {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 60pt;
+      color: #FFD844;
+      line-height: 1;
+      letter-spacing: 1mm;
+    }
+    .price-amount .won {
+      font-size: 32pt;
+      vertical-align: baseline;
+    }
+    .price-gift {
+      font-size: 10pt;
+      font-weight: 300;
+      color: #9A7E50;
+      margin-top: 2mm;
+      letter-spacing: 0.5mm;
+    }
+    .price-gift strong {
+      font-weight: 700;
+      color: #C4923A;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      position: absolute;
+      top: 307mm;
+      left: 18mm; right: 18mm;
+      border: 0.7px solid #3a2a12;
+      background: rgba(30, 18, 5, 0.75);
+      padding: 5mm 8mm;
+    }
+    .info-row {
+      display: flex;
+      align-items: center;
+      padding: 3mm 0;
+    }
+    .info-row + .info-row {
+      border-top: 0.5px solid #3a2a12;
+    }
+    .info-icon {
+      width: 5mm;
+      margin-right: 3mm;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+    .info-icon svg {
+      width: 4mm;
+      height: 4mm;
+      fill: #C4923A;
+    }
+    .info-label {
+      font-size: 8.5pt;
+      font-weight: 700;
+      color: #C4923A;
+      letter-spacing: 1mm;
+      width: 25mm;
+      flex-shrink: 0;
+    }
+    .info-sep {
+      font-size: 8pt;
+      color: #4a3520;
+      margin-right: 3mm;
+    }
+    .info-value {
+      font-size: 10pt;
+      font-weight: 400;
+      color: #EED9A8;
+      letter-spacing: 0.3mm;
+    }
+
+    /* ── Corner marks ── */
+    .corner {
+      position: absolute;
+      width: 8mm; height: 8mm;
+    }
+    .corner-tl { top: 15mm; left: 6mm; border-top: 0.8px solid #7A6030; border-left: 0.8px solid #7A6030; }
+    .corner-tr { top: 15mm; right: 6mm; border-top: 0.8px solid #7A6030; border-right: 0.8px solid #7A6030; }
+    .corner-bl { bottom: 18mm; left: 6mm; border-bottom: 0.8px solid #7A6030; border-left: 0.8px solid #7A6030; }
+    .corner-br { bottom: 18mm; right: 6mm; border-bottom: 0.8px solid #7A6030; border-right: 0.8px solid #7A6030; }
+
+    /* ── Bottom brand bar ── */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 16mm;
+      background: #C0392B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-name {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 24pt;
+      color: #FFFFFF;
+      letter-spacing: 8mm;
+      padding-left: 8mm;
+    }
+    .brand-sub {
+      font-size: 7pt;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 3mm;
+      margin-left: 5mm;
+    }
+
+    /* ── Decorative side lines ── */
+    .side-line-left, .side-line-right {
+      position: absolute;
+      top: 26mm; bottom: 16mm;
+      width: 0.4mm;
+    }
+    .side-line-left {
+      left: 6mm;
+      background: linear-gradient(to bottom, transparent 0%, #3a2a12 20%, #3a2a12 80%, transparent 100%);
+    }
+    .side-line-right {
+      right: 6mm;
+      background: linear-gradient(to bottom, transparent 0%, #3a2a12 20%, #3a2a12 80%, transparent 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="poster" data-canvas-width="1123" data-canvas-height="1587">
+
+    <!-- Background -->
+    <div class="bg-radial"></div>
+
+    <!-- Side decorative lines -->
+    <div class="side-line-left"></div>
+    <div class="side-line-right"></div>
+
+    <!-- Top ribbon -->
+    <div class="top-ribbon">
+      <div class="top-ribbon-dot"></div>
+      <span class="top-ribbon-text">사 전 예 약</span>
+      <div class="top-ribbon-dot"></div>
+    </div>
+
+    <!-- Subtitle tag -->
+    <div class="sub-tag">RESERVATION ONLY</div>
+
+    <!-- Hero image -->
+    <div class="hero-wrap">
+      <img
+        src="https://stock-apex-images-prod-ew1.s3.eu-west-1.amazonaws.com/c638e92464ff0947537469463b05f866c1575c9e4b12557924aaa35d77b7e126.jpg?response-content-disposition=attachment%3B%20filename%3D%22AdobeStock_375673240.jpeg%22&response-content-type=image%2Fjpeg&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUMGGMQGERDWXM64M%2F20260828%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20260828T035533Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=e0a664b03caf20a7952b4966baca42bbf433b7d8a613a279a45f1715f42d96af"
+        alt="LA갈비 이미지"
+        width="1123" height="616"
+      />
+      <div class="hero-fade-top"></div>
+      <div class="hero-fade-bottom"></div>
+    </div>
+
+    <!-- Main headline -->
+    <div class="headline-block">
+      <div class="headline-en">PREMIUM LA GALBI</div>
+      <div class="headline-kr">LA 갈 비</div>
+    </div>
+
+    <!-- Gold rule -->
+    <div class="gold-rule"></div>
+
+    <!-- Price block -->
+    <div class="price-block">
+      <div class="price-label">2.7 kg</div>
+      <div class="price-amount">89,000<span class="won">원</span></div>
+      <div class="price-gift">선물 포장 포함 시 <strong>92,000원</strong></div>
+    </div>
+
+    <!-- Info box -->
+    <div class="info-box">
+      <div class="info-row">
+        <div class="info-icon">
+          <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="3" width="14" height="11" rx="1.5" ry="1.5"/>
+            <rect x="4" y="1" width="2" height="4" rx="1"/>
+            <rect x="10" y="1" width="2" height="4" rx="1"/>
+            <rect x="1" y="7" width="14" height="1"/>
+          </svg>
+        </div>
+        <span class="info-label">예약 기간</span>
+        <span class="info-sep">|</span>
+        <span class="info-value">2026년 9월 1일(월) ~ 9월 18일(목)</span>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">
+          <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="3" width="14" height="11" rx="1.5" ry="1.5"/>
+            <rect x="4" y="1" width="2" height="4" rx="1"/>
+            <rect x="10" y="1" width="2" height="4" rx="1"/>
+            <rect x="1" y="7" width="14" height="1"/>
+          </svg>
+        </div>
+        <span class="info-label">수령 기간</span>
+        <span class="info-sep">|</span>
+        <span class="info-value">2026년 9월 14일(일) ~ 9월 23일(화)</span>
+      </div>
+    </div>
+
+    <!-- Corner marks -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Bottom brand bar -->
+    <div class="bottom-bar">
+      <span class="brand-name">필 마 트</span>
+      <span class="brand-sub">PHILMART</span>
+    </div>
+
+  </div>
+</body>
+</html>

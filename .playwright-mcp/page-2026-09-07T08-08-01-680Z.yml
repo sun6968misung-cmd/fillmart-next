@@ -1,0 +1,376 @@
+- generic [active] [ref=f11e1]:
+  - paragraph [ref=f11e2]:
+    - link "본문바로가기" [ref=f11e3] [cursor=pointer]:
+      - /url: "#container"
+  - generic [ref=f11e4]:
+    - generic [ref=f11e7]:
+      - paragraph [ref=f11e9]
+      - button "배너닫기" [ref=f11e11] [cursor=pointer]
+    - banner [ref=f11e12]:
+      - generic [ref=f11e14]:
+        - heading [level=1] [ref=f11e15]:
+          - link "장보고식자재마트 인터넷쇼핑몰 - 장보자.com" [ref=f11e16] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443
+        - generic [ref=f11e18]:
+          - textbox "상품을 검색해보세요!" [ref=f11e19]
+          - button "검색" [ref=f11e20] [cursor=pointer]
+        - generic [ref=f11e22]:
+          - list [ref=f11e23]:
+            - listitem [ref=f11e24]:
+              - link "마이페이지" [ref=f11e25] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/mypage
+          - list [ref=f11e26]:
+            - listitem [ref=f11e27]:
+              - link "주문/배송" [ref=f11e28] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/custOrderList
+            - listitem [ref=f11e29]:
+              - link "나의 찜" [ref=f11e30] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/wishItem
+            - listitem [ref=f11e31]:
+              - link "장바구니" [ref=f11e32] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/od/cart
+      - generic [ref=f11e34]:
+        - button "카테고리" [ref=f11e36] [cursor=pointer]
+        - navigation [ref=f11e38]:
+          - heading "메인메뉴" [level=2] [ref=f11e39]
+          - list [ref=f11e40]:
+            - listitem [ref=f11e41]:
+              - link "홈" [ref=f11e42] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443
+            - listitem [ref=f11e43]:
+              - link "매장행사" [ref=f11e44] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '672',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '99',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '/cs/salelist',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/salelist',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '812',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '매장행사'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f11e45]:
+              - link "신상품" [ref=f11e46] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '669',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '25',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '10020',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '809',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '신상품'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f11e47]:
+              - link "베스트" [ref=f11e48] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '670',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '25',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '10000',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '810',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '베스트'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f11e49]:
+              - link "이벤트" [ref=f11e50] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '712',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '30',\n\t\t\t\t\t\t\t\t   RELAT_VAL: 'BCU90002',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/event',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '876',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '이벤트'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f11e51]:
+              - link "외식브랜딩" [ref=f11e52] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '671',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '20',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '1000',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '811',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '외식브랜딩'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f11e53]:
+              - link "레시피" [ref=f11e54] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '676',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '21',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/recipe',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '816',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '레시피'\n\t\t\t\t\t\t\t\t })"
+        - generic [ref=f11e55]:
+          - link "로그인" [ref=f11e56] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cu/loginCustomer
+          - link "회원가입" [ref=f11e57] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cu/registCustomerSelect
+          - link "고객센터" [ref=f11e58] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cs/faq
+    - separator [ref=f11e59]
+    - generic [ref=f11e60]:
+      - text:  
+      - heading [level=3] [ref=f11e62]:
+        - button "식기/밀폐용기" [ref=f11e63] [cursor=pointer]
+      - generic [ref=f11e64]:
+        - generic [ref=f11e66]:
+          - generic [ref=f11e67]:
+            - radio "포함" [checked] [ref=f11e68]
+            - generic [ref=f11e69] [cursor=pointer]: 포함
+          - generic [ref=f11e70]:
+            - radio "제외" [ref=f11e71]
+            - generic [ref=f11e72] [cursor=pointer]: 제외
+          - generic [ref=f11e73]:
+            - textbox "결과내검색" [ref=f11e74]:
+              - /placeholder: 결과 내 검색어 입력
+            - button "검색" [ref=f11e75] [cursor=pointer]
+        - generic [ref=f11e77]:
+          - generic [ref=f11e78]:
+            - generic [ref=f11e79]:
+              - heading "보관방법" [level=5] [ref=f11e80]
+              - list [ref=f11e81]:
+                - listitem [ref=f11e82]:
+                  - generic [ref=f11e83]: 상온(522)
+                - listitem [ref=f11e85]:
+                  - generic [ref=f11e86]: 냉장(1)
+                - listitem [ref=f11e88]:
+                  - generic [ref=f11e89]: 냉동(0)
+            - generic [ref=f11e91]:
+              - heading "카테고리" [level=5] [ref=f11e92]
+              - list [ref=f11e93]:
+                - listitem [ref=f11e94]:
+                  - button "전체(810)" [ref=f11e95] [cursor=pointer]
+                - listitem [ref=f11e96]:
+                  - button "주방조리용품(810)" [ref=f11e97] [cursor=pointer]
+            - generic [ref=f11e98]:
+              - heading "혜택" [level=5] [ref=f11e99]
+              - list [ref=f11e100]:
+                - listitem [ref=f11e101]:
+                  - generic [ref=f11e102]: 쿠폰상품
+                - listitem [ref=f11e104]:
+                  - generic [ref=f11e105]: 할인상품
+            - generic [ref=f11e107]:
+              - heading "배송" [level=5] [ref=f11e108]
+              - list [ref=f11e109]:
+                - listitem [ref=f11e110]:
+                  - generic [ref=f11e111]: 직접배송
+                - listitem [ref=f11e113]:
+                  - generic [ref=f11e114]: 전국배송
+            - generic [ref=f11e116]:
+              - heading "브랜드" [level=5] [ref=f11e117]
+              - list [ref=f11e118]:
+                - listitem [ref=f11e119]:
+                  - generic [ref=f11e120]: 동성(133)
+                - listitem [ref=f11e122]:
+                  - generic [ref=f11e123]: 진성울트라(80)
+                - listitem [ref=f11e125]:
+                  - generic [ref=f11e126]: 신한(46)
+                - listitem [ref=f11e128]:
+                  - generic [ref=f11e129]: 락앤락(30)
+                - listitem [ref=f11e131]:
+                  - generic [ref=f11e132]: 쿨멕스(28)
+                - listitem [ref=f11e134]:
+                  - generic [ref=f11e135]: 쿨라라(27)
+                - listitem [ref=f11e137]:
+                  - generic [ref=f11e138]: 아트웨어(25)
+                - listitem [ref=f11e140]:
+                  - generic [ref=f11e141]: 태원(24)
+                - listitem [ref=f11e143]:
+                  - generic [ref=f11e144]: 국제(23)
+                - listitem [ref=f11e146]:
+                  - generic [ref=f11e147]: 대성기업(21)
+                - listitem [ref=f11e149]:
+                  - generic [ref=f11e150]: 미화플라스틱(21)
+                - listitem [ref=f11e152]:
+                  - generic [ref=f11e153]: 대영화학(20)
+                - listitem [ref=f11e155]:
+                  - generic [ref=f11e156]: 진주공방(20)
+                - listitem [ref=f11e158]:
+                  - generic [ref=f11e159]: 이지필림(17)
+                - listitem [ref=f11e161]:
+                  - generic [ref=f11e162]: 광신화학(15)
+                - listitem [ref=f11e164]:
+                  - generic [ref=f11e165]: 대동(12)
+                - listitem [ref=f11e167]:
+                  - generic [ref=f11e168]: 보성(12)
+                - listitem [ref=f11e170]:
+                  - generic [ref=f11e171]: 우일(12)
+                - listitem [ref=f11e173]:
+                  - generic [ref=f11e174]: ㈜코멕스산업(10)
+                - listitem [ref=f11e176]:
+                  - generic [ref=f11e177]: 델키(10)
+                - listitem [ref=f11e179]:
+                  - generic [ref=f11e180]: 거북표(9)
+                - listitem [ref=f11e182]:
+                  - generic [ref=f11e183]: 진성(9)
+                - listitem [ref=f11e185]:
+                  - generic [ref=f11e186]: 세신퀸센스(주)(8)
+                - listitem [ref=f11e188]:
+                  - generic [ref=f11e189]: 동림C&C(7)
+                - listitem [ref=f11e191]:
+                  - generic [ref=f11e192]: 모던락(7)
+                - listitem [ref=f11e194]:
+                  - generic [ref=f11e195]: 원라이프(6)
+                - listitem [ref=f11e197]:
+                  - generic [ref=f11e198]: ALS(6)
+                - listitem [ref=f11e200]:
+                  - generic [ref=f11e201]: 금강(5)
+                - listitem [ref=f11e203]:
+                  - generic [ref=f11e204]: 대명코리아(4)
+                - listitem [ref=f11e206]:
+                  - generic [ref=f11e207]: 보고나라(4)
+                - listitem [ref=f11e209]:
+                  - generic [ref=f11e210]: 소예(4)
+                - listitem [ref=f11e212]:
+                  - generic [ref=f11e213]: 최고상사(4)
+                - listitem [ref=f11e215]:
+                  - generic [ref=f11e216]: 대신유리(3)
+                - listitem [ref=f11e218]:
+                  - generic [ref=f11e219]: 도시엔(3)
+                - listitem [ref=f11e221]:
+                  - generic [ref=f11e222]: 로이첸(3)
+                - listitem [ref=f11e224]:
+                  - generic [ref=f11e225]: 윈닥스(3)
+                - listitem [ref=f11e227]:
+                  - generic [ref=f11e228]: 천성(3)
+                - listitem [ref=f11e230]:
+                  - generic [ref=f11e231]: 키친아트(3)
+                - listitem [ref=f11e233]:
+                  - generic [ref=f11e234]: 태양산업(3)
+                - listitem [ref=f11e236]:
+                  - generic [ref=f11e237]: C&T코리아(3)
+                - listitem [ref=f11e239]:
+                  - generic [ref=f11e240]: ㈜동화하이텍(2)
+                - listitem [ref=f11e242]:
+                  - generic [ref=f11e243]: ㈜비알피(2)
+                - listitem [ref=f11e245]:
+                  - generic [ref=f11e246]: ㈜월드씨앤씨(2)
+                - listitem [ref=f11e248]:
+                  - generic [ref=f11e249]: 경복(2)
+                - listitem [ref=f11e251]:
+                  - generic [ref=f11e252]: 동양하우스(2)
+                - listitem [ref=f11e254]:
+                  - generic [ref=f11e255]: 용인(2)
+                - listitem [ref=f11e257]:
+                  - generic [ref=f11e258]: 코멕스(2)
+                - listitem [ref=f11e260]:
+                  - generic [ref=f11e261]: 토광(2)
+                - listitem [ref=f11e263]:
+                  - generic [ref=f11e264]: 황제(2)
+                - listitem [ref=f11e266]:
+                  - generic [ref=f11e267]: (주)라쿠친(1)
+                - listitem [ref=f11e269]:
+                  - generic [ref=f11e270]: ㈜영스타(1)
+                - listitem [ref=f11e272]:
+                  - generic [ref=f11e273]: ㈜영신(1)
+                - listitem [ref=f11e275]:
+                  - generic [ref=f11e276]: 경동(1)
+                - listitem [ref=f11e278]:
+                  - generic [ref=f11e279]: 니드코(1)
+                - listitem [ref=f11e281]:
+                  - generic [ref=f11e282]: 대승(1)
+                - listitem [ref=f11e284]:
+                  - generic [ref=f11e285]: 동서알미늄(1)
+                - listitem [ref=f11e287]:
+                  - generic [ref=f11e288]: 상진기업(주)(1)
+                - listitem [ref=f11e290]:
+                  - generic [ref=f11e291]: 세신유엔씨(주)(1)
+                - listitem [ref=f11e293]:
+                  - generic [ref=f11e294]: 솔로몬상사(1)
+                - listitem [ref=f11e296]:
+                  - generic [ref=f11e297]: 신한리빙(1)
+                - listitem [ref=f11e299]:
+                  - generic [ref=f11e300]: 아이존(1)
+                - listitem [ref=f11e302]:
+                  - generic [ref=f11e303]: 아폴로(1)
+                - listitem [ref=f11e305]:
+                  - generic [ref=f11e306]: 영진(1)
+                - listitem [ref=f11e308]:
+                  - generic [ref=f11e309]: 유니온(1)
+                - listitem [ref=f11e311]:
+                  - generic [ref=f11e312]: 일조(1)
+                - listitem [ref=f11e314]:
+                  - generic [ref=f11e315]: 킹서진(1)
+                - listitem [ref=f11e317]:
+                  - generic [ref=f11e318]: Luminarc(1)
+                - listitem [ref=f11e320]:
+                  - generic [ref=f11e321]: 기타(91)
+            - generic [ref=f11e323]:
+              - heading "가격" [level=5] [ref=f11e324]
+              - generic [ref=f11e325]:
+                - button "전체" [ref=f11e327] [cursor=pointer]
+                - generic [ref=f11e329]:
+                  - button "10,000원 이하" [ref=f11e331] [cursor=pointer]
+                  - button "10,000원 ~ 20,000원" [ref=f11e334] [cursor=pointer]
+                  - button "20,000원 ~ 30,000원" [ref=f11e337] [cursor=pointer]
+                  - button "30,000원 ~ 50,000원" [ref=f11e340] [cursor=pointer]
+                  - button "50,000원 ~ 100,000원" [ref=f11e343] [cursor=pointer]
+                  - button "100,000원 이상" [ref=f11e346] [cursor=pointer]
+              - generic [ref=f11e348]:
+                - generic [ref=f11e349]:
+                  - textbox "600" [ref=f11e350]
+                  - text: 원
+                - generic [ref=f11e351]: ~
+                - generic [ref=f11e352]:
+                  - textbox "185000" [ref=f11e353]
+                  - text: 원
+                - button "적용" [ref=f11e354] [cursor=pointer]
+            - generic [ref=f11e355]:
+              - heading "단위" [level=5] [ref=f11e356]
+              - generic [ref=f11e357]:
+                - generic [ref=f11e358]: 상자 BOX(17)
+                - generic [ref=f11e360]: 개별 상품(793)
+          - generic [ref=f11e363]:
+            - heading "검색결과 리스트" [level=3] [ref=f11e364]
+            - generic [ref=f11e366]:
+              - paragraph [ref=f11e367]:
+                - text: 총
+                - emphasis
+                - text: 개 상품
+              - generic [ref=f11e369]:
+                - checkbox "품절 제외" [checked] [ref=f11e370]
+                - generic [ref=f11e371] [cursor=pointer]: 품절 제외
+              - combobox [ref=f11e373] [cursor=pointer]:
+                - option "추천순" [selected]
+                - option "낮은가격순"
+                - option "높은가격순"
+              - generic [ref=f11e374]:
+                - radio "갤러리형" [checked] [ref=f11e375]
+                - generic [ref=f11e376] [cursor=pointer]: 갤러리형
+                - radio "리스트형" [ref=f11e378]
+                - generic [ref=f11e379] [cursor=pointer]: 리스트형
+            - generic:
+              - list
+      - text: 
+    - separator [ref=f11e382]
+    - contentinfo [ref=f11e383]:
+      - contentinfo [ref=f11e384]:
+        - generic [ref=f11e386]:
+          - generic [ref=f11e387]:
+            - generic [ref=f11e388]:
+              - strong [ref=f11e389]: 회사안내 및 약관
+              - list:
+                - listitem [ref=f11e390]:
+                  - link "회사소개" [ref=f11e391] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/co/intro
+                - listitem [ref=f11e392]:
+                  - link "이용약관" [ref=f11e393] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/ag/agree
+                - listitem [ref=f11e394]:
+                  - link "개인정보처리방침" [ref=f11e395] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/ag/policy
+                - listitem [ref=f11e396]:
+                  - link "공지사항" [ref=f11e397] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/cs/notice
+            - list [ref=f11e399]:
+              - listitem [ref=f11e400]:
+                - link "페이스북" [ref=f11e401] [cursor=pointer]:
+                  - /url: https://www.facebook.com/profile.php?id=100011656551975
+              - listitem [ref=f11e403]:
+                - link "인스타그램" [ref=f11e404] [cursor=pointer]:
+                  - /url: https://www.instagram.com/jangboja/
+              - listitem [ref=f11e406]:
+                - link "유튜브 채널" [ref=f11e407] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@jangbogofood
+              - listitem [ref=f11e409]:
+                - link "네이버 블로그" [ref=f11e410] [cursor=pointer]:
+                  - /url: https://blog.naver.com/jangbogofood
+              - listitem [ref=f11e412]:
+                - link "카카오 채널" [ref=f11e413] [cursor=pointer]:
+                  - /url: https://pf.kakao.com/_xdIPad
+          - generic [ref=f11e415]:
+            - generic [ref=f11e416]:
+              - strong [ref=f11e418]: (주)장보고식자재마트
+              - list [ref=f11e419]:
+                - listitem [ref=f11e420]:
+                  - generic [ref=f11e421]: "대표 : 서정권"
+                - listitem [ref=f11e422]:
+                  - generic [ref=f11e423]: "주소 : 대구 북구 칠곡중앙대로 21 (팔달동)"
+                - listitem [ref=f11e424]:
+                  - generic [ref=f11e425]: "사업자 등록번호 : 514-81-56749"
+                  - link "사업자 정보확인" [ref=f11e426] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=f11e427]:
+                  - generic [ref=f11e428]: "통신판매업 신고번호 : 2012-대구북구-0302"
+                - listitem [ref=f11e429]:
+                  - generic [ref=f11e430]: "개인정보관리자 : 이용태 jangbogofood@naver.com"
+            - generic [ref=f11e431]:
+              - generic [ref=f11e432]:
+                - term [ref=f11e433]: 안심거래 서비스 가맹점
+                - definition [ref=f11e434]:
+                  - link "KICC 에스크로 서비스 가입사실 확인" [ref=f11e435] [cursor=pointer]:
+                    - /url: https://office.easypay.co.kr/homepage/other_service/EscrowAuthAction.do?memb_id=05510942
+              - paragraph [ref=f11e436]: 고객님은 안전거래를 위해 현금 등으로 결제 시 저희 쇼핑몰에서 가입한 구매안전 서비스를 이용하실 수 있습니다.
+          - generic [ref=f11e437]:
+            - strong [ref=f11e438]:
+              - link "고객센터" [ref=f11e439] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/cs/faq
+            - generic [ref=f11e440]:
+              - generic [ref=f11e441]: 1544-4490
+              - generic [ref=f11e442]:
+                - term [ref=f11e443]: "운영시간 :"
+                - definition [ref=f11e444]: 평일 08:30 ~ 20:30
+                - definition [ref=f11e445]: 토요일 08:30 ~ 17:30
+              - generic [ref=f11e446]: 일요일 휴무
+              - generic [ref=f11e447]:
+                - link "자주하는 질문" [ref=f11e448] [cursor=pointer]:
+                  - /url: https://www.jangboja.com:443/cs/faq
+                - link "1:1문의" [ref=f11e449] [cursor=pointer]:
+                  - /url: https://www.jangboja.com:443/cuca0020Form
+          - paragraph [ref=f11e450]: Copyright JangbogoFoodMart Co, LTD. All rights reserved.
+  - button "장보고마트 상담 버튼" [ref=f11e452]

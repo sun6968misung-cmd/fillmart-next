@@ -1,0 +1,43 @@
+[      34ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63
+[ 9095803ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63
+[ 9110864ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://apigw-sandbox.tosspayments.com/payment-gateway-window/open/pg-window/v1/px-payment-parameters?Authorization=Basic%20dGVzdF9ja19ENUdlUFd2eUpuckswVzBrNnE4Z0x6Tjk3RW9xOg%3D%3D:0
+[ 9110873ms] [ERROR] t: 전화번호 형식에 맞지 않습니다. 전화번호에는 특수문자가 포함될 수 없습니다.
+    at XMLHttpRequest.<anonymous> (https://js.tosspayments.com/v1/payment:8:175234) @ http://localhost:8787/checkout.html:323
+[ 9120755ms] [INFO] Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: "script-src 'self' 'sha256-Ng0w/6IKJEwewWPIksfXT39tgEtEMQpzdpXaRzbrgYk=' 'sha256-YBqklorF2b2WPeIsZrQgk3zO0mqS7CR6SMEwPPVerRY=' 'sha256-0llMqxVSyNUUM2kznZsX4O7orj/zXaa+TLJv9Jc1R7M=' 'sha256-f1iNgwXMLCCzsheR25xIh4vd6D+FGrIT8NVVmv5J8u0=' 'report-sample' https://js.tosspayments.com https://polyfill-fe.toss.im https://www.vpay.co.kr https://pinpay.hyundaicard.com https://nsp.pay.naver.com https://applepay.cdn-apple.com".
+ The policy is report-only, so the violation has been logged but no further action has been taken. @ https://payment-gateway-sandbox.tosspayments.com/payment-gateway/cb1e440ed3cac649f7bdea993077d66b51095838/_next/static/chunks/2452-430105d03c41b4be.js:0
+[ 9127687ms] [ERROR] Sending form data to 'https://online-payment.kakaopay.com/bridge/pc/reseller/one-time/payment/ed692e2164a0a135095d9330f006e1a695818fe4e8d8de77e8ad346f3c239801?' violates the following report-only Content Security Policy directive: "form-action 'self'". The violation has been logged, but no further action has been taken.
+ @ https://payment-gateway-sandbox.tosspayments.com/payment-gateway/cb1e440ed3cac649f7bdea993077d66b51095838/_next/static/chunks/pages/_app-e6fa10c5afe04a1c.js:0
+[ 9127688ms] [ERROR] Framing 'https://online-payment.kakaopay.com/' violates the following report-only Content Security Policy directive: "frame-src 'self' https://checkout-cert-auth.tosspayments.com https://checkout-cert-auth-sandbox.tosspayments.com https://checkout-cert-auth-staging.tosspayments.com https://checkout-cert-auth-dev.tosspayments.com". The violation has been logged, but no further action has been taken.
+ @ https://payment-gateway-sandbox.tosspayments.com/payment-gateway/cb1e440ed3cac649f7bdea993077d66b51095838/_next/static/chunks/pages/_app-e6fa10c5afe04a1c.js:0
+[ 9127733ms] [ERROR] Framing 'https://online-payment.kakaopay.com/' violates the following report-only Content Security Policy directive: "frame-src 'self' https://checkout-cert-auth.tosspayments.com https://checkout-cert-auth-sandbox.tosspayments.com https://checkout-cert-auth-staging.tosspayments.com https://checkout-cert-auth-dev.tosspayments.com". The violation has been logged, but no further action has been taken.
+ @ https://payment-gateway-sandbox.tosspayments.com/payment-gateway/cb1e440ed3cac649f7bdea993077d66b51095838/_next/static/chunks/pages/_app-e6fa10c5afe04a1c.js:0
+[ 9127859ms] [LOG] [PostMessage.ts] load. OS : {"app":{"type":"UNKNOWN","version":"0.0.0"},"browser":"UNKNOWN","isWave":false,"isPayWeb":false,"os":{"name":"UNKNOWN","version":"0.0.0"}} @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/payweb-3b57a965.js:8
+[ 9127860ms] [LOG] [PostMessage.ts] window.KakaoPay is not defined. @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/payweb-3b57a965.js:8
+[ 9127862ms] [LOG] [enableNativeStorageEvent] @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/payweb-3b57a965.js:8
+[ 9127862ms] [LOG] [enableTabViewEvent] @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/payweb-3b57a965.js:8
+[ 9127862ms] [LOG] [enableCommonCallbackEvent] @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/payweb-3b57a965.js:8
+[ 9127891ms] [LOG] [[extractHash]] @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/index-d4296bff.js:63
+[ 9127892ms] [LOG] documentReferrer:  https://payment-gateway-sandbox.tosspayments.com/ @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/index-d4296bff.js:63
+[ 9128078ms] [INFO] %c✅[TIARA][trackPage] sectionName: online, tiaraData: {"pageName":"PC_payment_QR","actionName":"PC결제_가맹점_QR","customProps":{"qr":"https://online-payment.kakaopay.com/bridge/mobile-pc/reseller/one-time/payment/ed692e2164a0a135095d9330f006e1a695818fe4e8d8de77e8ad346f3c2398018","online_channel":"RESELLER","payMode":"one-time","payDetailMode":"payment","isZero":"N","cid":"CU0000DB7C","webview_type":"payweb","t_referrer":"https://payment-gateway-sandbox.tosspayments.com/"}} color:#EBC153 @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/index-d4296bff.js:63
+[ 9128081ms] [LOG] QrStatus Response: undefined @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/index-d4296bff.js:63
+[ 9128121ms] [LOG] QrStatus Response: {
+  "status": "READY",
+  "expired": false,
+  "needRedirectFailUrl": false
+} @ https://fe.kakaopaycdn.com/online-payment/online-payment-pc-bridge-client/bfda0d8c4ad81f42d85ec511e91b0a20f39506f0/static/index-d4296bff.js:63
+[ 9129696ms] [WARNING] `AlertDialogContent` requires a description for the component to be accessible for screen reader users.
+
+You can add a description to the `AlertDialogContent` by passing a `AlertDialogDescription` component as a child, which also benefits sighted users by adding visible context to the dialog.
+
+Alternatively, you can use your own component as a description by assigning it an `id` and passing the same value to the `aria-describedby` prop in `AlertDialogContent`. If the description is confusing or duplicative for sighted users, you can use the `@radix-ui/react-visually-hidden` primitive as a wrapper around your description component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/alert-dialog @ https://payment-gateway-sandbox.tosspayments.com/payment-gateway/cb1e440ed3cac649f7bdea993077d66b51095838/_next/static/chunks/8204-12a6570cdaef86fa.js:6
+[ 9129706ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {AlertDialogContent}. @ https://payment-gateway-sandbox.tosspayments.com/payment-gateway/cb1e440ed3cac649f7bdea993077d66b51095838/_next/static/chunks/3891-9470279ae11b6a17.js:4
+[ 9132129ms] [ERROR] t: 취소되었습니다.
+    at https://js.tosspayments.com/v1/payment:8:204987
+    at Object.with (https://js.tosspayments.com/v1/payment:8:202987)
+    at Proxy.<anonymous> (https://js.tosspayments.com/v1/payment:8:204965)
+    at Generator.<anonymous> (https://js.tosspayments.com/v1/payment:8:4670)
+    at Generator.throw (https://js.tosspayments.com/v1/payment:8:5500)
+    at a (https://js.tosspayments.com/v1/payment:8:121684) @ http://localhost:8787/checkout.html:323
+[ 9133915ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63

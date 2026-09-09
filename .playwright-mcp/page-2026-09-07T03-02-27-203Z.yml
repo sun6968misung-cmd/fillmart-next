@@ -1,0 +1,1101 @@
+- generic [active] [ref=f9e1]:
+  - paragraph [ref=f9e2]:
+    - link "본문바로가기" [ref=f9e3] [cursor=pointer]:
+      - /url: "#container"
+  - generic [ref=f9e4]:
+    - generic [ref=f9e7]:
+      - paragraph [ref=f9e9]
+      - button "배너닫기" [ref=f9e11] [cursor=pointer]
+    - banner [ref=f9e12]:
+      - generic [ref=f9e14]:
+        - heading [level=1] [ref=f9e15]:
+          - link "장보고식자재마트 인터넷쇼핑몰 - 장보자.com" [ref=f9e16] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443
+        - generic [ref=f9e18]:
+          - textbox "상품을 검색해보세요!" [ref=f9e19]
+          - button "검색" [ref=f9e20] [cursor=pointer]
+        - generic [ref=f9e22]:
+          - list [ref=f9e23]:
+            - listitem [ref=f9e24]:
+              - link "마이페이지" [ref=f9e25] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/mypage
+          - list [ref=f9e26]:
+            - listitem [ref=f9e27]:
+              - link "주문/배송" [ref=f9e28] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/custOrderList
+            - listitem [ref=f9e29]:
+              - link "나의 찜" [ref=f9e30] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/wishItem
+            - listitem [ref=f9e31]:
+              - link "장바구니" [ref=f9e32] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/od/cart
+      - generic [ref=f9e34]:
+        - button "카테고리" [ref=f9e36] [cursor=pointer]
+        - navigation [ref=f9e38]:
+          - heading "메인메뉴" [level=2] [ref=f9e39]
+          - list [ref=f9e40]:
+            - listitem [ref=f9e41]:
+              - link "홈" [ref=f9e42] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443
+            - listitem [ref=f9e43]:
+              - link "매장행사" [ref=f9e44] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '672',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '99',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '/cs/salelist',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/salelist',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '812',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '매장행사'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f9e45]:
+              - link "신상품" [ref=f9e46] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '669',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '25',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '10020',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '809',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '신상품'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f9e47]:
+              - link "베스트" [ref=f9e48] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '670',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '25',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '10000',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '810',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '베스트'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f9e49]:
+              - link "이벤트" [ref=f9e50] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '712',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '30',\n\t\t\t\t\t\t\t\t   RELAT_VAL: 'BCU90002',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/event',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '876',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '이벤트'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f9e51]:
+              - link "외식브랜딩" [ref=f9e52] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '671',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '20',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '1000',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '811',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '외식브랜딩'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=f9e53]:
+              - link "레시피" [ref=f9e54] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '676',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '21',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/recipe',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '816',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '레시피'\n\t\t\t\t\t\t\t\t })"
+        - generic [ref=f9e55]:
+          - link "로그인" [ref=f9e56] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cu/loginCustomer
+          - link "회원가입" [ref=f9e57] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cu/registCustomerSelect
+          - link "고객센터" [ref=f9e58] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cs/faq
+    - separator [ref=f9e59]
+    - generic [ref=f9e60]:
+      - text: 
+      - generic [ref=f9e61]:
+        - generic [ref=f9e62]:
+          - generic [ref=f9e63] [cursor=pointer]: 이전
+          - generic [ref=f9e65] [cursor=pointer]: 다음
+          - generic [ref=f9e67]:
+            - generic [ref=f9e68]:
+              - link [ref=f9e70] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e71]
+              - link [ref=f9e74] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e75]
+                - paragraph [ref=f9e77]
+              - link [ref=f9e79] [cursor=pointer]:
+                - /url: "#"
+              - link [ref=f9e82] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e83]
+              - link [ref=f9e86] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e87]
+              - link [ref=f9e90] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e91]
+              - link [ref=f9e94] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e95]
+              - link [ref=f9e98] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e99]
+                - paragraph [ref=f9e101]
+              - link [ref=f9e103] [cursor=pointer]:
+                - /url: "#"
+              - link [ref=f9e106] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e107]
+              - link [ref=f9e110] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e111]
+              - link [ref=f9e114] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e115]
+              - link [ref=f9e118] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e119]
+              - link [ref=f9e122] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e123]
+                - paragraph [ref=f9e125]
+              - link [ref=f9e127] [cursor=pointer]:
+                - /url: "#"
+              - link [ref=f9e130] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e131]
+              - link [ref=f9e134] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e135]
+              - link [ref=f9e138] [cursor=pointer]:
+                - /url: "#"
+                - paragraph [ref=f9e139]
+            - generic:
+              - button "Previous slide" [ref=f9e141] [cursor=pointer]: 이전
+              - button "Next slide" [ref=f9e142] [cursor=pointer]: 다음
+            - generic [ref=f9e143]:
+              - button "정지" [ref=f9e144] [cursor=pointer]
+              - generic [ref=f9e145]: 1 / 6
+              - link "더보기" [ref=f9e146] [cursor=pointer]:
+                - /url: /goods/promotion
+        - generic [ref=f9e149]:
+          - generic [ref=f9e150]:
+            - heading [level=3] [ref=f9e151]:
+              - strong [ref=f9e152]: 싱싱제철맛집
+              - button "더보기" [ref=f9e153] [cursor=pointer]
+            - paragraph [ref=f9e154]
+          - list [ref=f9e156]:
+            - listitem [ref=f9e157]:
+              - article [ref=f9e158]:
+                - generic [ref=f9e159]:
+                  - img "햇고구마(특) 10KG/청해/국산" [ref=f9e160]
+                  - generic [ref=f9e161]: 농식품바우처
+                  - generic [ref=f9e163]:
+                    - button "장바구니" [ref=f9e164] [cursor=pointer]
+                    - button "찜" [ref=f9e166] [cursor=pointer]
+                - generic [ref=f9e168]:
+                  - generic: +
+                  - link "햇고구마(특) 10KG/청해/국산" [ref=f9e169] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e172]: 35,900원
+            - listitem [ref=f9e174]:
+              - article [ref=f9e175]:
+                - generic [ref=f9e176]:
+                  - img "햇감자(왕특) 2.5KG/청해" [ref=f9e177]
+                  - generic [ref=f9e178]: 농식품바우처
+                  - generic [ref=f9e180]:
+                    - button "장바구니" [ref=f9e181] [cursor=pointer]
+                    - button "찜" [ref=f9e183] [cursor=pointer]
+                - generic [ref=f9e185]:
+                  - generic: +
+                  - link "햇감자(왕특) 2.5KG/청해" [ref=f9e186] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e189]: 7,590원
+            - listitem [ref=f9e191]:
+              - article [ref=f9e192]:
+                - generic [ref=f9e193]:
+                  - img "햇감자(왕특) 5KG/청해" [ref=f9e194]
+                  - generic [ref=f9e195]: 농식품바우처
+                  - generic [ref=f9e197]:
+                    - button "장바구니" [ref=f9e198] [cursor=pointer]
+                    - button "찜" [ref=f9e200] [cursor=pointer]
+                - generic [ref=f9e202]:
+                  - generic: +
+                  - link "햇감자(왕특) 5KG/청해" [ref=f9e203] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e206]: 13,590원
+            - listitem [ref=f9e208]:
+              - article [ref=f9e209]:
+                - generic [ref=f9e210]:
+                  - img "거봉 4KG/국산" [ref=f9e211]
+                  - generic [ref=f9e212]: 농식품바우처
+                  - button "찜" [ref=f9e215] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e217]:
+                  - generic: +
+                  - link "거봉 4KG/국산" [ref=f9e218] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e221]: 29,800원
+            - listitem [ref=f9e223]:
+              - article [ref=f9e224]:
+                - generic [ref=f9e225]:
+                  - img "천도복숭아(1KG) 1팩/국산" [ref=f9e226]
+                  - generic [ref=f9e227]: 농식품바우처
+                  - button "찜" [ref=f9e230] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e232]:
+                  - generic: +
+                  - link "천도복숭아(1KG) 1팩/국산" [ref=f9e233] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e236]: 6,500원
+            - listitem [ref=f9e238]:
+              - article [ref=f9e239]:
+                - generic [ref=f9e240]:
+                  - img "자두(1KG) 1팩/국산" [ref=f9e241]
+                  - generic [ref=f9e242]: 농식품바우처
+                  - generic [ref=f9e244]:
+                    - button "장바구니" [ref=f9e245] [cursor=pointer]
+                    - button "찜" [ref=f9e247] [cursor=pointer]
+                - generic [ref=f9e249]:
+                  - generic: +
+                  - link "자두(1KG) 1팩/국산" [ref=f9e250] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e253]: 9,720원
+            - listitem [ref=f9e255]:
+              - article [ref=f9e256]:
+                - generic [ref=f9e257]:
+                  - img "체리 500G/미국" [ref=f9e258]
+                  - button "찜" [ref=f9e260] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e262]:
+                  - generic: +
+                  - link "체리 500G/미국" [ref=f9e263] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e266]: 9,800원
+            - listitem [ref=f9e268]:
+              - article [ref=f9e269]:
+                - generic [ref=f9e270]:
+                  - img "살구 1팩/국산" [ref=f9e271]
+                  - generic [ref=f9e272]: 농식품바우처
+                  - button "찜" [ref=f9e275] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e277]:
+                  - generic: +
+                  - link "살구 1팩/국산" [ref=f9e278] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e281]: 10,900원
+        - paragraph [ref=f9e284]
+        - generic [ref=f9e287]:
+          - generic [ref=f9e288]:
+            - heading [level=3] [ref=f9e289]:
+              - strong [ref=f9e290]: 대용량 농산물
+              - button "더보기" [ref=f9e291] [cursor=pointer]
+            - paragraph [ref=f9e292]: 신선한 농산물을 대용량으로 저렴하게!
+          - list [ref=f9e294]:
+            - listitem [ref=f9e295]:
+              - article [ref=f9e296]:
+                - generic [ref=f9e297]:
+                  - img "#홍파프리카A(경매) 5KG" [ref=f9e298]
+                  - generic [ref=f9e299]: 개별배송
+                  - generic [ref=f9e301]: 농식품바우처
+                  - generic [ref=f9e303]:
+                    - button "장바구니" [ref=f9e304] [cursor=pointer]
+                    - button "찜" [ref=f9e306] [cursor=pointer]
+                - generic [ref=f9e308]:
+                  - generic: +
+                  - link "#홍파프리카A(경매) 5KG" [ref=f9e309] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e312]: 51,900원
+            - listitem [ref=f9e314]:
+              - article [ref=f9e315]:
+                - generic [ref=f9e316]:
+                  - img "#노랑파프리카A(경매) 5KG" [ref=f9e317]
+                  - generic [ref=f9e318]: 개별배송
+                  - generic [ref=f9e320]: 농식품바우처
+                  - generic [ref=f9e322]:
+                    - button "장바구니" [ref=f9e323] [cursor=pointer]
+                    - button "찜" [ref=f9e325] [cursor=pointer]
+                - generic [ref=f9e327]:
+                  - generic: +
+                  - link "#노랑파프리카A(경매) 5KG" [ref=f9e328] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e331]: 53,900원
+            - listitem [ref=f9e333]:
+              - article [ref=f9e334]:
+                - generic [ref=f9e335]:
+                  - img "#참나물 4KG" [ref=f9e336]
+                  - generic [ref=f9e337]:
+                    - generic [ref=f9e338]: 박스상품
+                    - generic [ref=f9e339]: 개별배송
+                  - generic [ref=f9e340]: 농식품바우처
+                  - generic [ref=f9e342]:
+                    - button "장바구니" [ref=f9e343] [cursor=pointer]
+                    - button "찜" [ref=f9e345] [cursor=pointer]
+                - generic [ref=f9e347]:
+                  - generic: +
+                  - link "#참나물 4KG" [ref=f9e348] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e351]: 39,000원
+            - listitem [ref=f9e353]:
+              - article [ref=f9e354]:
+                - generic [ref=f9e355]:
+                  - img "#깻잎(밀양) 1BOX(50속)" [ref=f9e356]
+                  - generic [ref=f9e357]: 박스상품
+                  - generic [ref=f9e359]: 농식품바우처
+                  - generic [ref=f9e361]:
+                    - button "장바구니" [ref=f9e362] [cursor=pointer]
+                    - button "찜" [ref=f9e364] [cursor=pointer]
+                - generic [ref=f9e366]:
+                  - generic: +
+                  - link "#깻잎(밀양) 1BOX(50속)" [ref=f9e367] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e370]: 41,900원
+            - listitem [ref=f9e372]:
+              - article [ref=f9e373]:
+                - generic [ref=f9e374]:
+                  - img "#애기느타리버섯(벌크) 2KG/국산" [ref=f9e375]
+                  - generic [ref=f9e376]: 개별배송
+                  - generic [ref=f9e378]: 농식품바우처
+                  - generic [ref=f9e380]:
+                    - button "장바구니" [ref=f9e381] [cursor=pointer]
+                    - button "찜" [ref=f9e383] [cursor=pointer]
+                - generic [ref=f9e385]:
+                  - generic: +
+                  - link "#애기느타리버섯(벌크) 2KG/국산" [ref=f9e386] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e389]: 8,590원
+            - listitem [ref=f9e391]:
+              - article [ref=f9e392]:
+                - generic [ref=f9e393]:
+                  - img "게르마늄곱슬이콩나물 3.5KG/㈜초당F&B" [ref=f9e394]
+                  - button "찜" [ref=f9e396] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e398]:
+                  - generic: +
+                  - link "게르마늄곱슬이콩나물 3.5KG/㈜초당F&B" [ref=f9e399] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e402]: 3,900원
+            - listitem [ref=f9e404]:
+              - article [ref=f9e405]:
+                - generic [ref=f9e406]:
+                  - img "#가지(특 경매) 5KG/국산" [ref=f9e407]
+                  - generic [ref=f9e408]: 농식품바우처
+                  - generic [ref=f9e410]:
+                    - button "장바구니" [ref=f9e411] [cursor=pointer]
+                    - button "찜" [ref=f9e413] [cursor=pointer]
+                - generic [ref=f9e415]:
+                  - generic: +
+                  - link "#가지(특 경매) 5KG/국산" [ref=f9e416] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e419]: 29,900원
+            - listitem [ref=f9e421]:
+              - article [ref=f9e422]:
+                - generic [ref=f9e423]:
+                  - img "두절콩나물 4KG/월성식품" [ref=f9e424]
+                  - button "찜" [ref=f9e426] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e428]:
+                  - generic: +
+                  - link "두절콩나물 4KG/월성식품" [ref=f9e429] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e432]: 8,000원
+        - paragraph [ref=f9e435]
+        - generic [ref=f9e438]:
+          - generic [ref=f9e439]:
+            - heading [level=3] [ref=f9e440]:
+              - strong [ref=f9e441]: 보고네밥집
+              - button "더보기" [ref=f9e442] [cursor=pointer]
+            - paragraph [ref=f9e443]
+          - list [ref=f9e445]:
+            - listitem [ref=f9e446]:
+              - article [ref=f9e447]:
+                - generic [ref=f9e448]:
+                  - img "건강한우리쌀(장보고청결미) 20KG/화원RPC" [ref=f9e449]
+                  - generic [ref=f9e450]: 개별배송
+                  - generic [ref=f9e452]:
+                    - button "장바구니" [ref=f9e453] [cursor=pointer]
+                    - button "찜" [ref=f9e455] [cursor=pointer]
+                - generic [ref=f9e457]:
+                  - generic: +
+                  - link "건강한우리쌀(장보고청결미) 20KG/화원RPC" [ref=f9e458] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e461]: 56,900원
+            - listitem [ref=f9e463]:
+              - article [ref=f9e464]:
+                - generic [ref=f9e465]:
+                  - img "황금안계쌀(미소진품) 20KG/안계RPC" [ref=f9e466]
+                  - generic [ref=f9e467]: 개별배송
+                  - generic [ref=f9e469]:
+                    - button "장바구니" [ref=f9e470] [cursor=pointer]
+                    - button "찜" [ref=f9e472] [cursor=pointer]
+                - generic [ref=f9e474]:
+                  - generic: +
+                  - link "황금안계쌀(미소진품) 20KG/안계RPC" [ref=f9e475] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e478]: 61,500원
+            - listitem [ref=f9e480]:
+              - article [ref=f9e481]:
+                - generic [ref=f9e482]:
+                  - img "선산메뚜기쌀 20KG/하나영농조합법인" [ref=f9e483]
+                  - generic [ref=f9e484]: 개별배송
+                  - button "찜" [ref=f9e487] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e489]:
+                  - generic: +
+                  - link "선산메뚜기쌀 20KG/하나영농조합법인" [ref=f9e490] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e493]: 64,000원
+            - listitem [ref=f9e495]:
+              - article [ref=f9e496]:
+                - generic [ref=f9e497]:
+                  - img "황토안계쌀 20KG/안계RPC" [ref=f9e498]
+                  - generic [ref=f9e499]: 개별배송
+                  - generic [ref=f9e501]:
+                    - button "장바구니" [ref=f9e502] [cursor=pointer]
+                    - button "찜" [ref=f9e504] [cursor=pointer]
+                - generic [ref=f9e506]:
+                  - generic: +
+                  - link "황토안계쌀 20KG/안계RPC" [ref=f9e507] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e510]: 57,900원
+            - listitem [ref=f9e512]:
+              - article [ref=f9e513]:
+                - generic [ref=f9e514]:
+                  - img "찰으뜸미 10KG" [ref=f9e515]
+                  - generic [ref=f9e516]: 개별배송
+                  - generic [ref=f9e518]:
+                    - button "장바구니" [ref=f9e519] [cursor=pointer]
+                    - button "찜" [ref=f9e521] [cursor=pointer]
+                - generic [ref=f9e523]:
+                  - generic: +
+                  - link "찰으뜸미 10KG" [ref=f9e524] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e527]: 39,000원
+            - listitem [ref=f9e529]:
+              - article [ref=f9e530]:
+                - generic [ref=f9e531]:
+                  - img "칼로스쌀 20KG/미국" [ref=f9e532]
+                  - generic [ref=f9e533]: 개별배송
+                  - button "찜" [ref=f9e536] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e538]:
+                  - generic: +
+                  - link "칼로스쌀 20KG/미국" [ref=f9e539] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e542]: 46,500원
+            - listitem [ref=f9e544]:
+              - article [ref=f9e545]:
+                - generic [ref=f9e546]:
+                  - img "이슬찬경기미 20KG/독정RPC(유)" [ref=f9e547]
+                  - button "찜" [ref=f9e549] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e551]:
+                  - generic: +
+                  - link "이슬찬경기미 20KG/독정RPC(유)" [ref=f9e552] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e555]: 80,000원
+            - listitem [ref=f9e557]:
+              - article [ref=f9e558]:
+                - generic [ref=f9e559]:
+                  - img "황금메뚜기쌀 20KG/안계RPC" [ref=f9e560]
+                  - generic [ref=f9e561]: 개별배송
+                  - generic [ref=f9e563]:
+                    - button "장바구니" [ref=f9e564] [cursor=pointer]
+                    - button "찜" [ref=f9e566] [cursor=pointer]
+                - generic [ref=f9e568]:
+                  - generic: +
+                  - link "황금메뚜기쌀 20KG/안계RPC" [ref=f9e569] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e572]: 57,900원
+        - paragraph [ref=f9e575]
+        - generic [ref=f9e578]:
+          - generic [ref=f9e579]:
+            - heading [level=3] [ref=f9e580]:
+              - strong [ref=f9e581]: 소포장 농산물
+              - button "더보기" [ref=f9e582] [cursor=pointer]
+            - paragraph [ref=f9e583]: 알뜰하게 챙기는 소포장 농산물!
+          - list [ref=f9e585]:
+            - listitem [ref=f9e586]:
+              - article [ref=f9e587]:
+                - generic [ref=f9e588]:
+                  - img "혼합파프리카(L) 1봉(2입)/으뜸농산/국산" [ref=f9e589]
+                  - generic [ref=f9e590]: 농식품바우처
+                  - generic [ref=f9e592]:
+                    - button "장바구니" [ref=f9e593] [cursor=pointer]
+                    - button "찜" [ref=f9e595] [cursor=pointer]
+                - generic [ref=f9e597]:
+                  - generic: +
+                  - link "혼합파프리카(L) 1봉(2입)/으뜸농산/국산" [ref=f9e598] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e601]: 6,590원
+            - listitem [ref=f9e603]:
+              - article [ref=f9e604]:
+                - generic [ref=f9e605]:
+                  - img "쥬키니호박 5입/국산" [ref=f9e606]
+                  - generic [ref=f9e607]: 농식품바우처
+                  - generic [ref=f9e609]:
+                    - button "장바구니" [ref=f9e610] [cursor=pointer]
+                    - button "찜" [ref=f9e612] [cursor=pointer]
+                - generic [ref=f9e614]:
+                  - generic: +
+                  - link "쥬키니호박 5입/국산" [ref=f9e615] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e618]: 13,390원
+            - listitem [ref=f9e620]:
+              - article [ref=f9e621]:
+                - generic [ref=f9e622]:
+                  - img "백오이 10입/국산" [ref=f9e623]
+                  - generic [ref=f9e624]: 농식품바우처
+                  - generic [ref=f9e626]:
+                    - button "장바구니" [ref=f9e627] [cursor=pointer]
+                    - button "찜" [ref=f9e629] [cursor=pointer]
+                - generic [ref=f9e631]:
+                  - generic: +
+                  - link "백오이 10입/국산" [ref=f9e632] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e635]: 15,580원
+            - listitem [ref=f9e637]:
+              - article [ref=f9e638]:
+                - generic [ref=f9e639]:
+                  - img "#방풍나물 200G/국산" [ref=f9e640]
+                  - generic [ref=f9e641]: 농식품바우처
+                  - button "찜" [ref=f9e644] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e646]:
+                  - generic: +
+                  - link "#방풍나물 200G/국산" [ref=f9e647] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e650]: 2,100원
+            - listitem [ref=f9e652]:
+              - article [ref=f9e653]:
+                - generic [ref=f9e654]:
+                  - img "알뜰제주당근 2KG/국산" [ref=f9e655]
+                  - generic [ref=f9e656]: 농식품바우처
+                  - button "찜" [ref=f9e659] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e661]:
+                  - generic: +
+                  - link "알뜰제주당근 2KG/국산" [ref=f9e662] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e665]: 2,590원
+            - listitem [ref=f9e667]:
+              - article [ref=f9e668]:
+                - generic [ref=f9e669]:
+                  - img "깐마늘(소) 1KG/바른푸드" [ref=f9e670]
+                  - generic [ref=f9e671]: 농식품바우처
+                  - generic [ref=f9e673]:
+                    - button "장바구니" [ref=f9e674] [cursor=pointer]
+                    - button "찜" [ref=f9e676] [cursor=pointer]
+                - generic [ref=f9e678]:
+                  - generic: +
+                  - link "깐마늘(소) 1KG/바른푸드" [ref=f9e679] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e682]: 8,100원
+            - listitem [ref=f9e684]:
+              - article [ref=f9e685]:
+                - generic [ref=f9e686]:
+                  - img "백오이 5입/국산" [ref=f9e687]
+                  - generic [ref=f9e688]: 농식품바우처
+                  - generic [ref=f9e690]:
+                    - button "장바구니" [ref=f9e691] [cursor=pointer]
+                    - button "찜" [ref=f9e693] [cursor=pointer]
+                - generic [ref=f9e695]:
+                  - generic: +
+                  - link "백오이 5입/국산" [ref=f9e696] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e699]: 8,390원
+            - listitem [ref=f9e701]:
+              - article [ref=f9e702]:
+                - generic [ref=f9e703]:
+                  - img "#오이고추 200G" [ref=f9e704]
+                  - generic [ref=f9e705]: 농식품바우처
+                  - generic [ref=f9e707]:
+                    - button "장바구니" [ref=f9e708] [cursor=pointer]
+                    - button "찜" [ref=f9e710] [cursor=pointer]
+                - generic [ref=f9e712]:
+                  - generic: +
+                  - link "#오이고추 200G" [ref=f9e713] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e716]: 2,090원
+        - paragraph [ref=f9e719]
+        - generic [ref=f9e722]:
+          - generic [ref=f9e723]:
+            - heading [level=3] [ref=f9e724]:
+              - strong [ref=f9e725]: 장보고 축산/수산
+              - button "더보기" [ref=f9e726] [cursor=pointer]
+            - paragraph [ref=f9e727]: 신선함이 남다른 장보고!
+          - list [ref=f9e729]:
+            - listitem [ref=f9e730]:
+              - article [ref=f9e731]:
+                - generic [ref=f9e732]:
+                  - img "한우/안심(1+등급) 100G/국산" [ref=f9e733]
+                  - generic [ref=f9e734]: 농식품바우처
+                  - generic [ref=f9e736]:
+                    - button "장바구니" [ref=f9e737] [cursor=pointer]
+                    - button "찜" [ref=f9e739] [cursor=pointer]
+                - generic [ref=f9e741]:
+                  - generic: +
+                  - link "한우/안심(1+등급) 100G/국산" [ref=f9e742] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e745]: 14,900원
+            - listitem [ref=f9e747]:
+              - article [ref=f9e748]:
+                - generic [ref=f9e749]:
+                  - img "돈육돼지/등심 100G/국산" [ref=f9e750]
+                  - generic [ref=f9e751]: 농식품바우처
+                  - generic [ref=f9e753]:
+                    - button "장바구니" [ref=f9e754] [cursor=pointer]
+                    - button "찜" [ref=f9e756] [cursor=pointer]
+                - generic [ref=f9e758]:
+                  - generic: +
+                  - link "돈육돼지/등심 100G/국산" [ref=f9e759] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e762]: 1,250원
+            - listitem [ref=f9e764]:
+              - article [ref=f9e765]:
+                - generic [ref=f9e766]:
+                  - img "돈육돼지/뒷다리(냉동) 100G/국산" [ref=f9e767]
+                  - generic [ref=f9e768]: 농식품바우처
+                  - generic [ref=f9e770]:
+                    - button "장바구니" [ref=f9e771] [cursor=pointer]
+                    - button "찜" [ref=f9e773] [cursor=pointer]
+                - generic [ref=f9e775]:
+                  - generic: +
+                  - link "돈육돼지/뒷다리(냉동) 100G/국산" [ref=f9e776] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e779]: 750원
+            - listitem [ref=f9e781]:
+              - article [ref=f9e782]:
+                - generic [ref=f9e783]:
+                  - img "돈육돼지/등뼈(냉동) 1KG/국산" [ref=f9e784]
+                  - generic [ref=f9e785]: 농식품바우처
+                  - generic [ref=f9e787]:
+                    - button "장바구니" [ref=f9e788] [cursor=pointer]
+                    - button "찜" [ref=f9e790] [cursor=pointer]
+                - generic [ref=f9e792]:
+                  - generic: +
+                  - link "돈육돼지/등뼈(냉동) 1KG/국산" [ref=f9e793] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e796]: 4,500원
+            - listitem [ref=f9e798]:
+              - article [ref=f9e799]:
+                - generic [ref=f9e800]:
+                  - img "육우(등심) 100G/국산" [ref=f9e801]
+                  - generic [ref=f9e802]: 농식품바우처
+                  - generic [ref=f9e804]:
+                    - button "장바구니" [ref=f9e805] [cursor=pointer]
+                    - button "찜" [ref=f9e807] [cursor=pointer]
+                - generic [ref=f9e809]:
+                  - generic: +
+                  - link "육우(등심) 100G/국산" [ref=f9e810] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e813]: 5,500원
+            - listitem [ref=f9e815]:
+              - article [ref=f9e816]:
+                - generic [ref=f9e817]:
+                  - img "돈육돼지/목전지 500G/미국" [ref=f9e818]
+                  - generic [ref=f9e819]:
+                    - button "장바구니" [ref=f9e820] [cursor=pointer]
+                    - button "찜" [ref=f9e822] [cursor=pointer]
+                - generic [ref=f9e824]:
+                  - generic: +
+                  - link "돈육돼지/목전지 500G/미국" [ref=f9e825] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e828]: 4,250원
+            - listitem [ref=f9e830]:
+              - article [ref=f9e831]:
+                - generic [ref=f9e832]:
+                  - img "우육/삼겹양지(냉동) 500G/미국" [ref=f9e833]
+                  - generic [ref=f9e834]:
+                    - button "장바구니" [ref=f9e835] [cursor=pointer]
+                    - button "찜" [ref=f9e837] [cursor=pointer]
+                - generic [ref=f9e839]:
+                  - generic: +
+                  - link "우육/삼겹양지(냉동) 500G/미국" [ref=f9e840] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e843]: 9,950원
+            - listitem [ref=f9e845]:
+              - article [ref=f9e846]:
+                - generic [ref=f9e847]:
+                  - img "돈육돼지/사태 100G/국산" [ref=f9e848]
+                  - generic [ref=f9e849]: 농식품바우처
+                  - generic [ref=f9e851]:
+                    - button "장바구니" [ref=f9e852] [cursor=pointer]
+                    - button "찜" [ref=f9e854] [cursor=pointer]
+                - generic [ref=f9e856]:
+                  - generic: +
+                  - link "돈육돼지/사태 100G/국산" [ref=f9e857] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e860]: 1,300원
+        - paragraph [ref=f9e863]
+        - generic [ref=f9e866]:
+          - generic [ref=f9e867]:
+            - heading [level=3] [ref=f9e868]:
+              - strong [ref=f9e869]: 대용량음료
+              - button "더보기" [ref=f9e870] [cursor=pointer]
+            - paragraph [ref=f9e871]
+          - list [ref=f9e873]:
+            - listitem [ref=f9e874]:
+              - article [ref=f9e875]:
+                - generic [ref=f9e876]:
+                  - img "밀키스 340ML BOX (24)" [ref=f9e877]
+                  - generic [ref=f9e878]: 박스상품
+                  - generic [ref=f9e880]:
+                    - button "장바구니" [ref=f9e881] [cursor=pointer]
+                    - button "찜" [ref=f9e883] [cursor=pointer]
+                - generic [ref=f9e885]:
+                  - generic: +
+                  - link "밀키스 340ML BOX (24)" [ref=f9e886] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e889]: 19,000원
+            - listitem [ref=f9e891]:
+              - article [ref=f9e892]:
+                - generic [ref=f9e893]:
+                  - img "마운틴듀 355ML BOX (24)" [ref=f9e894]
+                  - generic [ref=f9e895]: 박스상품
+                  - button "찜" [ref=f9e898] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e900]:
+                  - generic: +
+                  - link "마운틴듀 355ML BOX (24)" [ref=f9e901] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e904]: 18,800원
+            - listitem [ref=f9e906]:
+              - article [ref=f9e907]:
+                - generic [ref=f9e908]:
+                  - img "펩시콜라 190ML/롯데 BOX (30)" [ref=f9e909]
+                  - generic [ref=f9e910]: 박스상품
+                  - generic [ref=f9e912]:
+                    - button "장바구니" [ref=f9e913] [cursor=pointer]
+                    - button "찜" [ref=f9e915] [cursor=pointer]
+                - generic [ref=f9e917]:
+                  - generic: +
+                  - link "펩시콜라 190ML/롯데 BOX (30)" [ref=f9e918] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e921]: 17,000원
+            - listitem [ref=f9e923]:
+              - article [ref=f9e924]:
+                - generic [ref=f9e925]:
+                  - img "조지아(오리지날) 240ML/코카 BOX (30)" [ref=f9e926]
+                  - generic [ref=f9e927]: 박스상품
+                  - generic [ref=f9e929]:
+                    - button "장바구니" [ref=f9e930] [cursor=pointer]
+                    - button "찜" [ref=f9e932] [cursor=pointer]
+                - generic [ref=f9e934]:
+                  - generic: +
+                  - link "조지아(오리지날) 240ML/코카 BOX (30)" [ref=f9e935] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e938]: 21,000원
+            - listitem [ref=f9e940]:
+              - article [ref=f9e941]:
+                - generic [ref=f9e942]:
+                  - img "솔의눈 240ML/롯데 BOX (30)" [ref=f9e943]
+                  - generic [ref=f9e944]: 박스상품
+                  - button "찜" [ref=f9e947] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e949]:
+                  - generic: +
+                  - link "솔의눈 240ML/롯데 BOX (30)" [ref=f9e950] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e953]: 25,000원
+            - listitem [ref=f9e955]:
+              - article [ref=f9e956]:
+                - generic [ref=f9e957]:
+                  - img "펩시콜라 1.5L/롯데 BOX (12)" [ref=f9e958]
+                  - generic [ref=f9e959]: 박스상품
+                  - generic [ref=f9e961]:
+                    - button "장바구니" [ref=f9e962] [cursor=pointer]
+                    - button "찜" [ref=f9e964] [cursor=pointer]
+                - generic [ref=f9e966]:
+                  - generic: +
+                  - link "펩시콜라 1.5L/롯데 BOX (12)" [ref=f9e967] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e970]: 30,500원
+            - listitem [ref=f9e972]:
+              - article [ref=f9e973]:
+                - generic [ref=f9e974]:
+                  - img "실론티 240ML/롯데 BOX (30)" [ref=f9e975]
+                  - generic [ref=f9e976]: 박스상품
+                  - generic [ref=f9e978]:
+                    - button "장바구니" [ref=f9e979] [cursor=pointer]
+                    - button "찜" [ref=f9e981] [cursor=pointer]
+                - generic [ref=f9e983]:
+                  - generic: +
+                  - link "실론티 240ML/롯데 BOX (30)" [ref=f9e984] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e987]: 20,000원
+            - listitem [ref=f9e989]:
+              - article [ref=f9e990]:
+                - generic [ref=f9e991]:
+                  - img "코카콜라(업소용) 500MLx24입" [ref=f9e992]
+                  - generic [ref=f9e993]:
+                    - generic [ref=f9e994]: 박스상품
+                    - generic [ref=f9e995]: 개별배송
+                  - generic [ref=f9e996]:
+                    - button "장바구니" [ref=f9e997] [cursor=pointer]
+                    - button "찜" [ref=f9e999] [cursor=pointer]
+                - generic [ref=f9e1001]:
+                  - generic: +
+                  - link "코카콜라(업소용) 500MLx24입" [ref=f9e1002] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1005]: 28,200원
+        - generic [ref=f9e1008]:
+          - generic [ref=f9e1009]:
+            - heading [level=3] [ref=f9e1010]:
+              - strong [ref=f9e1011]: 대용량과자
+              - button "더보기" [ref=f9e1012] [cursor=pointer]
+            - paragraph [ref=f9e1013]
+          - list [ref=f9e1015]:
+            - listitem [ref=f9e1016]:
+              - article [ref=f9e1017]:
+                - generic [ref=f9e1018]:
+                  - img "발효보리건빵 6KG/㈜신흥제과" [ref=f9e1019]
+                  - generic [ref=f9e1020]:
+                    - button "장바구니" [ref=f9e1021] [cursor=pointer]
+                    - button "찜" [ref=f9e1023] [cursor=pointer]
+                - generic [ref=f9e1025]:
+                  - generic: +
+                  - link "발효보리건빵 6KG/㈜신흥제과" [ref=f9e1026] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1029]: 17,600원
+            - listitem [ref=f9e1031]:
+              - article [ref=f9e1032]:
+                - generic [ref=f9e1033]:
+                  - img "버터쿠키 1.8KG/㈜신흥제과" [ref=f9e1034]
+                  - generic [ref=f9e1035]:
+                    - button "장바구니" [ref=f9e1036] [cursor=pointer]
+                    - button "찜" [ref=f9e1038] [cursor=pointer]
+                - generic [ref=f9e1040]:
+                  - generic: +
+                  - link "버터쿠키 1.8KG/㈜신흥제과" [ref=f9e1041] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1044]: 12,700원
+            - listitem [ref=f9e1046]:
+              - article [ref=f9e1047]:
+                - generic [ref=f9e1048]:
+                  - img "감자크래커 1.8KG/신흥제과" [ref=f9e1049]
+                  - generic [ref=f9e1050]:
+                    - button "장바구니" [ref=f9e1051] [cursor=pointer]
+                    - button "찜" [ref=f9e1053] [cursor=pointer]
+                - generic [ref=f9e1055]:
+                  - generic: +
+                  - link "감자크래커 1.8KG/신흥제과" [ref=f9e1056] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1059]: 12,700원
+            - listitem [ref=f9e1061]:
+              - article [ref=f9e1062]:
+                - generic [ref=f9e1063]:
+                  - img "뉴이브콘 1KG/해륙식품" [ref=f9e1064]
+                  - button "찜" [ref=f9e1066] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e1068]:
+                  - generic: +
+                  - link "뉴이브콘 1KG/해륙식품" [ref=f9e1069] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1072]: 8,900원
+            - listitem [ref=f9e1074]:
+              - article [ref=f9e1075]:
+                - generic [ref=f9e1076]:
+                  - img "해씨쵸코 600G/진미식품(주)" [ref=f9e1077]
+                  - generic [ref=f9e1078]:
+                    - button "장바구니" [ref=f9e1079] [cursor=pointer]
+                    - button "찜" [ref=f9e1081] [cursor=pointer]
+                - generic [ref=f9e1083]:
+                  - generic: +
+                  - link "해씨쵸코 600G/진미식품(주)" [ref=f9e1084] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1087]: 3,500원
+            - listitem [ref=f9e1089]:
+              - article [ref=f9e1090]:
+                - generic [ref=f9e1091]:
+                  - img "오란다과자 1.5KG/태광제과" [ref=f9e1092]
+                  - generic [ref=f9e1093]:
+                    - button "장바구니" [ref=f9e1094] [cursor=pointer]
+                    - button "찜" [ref=f9e1096] [cursor=pointer]
+                - generic [ref=f9e1098]:
+                  - generic: +
+                  - link "오란다과자 1.5KG/태광제과" [ref=f9e1099] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1102]: 9,400원
+            - listitem [ref=f9e1104]:
+              - article [ref=f9e1105]:
+                - generic [ref=f9e1106]:
+                  - img "참깨쿠키 1.8KG/신흥" [ref=f9e1107]
+                  - button "찜" [ref=f9e1109] [cursor=pointer]
+                  - text: 품절되었습니다
+                - generic [ref=f9e1111]:
+                  - generic: +
+                  - link "참깨쿠키 1.8KG/신흥" [ref=f9e1112] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1115]: 12,350원
+            - listitem [ref=f9e1117]:
+              - article [ref=f9e1118]:
+                - generic [ref=f9e1119]:
+                  - img "허니꿀짱 1KG/스위티코리아(주)" [ref=f9e1120]
+                  - generic [ref=f9e1121]:
+                    - button "장바구니" [ref=f9e1122] [cursor=pointer]
+                    - button "찜" [ref=f9e1124] [cursor=pointer]
+                - generic [ref=f9e1126]:
+                  - generic: +
+                  - link "허니꿀짱 1KG/스위티코리아(주)" [ref=f9e1127] [cursor=pointer]:
+                    - /url: "#"
+                  - strong [ref=f9e1130]: 6,000원
+        - generic [ref=f9e1133]:
+          - generic [ref=f9e1134]:
+            - strong [ref=f9e1135]: 장보고 레시피
+            - link "더보기" [ref=f9e1136] [cursor=pointer]:
+              - /url: javascript:void(0)
+          - generic [ref=f9e1138]:
+            - generic [ref=f9e1139]:
+              - link [ref=f9e1140] [cursor=pointer]:
+                - /url: "#"
+              - generic [ref=f9e1141]: "고소해서 고소당할 수 있는 :: 콩국수 레시피"
+            - generic [ref=f9e1142]:
+              - link [ref=f9e1143] [cursor=pointer]:
+                - /url: "#"
+              - generic [ref=f9e1144]: "시판퐁커리 소스로 간단하게 :: 푸팟퐁커리 만들기"
+            - generic [ref=f9e1145]:
+              - link [ref=f9e1146] [cursor=pointer]:
+                - /url: "#"
+              - generic [ref=f9e1147]: "한끼 뚝딱! 매일 먹고 싶은 :: 우삼겹덮밥 레시피"
+        - generic [ref=f9e1149]:
+          - generic [ref=f9e1150]:
+            - heading "장보고식자재마트 매장안내" [level=2] [ref=f9e1152]
+            - generic [ref=f9e1153]:
+              - list [ref=f9e1154]:
+                - listitem [ref=f9e1155]:
+                  - link "본사" [ref=f9e1156] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1157]:
+                  - link "농산물류센터" [ref=f9e1158] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1159]:
+                  - link "고객배송센터" [ref=f9e1160] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1161]:
+                  - link "종합물류센터" [ref=f9e1162] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1163]:
+                  - link "이비즈사업부" [ref=f9e1164] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1165]:
+                  - link "청과사업부" [ref=f9e1166] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1167]:
+                  - link "축산사업부" [ref=f9e1168] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1169]:
+                  - link "급식직거래사업부" [ref=f9e1170] [cursor=pointer]:
+                    - /url: /co/intro
+              - list [ref=f9e1171]:
+                - listitem [ref=f9e1172]:
+                  - link "성서점" [ref=f9e1173] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1174]:
+                  - link "월배점" [ref=f9e1175] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1176]:
+                  - link "경산점" [ref=f9e1177] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1178]:
+                  - link "칠곡점" [ref=f9e1179] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1180]:
+                  - link "칠성점" [ref=f9e1181] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1182]:
+                  - link "구미점" [ref=f9e1183] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1184]:
+                  - link "감삼점" [ref=f9e1185] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1186]:
+                  - link "진천점" [ref=f9e1187] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1188]:
+                  - link "반야월점" [ref=f9e1189] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1190]:
+                  - link "부산신평점" [ref=f9e1191] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1192]:
+                  - link "영대점" [ref=f9e1193] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1194]:
+                  - link "상인점" [ref=f9e1195] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1196]:
+                  - link "울산옥동점" [ref=f9e1197] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1198]:
+                  - link "황금점" [ref=f9e1199] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1200]:
+                  - link "포항 오천점" [ref=f9e1201] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1202]:
+                  - link "중방점" [ref=f9e1203] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1204]:
+                  - link "마켓 진천점" [ref=f9e1205] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1206]:
+                  - link "봉무점" [ref=f9e1207] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1208]:
+                  - link "중리점" [ref=f9e1209] [cursor=pointer]:
+                    - /url: /co/intro
+                - listitem [ref=f9e1210]:
+                  - link "내당점" [ref=f9e1211] [cursor=pointer]:
+                    - /url: /co/intro
+          - generic [ref=f9e1212]:
+            - heading [level=2] [ref=f9e1214]:
+              - link "공지사항" [ref=f9e1215] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/cs/notice
+            - list [ref=f9e1216]:
+              - listitem [ref=f9e1217]:
+                - link "장페이 추가지급 이벤트 (최대 2.5%)" [ref=f9e1218] [cursor=pointer]:
+                  - /url: javascript:void(0)
+                - generic [ref=f9e1219]: 2026-08-13
+              - listitem [ref=f9e1220]:
+                - link "매장별 '바로배송' 서비스 가능 지역 안내" [ref=f9e1221] [cursor=pointer]:
+                  - /url: javascript:void(0)
+                - generic [ref=f9e1222]: 2026-04-29
+              - listitem [ref=f9e1223]:
+                - link "'당일배송' 이용방법" [ref=f9e1224] [cursor=pointer]:
+                  - /url: javascript:void(0)
+                - generic [ref=f9e1225]: 2024-05-28
+      - text: 
+    - separator [ref=f9e1226]
+    - contentinfo [ref=f9e1227]:
+      - contentinfo [ref=f9e1228]:
+        - generic [ref=f9e1230]:
+          - generic [ref=f9e1231]:
+            - generic [ref=f9e1232]:
+              - strong [ref=f9e1233]: 회사안내 및 약관
+              - list:
+                - listitem [ref=f9e1234]:
+                  - link "회사소개" [ref=f9e1235] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/co/intro
+                - listitem [ref=f9e1236]:
+                  - link "이용약관" [ref=f9e1237] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/ag/agree
+                - listitem [ref=f9e1238]:
+                  - link "개인정보처리방침" [ref=f9e1239] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/ag/policy
+                - listitem [ref=f9e1240]:
+                  - link "공지사항" [ref=f9e1241] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/cs/notice
+            - list [ref=f9e1243]:
+              - listitem [ref=f9e1244]:
+                - link "페이스북" [ref=f9e1245] [cursor=pointer]:
+                  - /url: https://www.facebook.com/profile.php?id=100011656551975
+              - listitem [ref=f9e1247]:
+                - link "인스타그램" [ref=f9e1248] [cursor=pointer]:
+                  - /url: https://www.instagram.com/jangboja/
+              - listitem [ref=f9e1250]:
+                - link "유튜브 채널" [ref=f9e1251] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@jangbogofood
+              - listitem [ref=f9e1253]:
+                - link "네이버 블로그" [ref=f9e1254] [cursor=pointer]:
+                  - /url: https://blog.naver.com/jangbogofood
+              - listitem [ref=f9e1256]:
+                - link "카카오 채널" [ref=f9e1257] [cursor=pointer]:
+                  - /url: https://pf.kakao.com/_xdIPad
+          - generic [ref=f9e1259]:
+            - generic [ref=f9e1260]:
+              - strong [ref=f9e1262]: (주)장보고식자재마트
+              - list [ref=f9e1263]:
+                - listitem [ref=f9e1264]:
+                  - generic [ref=f9e1265]: "대표 : 서정권"
+                - listitem [ref=f9e1266]:
+                  - generic [ref=f9e1267]: "주소 : 대구 북구 칠곡중앙대로 21 (팔달동)"
+                - listitem [ref=f9e1268]:
+                  - generic [ref=f9e1269]: "사업자 등록번호 : 514-81-56749"
+                  - link "사업자 정보확인" [ref=f9e1270] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=f9e1271]:
+                  - generic [ref=f9e1272]: "통신판매업 신고번호 : 2012-대구북구-0302"
+                - listitem [ref=f9e1273]:
+                  - generic [ref=f9e1274]: "개인정보관리자 : 이용태 jangbogofood@naver.com"
+            - generic [ref=f9e1275]:
+              - generic [ref=f9e1276]:
+                - term [ref=f9e1277]: 안심거래 서비스 가맹점
+                - definition [ref=f9e1278]:
+                  - link "KICC 에스크로 서비스 가입사실 확인" [ref=f9e1279] [cursor=pointer]:
+                    - /url: https://office.easypay.co.kr/homepage/other_service/EscrowAuthAction.do?memb_id=05510942
+              - paragraph [ref=f9e1280]: 고객님은 안전거래를 위해 현금 등으로 결제 시 저희 쇼핑몰에서 가입한 구매안전 서비스를 이용하실 수 있습니다.
+          - generic [ref=f9e1281]:
+            - strong [ref=f9e1282]:
+              - link "고객센터" [ref=f9e1283] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/cs/faq
+            - generic [ref=f9e1284]:
+              - generic [ref=f9e1285]: 1544-4490
+              - generic [ref=f9e1286]:
+                - term [ref=f9e1287]: "운영시간 :"
+                - definition [ref=f9e1288]: 평일 08:30 ~ 20:30
+                - definition [ref=f9e1289]: 토요일 08:30 ~ 17:30
+              - generic [ref=f9e1290]: 일요일 휴무
+              - generic [ref=f9e1291]:
+                - link "자주하는 질문" [ref=f9e1292] [cursor=pointer]:
+                  - /url: https://www.jangboja.com:443/cs/faq
+                - link "1:1문의" [ref=f9e1293] [cursor=pointer]:
+                  - /url: https://www.jangboja.com:443/cuca0020Form
+          - paragraph [ref=f9e1294]: Copyright JangbogoFoodMart Co, LTD. All rights reserved.
+  - log [ref=f9e1295]
+  - button "장보고마트 상담 버튼" [ref=f9e1297]

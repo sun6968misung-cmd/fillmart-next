@@ -11,7 +11,7 @@ import { Footer } from '@/components/layout/Footer';
 const geist = Geist({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: '필마트 — 신선식품 당일배송',
+  title: '필식자재마마트 다사점 — 신선식품 당일배송',
   description: '신선한 야채, 과일, 육류, 수산물을 당일배송으로 만나보세요.',
 };
 

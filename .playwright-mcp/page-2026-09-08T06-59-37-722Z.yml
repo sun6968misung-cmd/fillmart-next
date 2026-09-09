@@ -1,0 +1,140 @@
+- generic [ref=f2e1]:
+  - banner [ref=f2e2]:
+    - generic [ref=f2e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f2e5]:
+      - link "필마트 필마트" [ref=f2e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f2e7]
+        - generic [ref=f2e8]: 필마트
+      - generic [ref=f2e9]:
+        - textbox "상품을 검색해보세요!" [ref=f2e10]
+        - button [ref=f2e11]
+      - generic [ref=f2e15]:
+        - link "주문내역" [ref=f2e93] [cursor=pointer]:
+          - /url: /orders
+        - link "나의 찜" [ref=f2e21] [cursor=pointer]:
+          - /url: /wishlist
+        - link "장바구니" [ref=f2e26] [cursor=pointer]:
+          - /url: /cart
+    - generic [ref=f2e35]:
+      - generic [ref=f2e36]:
+        - button "카테고리" [ref=f2e37]
+        - navigation [ref=f2e39]:
+          - link "홈" [ref=f2e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f2e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f2e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f2e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f2e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f2e45]:
+        - generic [ref=f2e98]: 테스트님
+        - button "로그아웃" [ref=f2e99]
+        - link "주문내역" [ref=f2e100] [cursor=pointer]:
+          - /url: /orders
+        - link "고객센터" [ref=f2e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f2e49]:
+    - generic [ref=f2e50]:
+      - link "홈으로" [ref=f2e102] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f2e52]:
+        - generic [ref=f2e105]:
+          - heading "오늘만 특가" [level=1] [ref=f2e108]
+          - generic [ref=f2e109]: 1인 최대 2개
+        - generic [ref=f2e110]: 🥩
+        - generic [ref=f2e112]:
+          - heading "국내산 삼겹살 500g" [level=2] [ref=f2e113]
+          - paragraph [ref=f2e114]: 제주 흑돼지 삼겹살 당일 도축 신선 배송
+        - generic [ref=f2e115]:
+          - generic [ref=f2e116]: 12,900원
+          - generic [ref=f2e117]: 19,900원
+          - generic [ref=f2e118]: 35%
+        - paragraph [ref=f2e119]:
+          - text: 1인 최대 2개 · 현재
+          - generic [ref=f2e120]: 0개
+          - text: 담음
+        - button "장바구니 담기" [ref=f2e121]
+        - generic [ref=f2e122]:
+          - paragraph [ref=f2e123]: 배송 안내
+          - paragraph [ref=f2e124]:
+            - text: • 오전 10시 이전 주문 시
+            - strong [ref=f2e125]: 당일 배송
+            - text: 처리됩니다.
+          - paragraph [ref=f2e126]: • 10만원 이상 주문 시 무료배송
+          - paragraph [ref=f2e127]: • 신선도가 마음에 들지 않으시면 수령일 24시간 이내 전액 환불
+      - generic [ref=f2e128]:
+        - button "상품정보" [ref=f2e129]
+        - button "상품평 (5)" [active] [ref=f2e130]
+        - button "배송/교환/반품 안내" [ref=f2e131]
+      - generic [ref=f2e132]:
+        - generic [ref=f2e133]:
+          - generic [ref=f2e134]: 좋아요
+          - paragraph [ref=f2e146]: 특가라서 반신반의했는데 품질이 정말 좋아요! 신선도도 완벽합니다.
+          - paragraph [ref=f2e147]: 2026.08.30 / 김*연
+        - generic [ref=f2e148]:
+          - generic [ref=f2e149]: 좋아요
+          - paragraph [ref=f2e161]: 이 가격에 이 퀄리티라니 놀랍네요. 다음 특가도 꼭 노릴게요.
+          - paragraph [ref=f2e162]: 2026.08.22 / 박*훈
+        - generic [ref=f2e163]:
+          - generic [ref=f2e164]: 만족해요
+          - paragraph [ref=f2e176]: 배송이 빠르고 포장도 꼼꼼했어요. 전반적으로 만족합니다.
+          - paragraph [ref=f2e177]: 2026.08.15 / 이*수
+        - generic [ref=f2e178]:
+          - generic [ref=f2e179]: 좋아요
+          - paragraph [ref=f2e191]: 오늘만 특가 항상 챙겨보는데 이번엔 정말 득템했어요!
+          - paragraph [ref=f2e192]: 2026.08.09 / 최*진
+        - generic [ref=f2e193]:
+          - generic [ref=f2e194]: 보통이에요
+          - paragraph [ref=f2e206]: 가격 대비 나쁘지 않아요. 기대가 너무 컸을 수도 있어요.
+          - paragraph [ref=f2e207]: 2026.07.28 / 정*아
+  - contentinfo [ref=f2e56]:
+    - generic [ref=f2e57]:
+      - generic [ref=f2e58]:
+        - generic [ref=f2e59]:
+          - heading "필마트" [level=3] [ref=f2e60]
+          - generic [ref=f2e61]:
+            - paragraph [ref=f2e62]: 대구광역시 달성군 다사읍 달구벌대로 858
+            - paragraph [ref=f2e63]:
+              - link "053-593-8253" [ref=f2e64] [cursor=pointer]:
+                - /url: tel:0535938253
+            - paragraph [ref=f2e65]: 매일 08:00~22:00
+        - generic [ref=f2e66]:
+          - heading "고객지원" [level=3] [ref=f2e67]
+          - list [ref=f2e68]:
+            - listitem [ref=f2e69]:
+              - link "공지사항" [ref=f2e70] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f2e71]:
+              - link "자주 묻는 질문" [ref=f2e72] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f2e73]:
+              - link "고객문의" [ref=f2e74] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f2e75]:
+          - heading "약관" [level=3] [ref=f2e76]
+          - list [ref=f2e77]:
+            - listitem [ref=f2e78]:
+              - link "이용약관" [ref=f2e79] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f2e80]:
+              - link "개인정보처리방침" [ref=f2e81] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f2e82]:
+          - heading "주문" [level=3] [ref=f2e83]
+          - list [ref=f2e84]:
+            - listitem [ref=f2e85]:
+              - link "주문내역" [ref=f2e86] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f2e87]:
+              - link "찜 목록" [ref=f2e88] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f2e89]
+      - generic [ref=f2e90]:
+        - paragraph [ref=f2e91]: 주식회사 필식자재마트 · 대표 서익준 · 사업자등록번호 702-85-01475
+        - paragraph [ref=f2e92]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - alert [ref=f2e208]

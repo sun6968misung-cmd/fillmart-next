@@ -1,0 +1,281 @@
+- generic [ref=f7e1]:
+  - banner [ref=f7e2]:
+    - generic [ref=f7e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f7e5]:
+      - link "필마트 필마트" [ref=f7e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f7e7]
+        - generic [ref=f7e8]: 필마트
+      - generic [ref=f7e9]:
+        - textbox "상품을 검색해보세요!" [ref=f7e10]
+        - button [ref=f7e11]
+      - generic [ref=f7e15]:
+        - link "로그인" [ref=f7e16] [cursor=pointer]:
+          - /url: /auth
+        - link "나의 찜" [ref=f7e21] [cursor=pointer]:
+          - /url: /wishlist
+        - button "장바구니" [ref=f7e26]
+    - generic [ref=f7e35]:
+      - generic [ref=f7e36]:
+        - button "카테고리" [ref=f7e37]
+        - navigation [ref=f7e39]:
+          - link "홈" [ref=f7e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f7e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f7e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f7e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f7e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f7e45]:
+        - link "로그인" [ref=f7e46] [cursor=pointer]:
+          - /url: /auth
+        - link "회원가입" [ref=f7e47] [cursor=pointer]:
+          - /url: /auth
+        - link "고객센터" [ref=f7e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f7e49]:
+    - generic [ref=f7e50]:
+      - heading "관리자" [level=1] [ref=f7e51]
+      - generic [ref=f7e96]:
+        - tablist [ref=f7e97]:
+          - tab "주문" [ref=f7e98]
+          - tab "상품" [active] [selected] [ref=f7e99]
+          - tab "공지" [ref=f7e100]
+          - tab "설정" [ref=f7e101]
+        - tabpanel "상품" [ref=f7e134]:
+          - generic [ref=f7e135]:
+            - generic [ref=f7e136]: 상품 가격/이름 수정
+            - table [ref=f7e140]:
+              - rowgroup [ref=f7e141]:
+                - row [ref=f7e142]:
+                  - columnheader "상품명" [ref=f7e143]
+                  - columnheader "기본 가격" [ref=f7e144]
+                  - columnheader "수정 가격" [ref=f7e145]
+                  - columnheader "저장" [ref=f7e146]
+              - rowgroup [ref=f7e147]:
+                - row [ref=f7e148]:
+                  - cell "국내산 삼겹살 500g" [ref=f7e149]
+                  - cell "9,900원" [ref=f7e150]
+                  - cell [ref=f7e151]:
+                    - spinbutton [ref=f7e152]: "9900"
+                  - cell [ref=f7e153]:
+                    - button "저장" [ref=f7e154]
+                - row [ref=f7e155]:
+                  - cell "양파 3kg" [ref=f7e156]
+                  - cell "3,900원" [ref=f7e157]
+                  - cell [ref=f7e158]:
+                    - spinbutton [ref=f7e159]: "3900"
+                  - cell [ref=f7e160]:
+                    - button "저장" [ref=f7e161]
+                - row [ref=f7e162]:
+                  - cell "계란 30구 특란" [ref=f7e163]
+                  - cell "8,900원" [ref=f7e164]
+                  - cell [ref=f7e165]:
+                    - spinbutton [ref=f7e166]: "8900"
+                  - cell [ref=f7e167]:
+                    - button "저장" [ref=f7e168]
+                - row [ref=f7e169]:
+                  - cell "닭가슴살 1kg" [ref=f7e170]
+                  - cell "7,900원" [ref=f7e171]
+                  - cell [ref=f7e172]:
+                    - spinbutton [ref=f7e173]: "7900"
+                  - cell [ref=f7e174]:
+                    - button "저장" [ref=f7e175]
+                - row [ref=f7e176]:
+                  - cell "고등어 2마리" [ref=f7e177]
+                  - cell "5,900원" [ref=f7e178]
+                  - cell [ref=f7e179]:
+                    - spinbutton [ref=f7e180]: "5900"
+                  - cell [ref=f7e181]:
+                    - button "저장" [ref=f7e182]
+                - row [ref=f7e183]:
+                  - cell "국산 두부 2개입" [ref=f7e184]
+                  - cell "2,900원" [ref=f7e185]
+                  - cell [ref=f7e186]:
+                    - spinbutton [ref=f7e187]: "2900"
+                  - cell [ref=f7e188]:
+                    - button "저장" [ref=f7e189]
+                - row [ref=f7e190]:
+                  - cell "양배추 1통" [ref=f7e191]
+                  - cell "3,500원" [ref=f7e192]
+                  - cell [ref=f7e193]:
+                    - spinbutton [ref=f7e194]: "3500"
+                  - cell [ref=f7e195]:
+                    - button "저장" [ref=f7e196]
+                - row [ref=f7e197]:
+                  - cell "대파 1단" [ref=f7e198]
+                  - cell "1,900원" [ref=f7e199]
+                  - cell [ref=f7e200]:
+                    - spinbutton [ref=f7e201]: "1900"
+                  - cell [ref=f7e202]:
+                    - button "저장" [ref=f7e203]
+                - row [ref=f7e204]:
+                  - cell "햇감자 2.5kg" [ref=f7e205]
+                  - cell "5,900원" [ref=f7e206]
+                  - cell [ref=f7e207]:
+                    - spinbutton [ref=f7e208]: "5900"
+                  - cell [ref=f7e209]:
+                    - button "저장" [ref=f7e210]
+                - row [ref=f7e211]:
+                  - cell "당근 1kg" [ref=f7e212]
+                  - cell "2,900원" [ref=f7e213]
+                  - cell [ref=f7e214]:
+                    - spinbutton [ref=f7e215]: "2900"
+                  - cell [ref=f7e216]:
+                    - button "저장" [ref=f7e217]
+                - row [ref=f7e218]:
+                  - cell "수박 (소) 1통" [ref=f7e219]
+                  - cell "12,900원" [ref=f7e220]
+                  - cell [ref=f7e221]:
+                    - spinbutton [ref=f7e222]: "12900"
+                  - cell [ref=f7e223]:
+                    - button "저장" [ref=f7e224]
+                - row [ref=f7e225]:
+                  - cell "복숭아 1.5kg" [ref=f7e226]
+                  - cell "8,900원" [ref=f7e227]
+                  - cell [ref=f7e228]:
+                    - spinbutton [ref=f7e229]: "8900"
+                  - cell [ref=f7e230]:
+                    - button "저장" [ref=f7e231]
+                - row [ref=f7e232]:
+                  - cell "포도 2kg" [ref=f7e233]
+                  - cell "9,900원" [ref=f7e234]
+                  - cell [ref=f7e235]:
+                    - spinbutton [ref=f7e236]: "9900"
+                  - cell [ref=f7e237]:
+                    - button "저장" [ref=f7e238]
+                - row [ref=f7e239]:
+                  - cell "방울토마토 1kg" [ref=f7e240]
+                  - cell "4,900원" [ref=f7e241]
+                  - cell [ref=f7e242]:
+                    - spinbutton [ref=f7e243]: "4900"
+                  - cell [ref=f7e244]:
+                    - button "저장" [ref=f7e245]
+                - row [ref=f7e246]:
+                  - cell "한우 불고기 300g" [ref=f7e247]
+                  - cell "16,900원" [ref=f7e248]
+                  - cell [ref=f7e249]:
+                    - spinbutton [ref=f7e250]: "16900"
+                  - cell [ref=f7e251]:
+                    - button "저장" [ref=f7e252]
+                - row [ref=f7e253]:
+                  - cell "돼지 목살 500g" [ref=f7e254]
+                  - cell "7,900원" [ref=f7e255]
+                  - cell [ref=f7e256]:
+                    - spinbutton [ref=f7e257]: "7900"
+                  - cell [ref=f7e258]:
+                    - button "저장" [ref=f7e259]
+                - row [ref=f7e260]:
+                  - cell "닭볶음탕용 1kg" [ref=f7e261]
+                  - cell "6,900원" [ref=f7e262]
+                  - cell [ref=f7e263]:
+                    - spinbutton [ref=f7e264]: "6900"
+                  - cell [ref=f7e265]:
+                    - button "저장" [ref=f7e266]
+                - row [ref=f7e267]:
+                  - cell "오징어 2마리" [ref=f7e268]
+                  - cell "7,900원" [ref=f7e269]
+                  - cell [ref=f7e270]:
+                    - spinbutton [ref=f7e271]: "7900"
+                  - cell [ref=f7e272]:
+                    - button "저장" [ref=f7e273]
+                - row [ref=f7e274]:
+                  - cell "생새우 500g" [ref=f7e275]
+                  - cell "12,900원" [ref=f7e276]
+                  - cell [ref=f7e277]:
+                    - spinbutton [ref=f7e278]: "12900"
+                  - cell [ref=f7e279]:
+                    - button "저장" [ref=f7e280]
+                - row [ref=f7e281]:
+                  - cell "손질 고등어 4토막" [ref=f7e282]
+                  - cell "6,900원" [ref=f7e283]
+                  - cell [ref=f7e284]:
+                    - spinbutton [ref=f7e285]: "6900"
+                  - cell [ref=f7e286]:
+                    - button "저장" [ref=f7e287]
+                - row [ref=f7e288]:
+                  - cell "신라면 멀티 5개입" [ref=f7e289]
+                  - cell "4,200원" [ref=f7e290]
+                  - cell [ref=f7e291]:
+                    - spinbutton [ref=f7e292]: "4200"
+                  - cell [ref=f7e293]:
+                    - button "저장" [ref=f7e294]
+                - row [ref=f7e295]:
+                  - cell "부침두부 2개입" [ref=f7e296]
+                  - cell "2,500원" [ref=f7e297]
+                  - cell [ref=f7e298]:
+                    - spinbutton [ref=f7e299]: "2500"
+                  - cell [ref=f7e300]:
+                    - button "저장" [ref=f7e301]
+                - row [ref=f7e302]:
+                  - cell "사각어묵 400g" [ref=f7e303]
+                  - cell "3,900원" [ref=f7e304]
+                  - cell [ref=f7e305]:
+                    - spinbutton [ref=f7e306]: "3900"
+                  - cell [ref=f7e307]:
+                    - button "저장" [ref=f7e308]
+                - row [ref=f7e309]:
+                  - cell "스팸 클래식 340g" [ref=f7e310]
+                  - cell "4,900원" [ref=f7e311]
+                  - cell [ref=f7e312]:
+                    - spinbutton [ref=f7e313]: "4900"
+                  - cell [ref=f7e314]:
+                    - button "저장" [ref=f7e315]
+                - row [ref=f7e316]:
+                  - cell "슬라이스 치즈 20장" [ref=f7e317]
+                  - cell "5,900원" [ref=f7e318]
+                  - cell [ref=f7e319]:
+                    - spinbutton [ref=f7e320]: "5900"
+                  - cell [ref=f7e321]:
+                    - button "저장" [ref=f7e322]
+                - row [ref=f7e323]:
+                  - cell "떠먹는 요거트 3개입" [ref=f7e324]
+                  - cell "3,900원" [ref=f7e325]
+                  - cell [ref=f7e326]:
+                    - spinbutton [ref=f7e327]: "3900"
+                  - cell [ref=f7e328]:
+                    - button "저장" [ref=f7e329]
+  - contentinfo [ref=f7e56]:
+    - generic [ref=f7e57]:
+      - generic [ref=f7e58]:
+        - generic [ref=f7e59]:
+          - heading "필마트" [level=3] [ref=f7e60]
+          - paragraph [ref=f7e61]: 신선식품 당일배송고객 만족 최우선
+        - generic [ref=f7e62]:
+          - heading "고객지원" [level=3] [ref=f7e63]
+          - list [ref=f7e64]:
+            - listitem [ref=f7e65]:
+              - link "공지사항" [ref=f7e66] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f7e67]:
+              - link "자주 묻는 질문" [ref=f7e68] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f7e69]:
+              - link "고객문의" [ref=f7e70] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f7e71]:
+          - heading "약관" [level=3] [ref=f7e72]
+          - list [ref=f7e73]:
+            - listitem [ref=f7e74]:
+              - link "이용약관" [ref=f7e75] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f7e76]:
+              - link "개인정보처리방침" [ref=f7e77] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f7e78]:
+          - heading "주문" [level=3] [ref=f7e79]
+          - list [ref=f7e80]:
+            - listitem [ref=f7e81]:
+              - link "주문내역" [ref=f7e82] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f7e83]:
+              - link "찜 목록" [ref=f7e84] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f7e85]
+      - paragraph [ref=f7e86]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f7e92] [cursor=pointer]
+  - alert [ref=f7e115]

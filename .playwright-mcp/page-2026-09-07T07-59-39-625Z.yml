@@ -1,0 +1,454 @@
+- generic [active] [ref=e1]:
+  - paragraph [ref=e2]:
+    - link "본문바로가기" [ref=e3] [cursor=pointer]:
+      - /url: "#container"
+  - generic [ref=e4]:
+    - generic [ref=e7]:
+      - paragraph [ref=e9]
+      - button "배너닫기" [ref=e11] [cursor=pointer]
+    - banner [ref=e12]:
+      - generic [ref=e14]:
+        - heading [level=1] [ref=e15]:
+          - link "장보고식자재마트 인터넷쇼핑몰 - 장보자.com" [ref=e16] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443
+        - generic [ref=e18]:
+          - textbox "상품을 검색해보세요!" [ref=e19]
+          - button "검색" [ref=e20] [cursor=pointer]
+        - generic [ref=e22]:
+          - list [ref=e23]:
+            - listitem [ref=e24]:
+              - link "마이페이지" [ref=e25] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/mypage
+          - list [ref=e26]:
+            - listitem [ref=e27]:
+              - link "주문/배송" [ref=e28] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/custOrderList
+            - listitem [ref=e29]:
+              - link "나의 찜" [ref=e30] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/wishItem
+            - listitem [ref=e31]:
+              - link "장바구니" [ref=e32] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/od/cart
+      - generic [ref=e34]:
+        - button "카테고리" [ref=e36] [cursor=pointer]
+        - navigation [ref=e38]:
+          - heading "메인메뉴" [level=2] [ref=e39]
+          - list [ref=e40]:
+            - listitem [ref=e41]:
+              - link "홈" [ref=e42] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443
+            - listitem [ref=e43]:
+              - link "매장행사" [ref=e44] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '672',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '99',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '/cs/salelist',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/salelist',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '812',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '매장행사'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=e45]:
+              - link "신상품" [ref=e46] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '669',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '25',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '10020',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '809',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '신상품'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=e47]:
+              - link "베스트" [ref=e48] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '670',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '25',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '10000',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '810',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '베스트'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=e49]:
+              - link "이벤트" [ref=e50] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '712',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '30',\n\t\t\t\t\t\t\t\t   RELAT_VAL: 'BCU90002',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/event',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '876',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '이벤트'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=e51]:
+              - link "외식브랜딩" [ref=e52] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '671',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '20',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '1000',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/promotion',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '811',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '외식브랜딩'\n\t\t\t\t\t\t\t\t })"
+            - listitem [ref=e53]:
+              - link "레시피" [ref=e54] [cursor=pointer]:
+                - /url: "javascript:bannerEvent({\n\t\t\t\t\t\t\t\t   BANNER_NO: '676',\n\t\t\t\t\t\t\t\t   BANNER_LINK_INFO_TP: '21',\n\t\t\t\t\t\t\t\t   RELAT_VAL: '',\n\t\t\t\t\t\t\t\t   LINK_ADD_INFO: '/recipe',\n\t\t\t\t\t\t\t\t   EXHIB_DP_GRP_LINK_EXHIB_NO: '816',\n\t\t\t\t\t\t\t\t   TAB_YN: 'Y',\n\t\t\t\t\t\t\t\t   BANNER_DP_NM: '레시피'\n\t\t\t\t\t\t\t\t })"
+        - generic [ref=e55]:
+          - link "로그인" [ref=e56] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cu/loginCustomer
+          - link "회원가입" [ref=e57] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cu/registCustomerSelect
+          - link "고객센터" [ref=e58] [cursor=pointer]:
+            - /url: https://www.jangboja.com:443/cs/faq
+    - separator [ref=e59]
+    - generic [ref=e60]:
+      - text:  
+      - heading [level=3] [ref=e62]:
+        - button "주방잡화" [ref=e63] [cursor=pointer]
+      - generic [ref=e64]:
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - radio "포함" [checked] [ref=e68]
+            - generic [ref=e69] [cursor=pointer]: 포함
+          - generic [ref=e70]:
+            - radio "제외" [ref=e71]
+            - generic [ref=e72] [cursor=pointer]: 제외
+          - generic [ref=e73]:
+            - textbox "결과내검색" [ref=e74]:
+              - /placeholder: 결과 내 검색어 입력
+            - button "검색" [ref=e75] [cursor=pointer]
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - heading "보관방법" [level=5] [ref=e80]
+              - list [ref=e81]:
+                - listitem [ref=e82]:
+                  - generic [ref=e83]: 상온(165)
+                - listitem [ref=e85]:
+                  - generic [ref=e86]: 냉장(0)
+                - listitem [ref=e88]:
+                  - generic [ref=e89]: 냉동(0)
+            - generic [ref=e91]:
+              - heading "카테고리" [level=5] [ref=e92]
+              - list [ref=e93]:
+                - listitem [ref=e94]:
+                  - button "전체(179)" [ref=e95] [cursor=pointer]
+                - listitem [ref=e96]:
+                  - button "생활용품(179)" [ref=e97] [cursor=pointer]
+            - generic [ref=e98]:
+              - heading "혜택" [level=5] [ref=e99]
+              - list [ref=e100]:
+                - listitem [ref=e101]:
+                  - generic [ref=e102]: 쿠폰상품
+                - listitem [ref=e104]:
+                  - generic [ref=e105]: 할인상품
+            - generic [ref=e107]:
+              - heading "배송" [level=5] [ref=e108]
+              - list [ref=e109]:
+                - listitem [ref=e110]:
+                  - generic [ref=e111]: 직접배송
+                - listitem [ref=e113]:
+                  - generic [ref=e114]: 전국배송
+            - generic [ref=e116]:
+              - heading "브랜드" [level=5] [ref=e117]
+              - list [ref=e118]:
+                - listitem [ref=e119]:
+                  - generic [ref=e120]: LG생활건강(31)
+                - listitem [ref=e122]:
+                  - generic [ref=e123]: 애경산업(주)(29)
+                - listitem [ref=e125]:
+                  - generic [ref=e126]: 유한양행(17)
+                - listitem [ref=e128]:
+                  - generic [ref=e129]: 동창C&F(11)
+                - listitem [ref=e131]:
+                  - generic [ref=e132]: 한샘생활건강(10)
+                - listitem [ref=e134]:
+                  - generic [ref=e135]: ㈜자숨(8)
+                - listitem [ref=e137]:
+                  - generic [ref=e138]: ㈜피죤(7)
+                - listitem [ref=e140]:
+                  - generic [ref=e141]: (주)무궁화(6)
+                - listitem [ref=e143]:
+                  - generic [ref=e144]: LG(6)
+                - listitem [ref=e146]:
+                  - generic [ref=e147]: 깨끗한나라(4)
+                - listitem [ref=e149]:
+                  - generic [ref=e150]: 뉴세제(4)
+                - listitem [ref=e152]:
+                  - generic [ref=e153]: 히트산업(4)
+                - listitem [ref=e155]:
+                  - generic [ref=e156]: 미래생활(주)(3)
+                - listitem [ref=e158]:
+                  - generic [ref=e159]: 유한킴벌리(3)
+                - listitem [ref=e161]:
+                  - generic [ref=e162]: 헨켈(3)
+                - listitem [ref=e164]:
+                  - generic [ref=e165]: (주)산도깨비(2)
+                - listitem [ref=e167]:
+                  - generic [ref=e168]: 라이온코리아(주)(2)
+                - listitem [ref=e170]:
+                  - generic [ref=e171]: 씨제이프레시웨이(주)(2)
+                - listitem [ref=e173]:
+                  - generic [ref=e174]: 크린랲(2)
+                - listitem [ref=e176]:
+                  - generic [ref=e177]: 피죤(2)
+                - listitem [ref=e179]:
+                  - generic [ref=e180]: 헨켈홈케어코리아(2)
+                - listitem [ref=e182]:
+                  - generic [ref=e183]: ㈜모나리자(1)
+                - listitem [ref=e185]:
+                  - generic [ref=e186]: ㈜울산모나리자(1)
+                - listitem [ref=e188]:
+                  - generic [ref=e189]: 라이온(1)
+                - listitem [ref=e191]:
+                  - generic [ref=e192]: 무궁화(1)
+                - listitem [ref=e194]:
+                  - generic [ref=e195]: 미화플라스틱(1)
+                - listitem [ref=e197]:
+                  - generic [ref=e198]: 원라이프(1)
+                - listitem [ref=e200]:
+                  - generic [ref=e201]: 해동I&D(1)
+                - listitem [ref=e203]:
+                  - generic [ref=e204]: 기타(14)
+            - generic [ref=e206]:
+              - heading "가격" [level=5] [ref=e207]
+              - generic [ref=e208]:
+                - button "전체" [ref=e210] [cursor=pointer]
+                - generic [ref=e212]:
+                  - button "10,000원 이하" [ref=e214] [cursor=pointer]
+                  - button "10,000원 ~ 20,000원" [ref=e217] [cursor=pointer]
+                  - button "20,000원 ~ 30,000원" [ref=e220] [cursor=pointer]
+                  - button "30,000원 ~ 50,000원" [ref=e223] [cursor=pointer]
+                  - button "50,000원 ~ 100,000원" [ref=e226] [cursor=pointer]
+                  - button "100,000원 이상" [ref=e229] [cursor=pointer]
+              - generic [ref=e231]:
+                - generic [ref=e232]:
+                  - textbox "1900" [ref=e233]
+                  - text: 원
+                - generic [ref=e234]: ~
+                - generic [ref=e235]:
+                  - textbox "138000" [ref=e236]
+                  - text: 원
+                - button "적용" [ref=e237] [cursor=pointer]
+            - generic [ref=e238]:
+              - heading "단위" [level=5] [ref=e239]
+              - generic [ref=e240]:
+                - generic [ref=e241]: 상자 BOX(31)
+                - generic [ref=e243]: 개별 상품(148)
+          - generic [ref=e246]:
+            - heading "검색결과 리스트" [level=3] [ref=e247]
+            - generic [ref=e249]:
+              - paragraph [ref=e250]:
+                - text: 총
+                - emphasis [ref=e251]: "103"
+                - text: 개 상품
+              - generic [ref=e253]:
+                - checkbox "품절 제외" [checked] [ref=e254]
+                - generic [ref=e255] [cursor=pointer]: 품절 제외
+              - combobox [ref=e257] [cursor=pointer]:
+                - option "추천순" [selected]
+                - option "낮은가격순"
+                - option "높은가격순"
+              - generic [ref=e258]:
+                - radio "갤러리형" [checked] [ref=e259]
+                - generic [ref=e260] [cursor=pointer]: 갤러리형
+                - radio "리스트형" [ref=e262]
+                - generic [ref=e263] [cursor=pointer]: 리스트형
+            - list [ref=e266]:
+              - listitem [ref=e267]:
+                - article [ref=e268]:
+                  - generic [ref=e269]:
+                    - img "이츠웰그린알로주방세제 2KG/씨제이프레시웨이(주)" [ref=e270]
+                    - generic [ref=e271]:
+                      - button "장바구니" [ref=e272] [cursor=pointer]
+                      - button "찜" [ref=e274] [cursor=pointer]
+                  - generic [ref=e276]:
+                    - generic: +
+                    - link "이츠웰그린알로주방세제 2KG/씨제이프레시웨이(주)" [ref=e277] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911856459&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e280]: 3,650원
+              - listitem [ref=e281]:
+                - article [ref=e282]:
+                  - generic [ref=e283]:
+                    - img "이츠웰그린알로주방세제 3KG/씨제이프레시웨이(주)" [ref=e284]
+                    - generic [ref=e285]:
+                      - button "장바구니" [ref=e286] [cursor=pointer]
+                      - button "찜" [ref=e288] [cursor=pointer]
+                  - generic [ref=e290]:
+                    - generic: +
+                    - link "이츠웰그린알로주방세제 3KG/씨제이프레시웨이(주)" [ref=e291] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911856460&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e294]: 5,450원
+              - listitem [ref=e295]:
+                - article [ref=e296]:
+                  - generic [ref=e297]:
+                    - img "수퍼타이(R) 5.5kg" [ref=e298]
+                    - generic [ref=e299]:
+                      - button "장바구니" [ref=e300] [cursor=pointer]
+                      - button "찜" [ref=e302] [cursor=pointer]
+                  - generic [ref=e304]:
+                    - generic: +
+                    - link "수퍼타이(R) 5.5kg" [ref=e305] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911871157&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e308]: 12,000원
+              - listitem [ref=e309]:
+                - article [ref=e310]:
+                  - generic [ref=e311]:
+                    - img "식기세척기용고농축원액린스 1L/뉴세제 BOX (6)" [ref=e312]
+                    - generic [ref=e313]: 박스상품
+                    - generic [ref=e315]:
+                      - button "장바구니" [ref=e316] [cursor=pointer]
+                      - button "찜" [ref=e318] [cursor=pointer]
+                  - generic [ref=e320]:
+                    - generic: +
+                    - link "식기세척기용고농축원액린스 1L/뉴세제 BOX (6)" [ref=e321] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911872574&unitCd=2&itemGrpNo=26&grpLev=2
+                    - generic [ref=e322]:
+                      - strong [ref=e324]: 54,000원
+                      - generic [ref=e325]: 1개당 9,000원
+              - listitem [ref=e326]:
+                - article [ref=e327]:
+                  - generic [ref=e328]:
+                    - img "식기세척기용고농축원액린스 1L/뉴세제" [ref=e329]
+                    - generic [ref=e330]:
+                      - button "장바구니" [ref=e331] [cursor=pointer]
+                      - button "찜" [ref=e333] [cursor=pointer]
+                  - generic [ref=e335]:
+                    - generic: +
+                    - link "식기세척기용고농축원액린스 1L/뉴세제" [ref=e336] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911872574&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e339]: 9,700원
+              - listitem [ref=e340]:
+                - article [ref=e341]:
+                  - generic [ref=e342]:
+                    - img "식기세척기용고농축원액세제 1L/뉴세제 BOX (6)" [ref=e343]
+                    - generic [ref=e344]: 박스상품
+                    - generic [ref=e346]:
+                      - button "장바구니" [ref=e347] [cursor=pointer]
+                      - button "찜" [ref=e349] [cursor=pointer]
+                  - generic [ref=e351]:
+                    - generic: +
+                    - link "식기세척기용고농축원액세제 1L/뉴세제 BOX (6)" [ref=e352] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911872575&unitCd=2&itemGrpNo=26&grpLev=2
+                    - generic [ref=e353]:
+                      - strong [ref=e355]: 54,000원
+                      - generic [ref=e356]: 1개당 9,000원
+              - listitem [ref=e357]:
+                - article [ref=e358]:
+                  - generic [ref=e359]:
+                    - img "식기세척기용고농축원액세제 1L/뉴세제" [ref=e360]
+                    - generic [ref=e361]:
+                      - button "장바구니" [ref=e362] [cursor=pointer]
+                      - button "찜" [ref=e364] [cursor=pointer]
+                  - generic [ref=e366]:
+                    - generic: +
+                    - link "식기세척기용고농축원액세제 1L/뉴세제" [ref=e367] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911872575&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e370]: 9,700원
+              - listitem [ref=e371]:
+                - article [ref=e372]:
+                  - generic [ref=e373]:
+                    - img "탄산수소나트륨(중조) 25KG" [ref=e374]
+                    - generic [ref=e375]:
+                      - button "장바구니" [ref=e376] [cursor=pointer]
+                      - button "찜" [ref=e378] [cursor=pointer]
+                  - generic [ref=e380]:
+                    - generic: +
+                    - link "탄산수소나트륨(중조) 25KG" [ref=e381] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911872614&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e384]: 58,800원
+              - listitem [ref=e385]:
+                - article [ref=e386]:
+                  - generic [ref=e387]:
+                    - img "오클린액체세제(용기) 3L" [ref=e388]
+                    - generic [ref=e389]:
+                      - button "장바구니" [ref=e390] [cursor=pointer]
+                      - button "찜" [ref=e392] [cursor=pointer]
+                  - generic [ref=e394]:
+                    - generic: +
+                    - link "오클린액체세제(용기) 3L" [ref=e395] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911876898&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e398]: 12,000원
+              - listitem [ref=e399]:
+                - article [ref=e400]:
+                  - generic [ref=e401]:
+                    - img "유한락스(삶은듯깨끗한주방) 500ML/유한양행" [ref=e402]
+                    - generic [ref=e403]:
+                      - button "장바구니" [ref=e404] [cursor=pointer]
+                      - button "찜" [ref=e406] [cursor=pointer]
+                  - generic [ref=e408]:
+                    - generic: +
+                    - link "유한락스(삶은듯깨끗한주방) 500ML/유한양행" [ref=e409] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911878913&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e412]: 7,500원
+              - listitem [ref=e413]:
+                - article [ref=e414]:
+                  - generic [ref=e415]:
+                    - img "유한젠산소표백제 1KGx2입/유한양행" [ref=e416]
+                    - generic [ref=e417]:
+                      - button "장바구니" [ref=e418] [cursor=pointer]
+                      - button "찜" [ref=e420] [cursor=pointer]
+                  - generic [ref=e422]:
+                    - generic: +
+                    - link "유한젠산소표백제 1KGx2입/유한양행" [ref=e423] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911878929&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e426]: 10,700원
+              - listitem [ref=e427]:
+                - article [ref=e428]:
+                  - generic [ref=e429]:
+                    - img "키친타월잘풀리는집(3겹) 130매x12입/미래생활(주)" [ref=e430]
+                    - generic [ref=e431]:
+                      - button "장바구니" [ref=e432] [cursor=pointer]
+                      - button "찜" [ref=e434] [cursor=pointer]
+                  - generic [ref=e436]:
+                    - generic: +
+                    - link "키친타월잘풀리는집(3겹) 130매x12입/미래생활(주)" [ref=e437] [cursor=pointer]:
+                      - /url: https://www.jangboja.com:443/goods/itemDetail?itemCd=1911880170&unitCd=1&itemGrpNo=26&grpLev=2
+                    - strong [ref=e440]: 18,700원
+            - generic [ref=e441]:
+              - generic [ref=e442] [cursor=pointer]: "1"
+              - generic [ref=e443] [cursor=pointer]: "2"
+              - generic [ref=e444] [cursor=pointer]: "3"
+              - generic [ref=e445] [cursor=pointer]: "4"
+              - generic [ref=e446] [cursor=pointer]: "5"
+              - generic [ref=e447] [cursor=pointer]: 다음
+      - text: 
+    - separator [ref=e448]
+    - contentinfo [ref=e449]:
+      - contentinfo [ref=e450]:
+        - generic [ref=e452]:
+          - generic [ref=e453]:
+            - generic [ref=e454]:
+              - strong [ref=e455]: 회사안내 및 약관
+              - list:
+                - listitem [ref=e456]:
+                  - link "회사소개" [ref=e457] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/co/intro
+                - listitem [ref=e458]:
+                  - link "이용약관" [ref=e459] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/ag/agree
+                - listitem [ref=e460]:
+                  - link "개인정보처리방침" [ref=e461] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/ag/policy
+                - listitem [ref=e462]:
+                  - link "공지사항" [ref=e463] [cursor=pointer]:
+                    - /url: https://www.jangboja.com:443/cs/notice
+            - list [ref=e465]:
+              - listitem [ref=e466]:
+                - link "페이스북" [ref=e467] [cursor=pointer]:
+                  - /url: https://www.facebook.com/profile.php?id=100011656551975
+              - listitem [ref=e469]:
+                - link "인스타그램" [ref=e470] [cursor=pointer]:
+                  - /url: https://www.instagram.com/jangboja/
+              - listitem [ref=e472]:
+                - link "유튜브 채널" [ref=e473] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@jangbogofood
+              - listitem [ref=e475]:
+                - link "네이버 블로그" [ref=e476] [cursor=pointer]:
+                  - /url: https://blog.naver.com/jangbogofood
+              - listitem [ref=e478]:
+                - link "카카오 채널" [ref=e479] [cursor=pointer]:
+                  - /url: https://pf.kakao.com/_xdIPad
+          - generic [ref=e481]:
+            - generic [ref=e482]:
+              - strong [ref=e484]: (주)장보고식자재마트
+              - list [ref=e485]:
+                - listitem [ref=e486]:
+                  - generic [ref=e487]: "대표 : 서정권"
+                - listitem [ref=e488]:
+                  - generic [ref=e489]: "주소 : 대구 북구 칠곡중앙대로 21 (팔달동)"
+                - listitem [ref=e490]:
+                  - generic [ref=e491]: "사업자 등록번호 : 514-81-56749"
+                  - link "사업자 정보확인" [ref=e492] [cursor=pointer]:
+                    - /url: "#"
+                - listitem [ref=e493]:
+                  - generic [ref=e494]: "통신판매업 신고번호 : 2012-대구북구-0302"
+                - listitem [ref=e495]:
+                  - generic [ref=e496]: "개인정보관리자 : 이용태 jangbogofood@naver.com"
+            - generic [ref=e497]:
+              - generic [ref=e498]:
+                - term [ref=e499]: 안심거래 서비스 가맹점
+                - definition [ref=e500]:
+                  - link "KICC 에스크로 서비스 가입사실 확인" [ref=e501] [cursor=pointer]:
+                    - /url: https://office.easypay.co.kr/homepage/other_service/EscrowAuthAction.do?memb_id=05510942
+              - paragraph [ref=e502]: 고객님은 안전거래를 위해 현금 등으로 결제 시 저희 쇼핑몰에서 가입한 구매안전 서비스를 이용하실 수 있습니다.
+          - generic [ref=e503]:
+            - strong [ref=e504]:
+              - link "고객센터" [ref=e505] [cursor=pointer]:
+                - /url: https://www.jangboja.com:443/cs/faq
+            - generic [ref=e506]:
+              - generic [ref=e507]: 1544-4490
+              - generic [ref=e508]:
+                - term [ref=e509]: "운영시간 :"
+                - definition [ref=e510]: 평일 08:30 ~ 20:30
+                - definition [ref=e511]: 토요일 08:30 ~ 17:30
+              - generic [ref=e512]: 일요일 휴무
+              - generic [ref=e513]:
+                - link "자주하는 질문" [ref=e514] [cursor=pointer]:
+                  - /url: https://www.jangboja.com:443/cs/faq
+                - link "1:1문의" [ref=e515] [cursor=pointer]:
+                  - /url: https://www.jangboja.com:443/cuca0020Form
+          - paragraph [ref=e516]: Copyright JangbogoFoodMart Co, LTD. All rights reserved.
+  - button "장보고마트 상담 버튼" [ref=e518]

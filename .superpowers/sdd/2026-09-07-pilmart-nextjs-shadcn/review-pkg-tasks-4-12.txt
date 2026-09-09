@@ -1,0 +1,33 @@
+﻿d59f0fb feat: verify production build passes
+0935fc5 feat: add info pages (notice, faq, contact, terms, privacy, naver-callback)
+e80d5b3 feat: add orders, wishlist, admin pages
+c6feaca feat: add auth, checkout, success/fail pages
+7d3b660 feat: add home page and product pages
+743ccf0 feat: add layout components (Navbar, Footer, CartSheet)
+---STAT---
+ pilmart-next/app/admin/page.tsx                    | 213 +++++++++++++++++++++
+ pilmart-next/app/auth/page.tsx                     | 100 ++++++++++
+ pilmart-next/app/checkout/page.tsx                 | 134 +++++++++++++
+ pilmart-next/app/contact/page.tsx                  |  37 ++++
+ pilmart-next/app/fail/page.tsx                     |  27 +++
+ pilmart-next/app/faq/page.tsx                      |  25 +++
+ pilmart-next/app/flash-product/[idx]/page.tsx      |  82 ++++++++
+ pilmart-next/app/layout.tsx                        |  44 +++--
+ pilmart-next/app/naver-callback/page.tsx           |  25 +++
+ pilmart-next/app/notice/page.tsx                   |  38 ++++
+ pilmart-next/app/orders/page.tsx                   |  58 ++++++
+ pilmart-next/app/page.tsx                          |  77 ++------
+ pilmart-next/app/privacy/page.tsx                  |  12 ++
+ pilmart-next/app/product/[id]/page.tsx             |  86 +++++++++
+ pilmart-next/app/success/page.tsx                  |  58 ++++++
+ pilmart-next/app/terms/page.tsx                    |  14 ++
+ pilmart-next/app/wishlist/page.tsx                 |  30 +++
+ pilmart-next/components/home/FlashSaleSection.tsx  |  73 +++++++
+ pilmart-next/components/home/HeroBanner.tsx        |  31 +++
+ pilmart-next/components/layout/CartSheet.tsx       |  75 ++++++++
+ pilmart-next/components/layout/Footer.tsx          |  43 +++++
+ pilmart-next/components/layout/Navbar.tsx          |  88 +++++++++
+ pilmart-next/components/product/CategoryFilter.tsx |  27 +++
+ pilmart-next/components/product/ProductCard.tsx    |  67 +++++++
+ pilmart-next/components/product/ProductGrid.tsx    |  32 ++++
+ 25 files changed, 1412 insertions(+), 84 deletions(-)

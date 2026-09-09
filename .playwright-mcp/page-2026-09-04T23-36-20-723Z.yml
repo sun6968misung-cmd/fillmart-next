@@ -1,0 +1,181 @@
+- generic [ref=f4e5]:
+  - banner:
+    - generic [ref=f4e8]:
+      - generic [ref=f4e10]:
+        - generic [aria-hidden]:
+          - button [disabled]
+        - button "Facebook" [ref=f4e12] [cursor=pointer]:
+          - img "Facebook" [ref=f4e13]
+      - generic [ref=f4e18]:
+        - textbox "이메일 또는 휴대폰" [ref=f4e21]
+        - textbox "비밀번호" [ref=f4e24]
+        - button "로그인" [ref=f4e27] [cursor=pointer]
+        - link "계정을 잊으셨나요?" [ref=f4e34] [cursor=pointer]:
+          - /url: https://www.facebook.com/recover/initiate?ars=royal_blue_bar
+  - main [ref=f4e41]:
+    - generic [ref=f4e42]:
+      - link [ref=f4e53] [cursor=pointer]:
+        - /url: https://www.facebook.com/photo/?fbid=190476776703361&set=a.190476746703364
+      - generic [ref=f4e62]:
+        - link [ref=f4e65] [cursor=pointer]:
+          - /url: https://www.facebook.com/photo/?fbid=190476780036694&set=a.190476750036697&__tn__=%3C
+        - generic [ref=f4e73]:
+          - heading [level=1] [ref=f4e78]: 필마트
+          - generic [ref=f4e80]:
+            - link [ref=f4e81] [cursor=pointer]:
+              - /url: https://www.facebook.com/profile.php?id=100072231188870&sk=followers
+              - text: 팔로워
+              - strong [ref=f4e82]: "39"
+              - text: 명
+            - text: •
+            - link [ref=f4e83] [cursor=pointer]:
+              - /url: https://www.facebook.com/profile.php?id=100072231188870&sk=following
+              - text: 팔로잉
+              - strong [ref=f4e84]: "0"
+              - text: 명
+    - generic [ref=f4e92]:
+      - tablist [ref=f4e100]:
+        - generic [ref=f4e102]:
+          - generic [ref=f4e103]: 더 보기
+          - tab [selected] [ref=f4e109] [cursor=pointer]:
+            - generic [ref=f4e110]: 게시물
+          - tab [ref=f4e113] [cursor=pointer]:
+            - generic [ref=f4e114]: 정보
+          - tab [ref=f4e117] [cursor=pointer]:
+            - generic [ref=f4e118]: 사진
+      - button [ref=f4e123] [cursor=pointer]
+    - generic [ref=f4e132]:
+      - generic [ref=f4e135]:
+        - generic [ref=f4e139]:
+          - heading [level=2] [ref=f4e148]:
+            - generic [ref=f4e149]: 소개
+          - generic [ref=f4e151]:
+            - generic [ref=f4e152]: 필마트 구미 인동점
+            - list [ref=f4e158]:
+              - button [ref=f4e166] [cursor=pointer]:
+                - generic [ref=f4e167]:
+                  - strong [ref=f4e168]: 페이지
+                  - text: · 대형 마트
+              - button [ref=f4e172] [cursor=pointer]:
+                - generic [ref=f4e173]: 인의동 485번지, South Korea 경상북도 구미
+              - generic [ref=f4e174]: 054-473-2841
+              - button [ref=f4e183] [cursor=pointer]:
+                - generic [ref=f4e184]: 곧 개점
+              - link [ref=f4e192] [cursor=pointer]:
+                - /url: https://www.facebook.com/profile.php?id=100072231188870&sk=reviews
+                - generic [ref=f4e195]:
+                  - text: 평점 없음(리뷰 0개)
+                  - button [ref=f4e196]
+        - generic [ref=f4e202]:
+          - generic [ref=f4e209]:
+            - heading [level=2] [ref=f4e211]:
+              - link [ref=f4e214] [cursor=pointer]:
+                - /url: https://www.facebook.com/profile.php?id=100072231188870&sk=photos
+                - text: 사진
+            - link [ref=f4e219] [cursor=pointer]:
+              - /url: https://www.facebook.com/profile.php?id=100072231188870&sk=photos
+              - generic [ref=f4e220]: 사진 모두 보기
+          - generic [ref=f4e224]:
+            - link [aria-hidden] [ref=f4e227] [cursor=pointer]:
+              - /url: /photo/?fbid=190476780036694&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e232] [cursor=pointer]:
+              - /url: /photo/?fbid=190476776703361&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e237] [cursor=pointer]:
+              - /url: /photo/?fbid=1636886666590778&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e242] [cursor=pointer]:
+              - /url: /photo/?fbid=1636886233257488&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e247] [cursor=pointer]:
+              - /url: /photo/?fbid=1636886223257489&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e252] [cursor=pointer]:
+              - /url: /photo/?fbid=1636886213257490&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e257] [cursor=pointer]:
+              - /url: /photo/?fbid=1636592356620209&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e262] [cursor=pointer]:
+              - /url: /photo/?fbid=1636592353286876&set=pb.100072231188870.-2207520000
+            - link [aria-hidden] [ref=f4e267] [cursor=pointer]:
+              - /url: /photo/?fbid=1636592343286877&set=pb.100072231188870.-2207520000
+        - contentinfo [ref=f4e270]:
+          - list [ref=f4e272]:
+            - listitem [ref=f4e273]:
+              - link [ref=f4e274] [cursor=pointer]:
+                - /url: /privacy/policy/?entry_point=comet_dropdown
+                - text: 개인정보처리방침
+              - generic [ref=f4e275]: ·
+            - listitem [ref=f4e277]:
+              - link [ref=f4e278] [cursor=pointer]:
+                - /url: /policies?ref=pf
+                - text: 약관
+              - generic [ref=f4e279]: ·
+            - listitem [ref=f4e281]:
+              - link [ref=f4e282] [cursor=pointer]:
+                - /url: /business/
+                - text: 광고
+              - generic [ref=f4e283]: ·
+            - listitem [ref=f4e285]:
+              - link [ref=f4e286] [cursor=pointer]:
+                - /url: /help/568137493302217
+                - text: AdChoices
+              - generic [ref=f4e291]: ·
+            - listitem [ref=f4e293]:
+              - link [ref=f4e294] [cursor=pointer]:
+                - /url: /policies/cookies/
+                - text: 쿠키
+              - generic [ref=f4e295]: ·
+            - listitem [ref=f4e297]:
+              - button [ref=f4e298] [cursor=pointer]: 더 보기
+      - generic [ref=f4e300]:
+        - article [ref=f4e307]:
+          - generic [ref=f4e315]:
+            - generic [ref=f4e317]:
+              - link [ref=f4e321] [cursor=pointer]:
+                - /url: https://www.facebook.com/people/%ED%95%84%EB%A7%88%ED%8A%B8/100072231188870/?__cft__[0]=AZh4EuZYd7v0JYFbzdWbIhwLtJsxxk4nZUfGqd6xhse87BDwMHrCkdvBfx9LXaR30CkYo7mz7eKueXw5jksWfG9szZFWZNbhIJFAXW8eUNiSosgdoqK3vQWyw1swqxMmZCaOOsJwTLNFb0bm3pakVgpEmnhcWOkkrKWVfiAHZWYLqrdizORm4EwlyS8&__tn__=%3C%3C%2CP-R
+              - generic [ref=f4e328]:
+                - heading [level=2] [ref=f4e332]:
+                  - link [ref=f4e337] [cursor=pointer]:
+                    - /url: https://www.facebook.com/people/%ED%95%84%EB%A7%88%ED%8A%B8/100072231188870/?__cft__[0]=AZh4EuZYd7v0JYFbzdWbIhwLtJsxxk4nZUfGqd6xhse87BDwMHrCkdvBfx9LXaR30CkYo7mz7eKueXw5jksWfG9szZFWZNbhIJFAXW8eUNiSosgdoqK3vQWyw1swqxMmZCaOOsJwTLNFb0bm3pakVgpEmnhcWOkkrKWVfiAHZWYLqrdizORm4EwlyS8&__tn__=-UC%2CP-R
+                    - generic [ref=f4e338]: 필마트
+                - generic [ref=f4e341]:
+                  - link [ref=f4e345] [cursor=pointer]:
+                    - /url: https://www.facebook.com/photo/?fbid=1636886666590778&set=a.190476743370031&__cft__[0]=AZh4EuZYd7v0JYFbzdWbIhwLtJsxxk4nZUfGqd6xhse87BDwMHrCkdvBfx9LXaR30CkYo7mz7eKueXw5jksWfG9szZFWZNbhIJFAXW8eUNiSosgdoqK3vQWyw1swqxMmZCaOOsJwTLNFb0bm3pakVgpEmnhcWOkkrKWVfiAHZWYLqrdizORm4EwlyS8&__tn__=%2CO%2CP-R
+                    - text: 2015년 10월 21일
+                  - generic [ref=f4e346]: ·
+            - generic [ref=f4e358]:
+              - generic [ref=f4e366]:
+                - generic [ref=f4e367]: 2015/10/21 (수)
+                - generic [ref=f4e368]:
+                  - text: 구미 인동점…
+                  - button [ref=f4e369] [cursor=pointer]: 더 보기
+              - link [ref=f4e372] [cursor=pointer]:
+                - /url: https://www.facebook.com/photo/?fbid=1636886666590778&set=a.190476743370031&__cft__[0]=AZh4EuZYd7v0JYFbzdWbIhwLtJsxxk4nZUfGqd6xhse87BDwMHrCkdvBfx9LXaR30CkYo7mz7eKueXw5jksWfG9szZFWZNbhIJFAXW8eUNiSosgdoqK3vQWyw1swqxMmZCaOOsJwTLNFb0bm3pakVgpEmnhcWOkkrKWVfiAHZWYLqrdizORm4EwlyS8&__tn__=EH-R
+            - generic [ref=f4e382]:
+              - generic [ref=f4e385]:
+                - toolbar [ref=f4e386]:
+                  - button [ref=f4e391] [cursor=pointer]
+                - generic [ref=f4e392]: "모든 공감:"
+                - generic [ref=f4e394]: "5"
+              - generic [ref=f4e396]:
+                - button [ref=f4e398] [cursor=pointer]:
+                  - generic [ref=f4e399]: 좋아요
+                - button [ref=f4e405] [cursor=pointer]:
+                  - generic [ref=f4e406]: 댓글
+        - generic [ref=f4e412]:
+          - article [ref=f4e413]:
+            - status [ref=f4e414]
+          - article [ref=f4e426]:
+            - status [ref=f4e427]
+  - dialog [ref=f4e447]:
+    - button "닫기" [ref=f4e449] [cursor=pointer]
+    - generic [ref=f4e456]:
+      - generic [ref=f4e466]: 필마트 | Gumi 콘텐츠 더 보기
+      - generic [ref=f4e473]:
+        - generic: 이메일 또는 전화번호
+        - textbox "이메일 또는 전화번호" [active] [ref=f4e474]
+      - generic [ref=f4e479]:
+        - generic: 비밀번호
+        - textbox "비밀번호" [ref=f4e480]
+      - button "Facebook에 로그인" [ref=f4e482] [cursor=pointer]:
+        - generic [ref=f4e483]: 로그인
+      - link "비밀번호를 잊으셨나요?" [ref=f4e487] [cursor=pointer]:
+        - /url: https://www.facebook.com/recover/initiate?ars=royal_blue_bar
+      - generic [ref=f4e489]: 또는
+      - button "새 계정 만들기" [ref=f4e498] [cursor=pointer]

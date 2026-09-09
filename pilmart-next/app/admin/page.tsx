@@ -65,7 +65,7 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<OrderWithStatus[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [notices, setNotices] = useState<Notice[]>([]);
-  const [storeInfo, setStoreInfo] = useState<StoreInfo>({ name: '필마트', phone: '', address: '' });
+  const [storeInfo, setStoreInfo] = useState<StoreInfo>({ name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' });
   const [newPw, setNewPw] = useState('');
   const [newPwConfirm, setNewPwConfirm] = useState('');
 
@@ -100,7 +100,7 @@ export default function AdminPage() {
     setOrders([...raw].reverse());
     setProducts(getAllProductsAdmin());
     setNotices(lsGet<Notice[]>(KEYS.notices, []));
-    setStoreInfo(lsGet<StoreInfo>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' }));
+    setStoreInfo(lsGet<StoreInfo>(KEYS.storeInfo, { name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' }));
     setFlashSale(lsGet<FlashSaleConfig>(KEYS.flashSale, DEFAULT_FLASH));
     setLogoUrl(localStorage.getItem(KEYS.logo) || '');
     setAdminAccounts(lsGet<AdminAccount[]>(KEYS.adminAccounts, []));
@@ -249,7 +249,7 @@ export default function AdminPage() {
     const ws = XLSX.utils.json_to_sheet(sample, { header: headers });
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, '상품목록');
-    XLSX.writeFile(wb, '필마트_상품_템플릿.xlsx');
+    XLSX.writeFile(wb, '필식자재마마트_상품_템플릿.xlsx');
   }
 
   function downloadProductsExcel() {
@@ -264,7 +264,7 @@ export default function AdminPage() {
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, '상품목록');
-    XLSX.writeFile(wb, '필마트_상품목록.xlsx');
+    XLSX.writeFile(wb, '필식자재마마트_상품목록.xlsx');
   }
 
   async function handleExcelImport(e: React.ChangeEvent<HTMLInputElement>) {
@@ -607,7 +607,7 @@ export default function AdminPage() {
   function printOrder(order: OrderWithStatus) {
     const w = window.open('', '_blank', 'width=620,height=820');
     if (!w) return;
-    const info = lsGet<{ name: string; phone: string; address: string }>(KEYS.storeInfo, { name: '필마트', phone: '', address: '' });
+    const info = lsGet<{ name: string; phone: string; address: string }>(KEYS.storeInfo, { name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' });
     const itemRows = (order.items ?? []).map(i => `
       <tr>
         <td>${escapeHtml(i.emoji ?? '')} ${escapeHtml(i.name)}</td>
@@ -713,7 +713,7 @@ export default function AdminPage() {
             <KeyRound className="h-7 w-7 text-primary" />
           </div>
           <h2 className="text-xl font-black text-gray-800 mb-1">관리자 로그인</h2>
-          <p className="text-sm text-gray-400 mb-6">필마트 관리자 페이지</p>
+          <p className="text-sm text-gray-400 mb-6">필식자재마마트 다사점 관리자</p>
           <div className="space-y-3 text-left mb-3">
             <div>
               <label className="text-xs text-gray-500 font-medium block mb-1">아이디 <span className="text-gray-300">(최고관리자는 비워두세요)</span></label>
@@ -1480,7 +1480,7 @@ export default function AdminPage() {
                     <input type="text"
                       value={storeInfo.address}
                       onChange={e => setStoreInfo(s => ({ ...s, address: e.target.value }))}
-                      placeholder="경북 구미시 인의동 485번지"
+                      placeholder="대구광역시 달성군 다사읍 달구벌대로 858"
                       className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary" />
                   </div>
                 </div>
@@ -1633,7 +1633,7 @@ export default function AdminPage() {
                     { label: '상품 수정 초기화', key: KEYS.products, desc: '수정·삭제된 상품 모두 원래대로', onDelete: () => { lsRemove(KEYS.customProducts); setProducts(getAllProductsAdmin()); notifyProductsChanged(); } },
                     { label: '공지사항 삭제', key: KEYS.notices, desc: `현재 ${notices.length}건`, onDelete: () => setNotices([]) },
                     { label: '오늘 특가 설정 초기화', key: KEYS.flashSale, desc: `특가 상품 ${flashSale.products.length}개 포함`, onDelete: () => setFlashSale(DEFAULT_FLASH) },
-                    { label: '매장 정보 초기화', key: KEYS.storeInfo, desc: '상호명·전화번호·주소 초기화', onDelete: () => setStoreInfo({ name: '필마트', phone: '', address: '' }) },
+                    { label: '매장 정보 초기화', key: KEYS.storeInfo, desc: '상호명·전화번호·주소 초기화', onDelete: () => setStoreInfo({ name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' }) },
                     { label: '회원 세션 종료', key: KEYS.session, desc: '현재 로그인 세션만 삭제', onDelete: () => {} },
                     { label: '회원 계정 전체 삭제', key: KEYS.users, desc: '가입된 모든 회원 데이터 삭제', onDelete: () => {}, danger: true },
                   ] as Array<{ label: string; key: string; desc: string; onDelete: () => void; danger?: boolean }>).map(item => (

@@ -1,0 +1,21 @@
+- generic [active] [ref=f11e1]:
+  - banner [ref=f11e2]:
+    - generic [ref=f11e3]:
+      - link "" [ref=f11e4] [cursor=pointer]:
+        - /url: index.html
+      - link [ref=f11e6] [cursor=pointer]:
+        - /url: index.html
+        - img [ref=f11e7]:
+          - generic [ref=f11e8]: FILL
+          - generic [ref=f11e10]: M
+          - generic [ref=f11e11]: ART
+      - heading "주문 내역" [level=1] [ref=f11e12]
+  - main [ref=f11e13]:
+    - generic [ref=f11e14]:
+      - generic [ref=f11e15]: 
+      - paragraph [ref=f11e17]: 아직 주문 내역이 없습니다
+      - link " 쇼핑 시작하기" [ref=f11e18] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=f11e19]: 
+        - text: 쇼핑 시작하기
+    - text: 

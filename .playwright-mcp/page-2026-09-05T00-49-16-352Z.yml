@@ -1,0 +1,569 @@
+- generic [active] [ref=f4e1]:
+  - generic [ref=f4e3]:
+    - generic [ref=f4e4]:
+      - generic [ref=f4e5]:
+        - generic [ref=f4e6]: 
+        - text: 구미 인동점
+      - generic [ref=f4e7]:
+        - generic [ref=f4e8]: 
+        - text: 054-473-2841
+      - generic [ref=f4e9]:
+        - generic [ref=f4e10]: 
+        - text: 09:00 ~ 22:00
+    - generic [ref=f4e11]:
+      - link "로그인" [ref=f4e12] [cursor=pointer]:
+        - /url: "#"
+      - generic [ref=f4e13]: "|"
+      - link "회원가입" [ref=f4e14] [cursor=pointer]:
+        - /url: "#"
+      - generic [ref=f4e15]: "|"
+      - link "주문조회" [ref=f4e16] [cursor=pointer]:
+        - /url: "#"
+  - banner [ref=f4e17]:
+    - generic [ref=f4e18]:
+      - link [ref=f4e19] [cursor=pointer]:
+        - /url: index.html
+        - img [ref=f4e20]:
+          - generic [ref=f4e21]: FILL
+          - generic [ref=f4e23]: M
+          - generic [ref=f4e24]: ART
+      - generic [ref=f4e26]:
+        - textbox "신선한 식재료를 검색하세요" [ref=f4e27]
+        - button "" [ref=f4e28] [cursor=pointer]
+      - generic [ref=f4e30]:
+        - button " 찜목록" [ref=f4e31] [cursor=pointer]:
+          - generic [ref=f4e32]: 
+          - generic [ref=f4e33]: 찜목록
+        - button " 1 장바구니" [ref=f4e34] [cursor=pointer]:
+          - generic [ref=f4e35]:
+            - generic [ref=f4e36]: 
+            - generic [ref=f4e37]: "1"
+          - generic [ref=f4e38]: 장바구니
+  - navigation [ref=f4e39]:
+    - list [ref=f4e41]:
+      - listitem [ref=f4e42]:
+        - link "홈" [ref=f4e43] [cursor=pointer]:
+          - /url: index.html
+      - listitem [ref=f4e44]:
+        - link "🔥 이번주특가" [ref=f4e45] [cursor=pointer]:
+          - /url: "#sale"
+      - listitem [ref=f4e46]:
+        - link "신상품" [ref=f4e47] [cursor=pointer]:
+          - /url: "#vegetables"
+      - listitem [ref=f4e48]:
+        - link "베스트" [ref=f4e49] [cursor=pointer]:
+          - /url: "#meat"
+      - listitem [ref=f4e50]:
+        - link "이벤트" [ref=f4e51] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=f4e52]:
+        - link "1+1행사" [ref=f4e53] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=f4e54]:
+        - link "농식품바우처" [ref=f4e55] [cursor=pointer]:
+          - /url: "#"
+  - generic [ref=f4e59]:
+    - group "1 / 12" [ref=f4e60] [cursor=pointer]:
+      - link "🥬 채소" [ref=f4e61]:
+        - /url: "#vegetables"
+        - generic [ref=f4e62]: 🥬
+        - generic [ref=f4e63]: 채소
+    - group "2 / 12" [ref=f4e64] [cursor=pointer]:
+      - link "🍎 과일" [ref=f4e65]:
+        - /url: "#vegetables"
+        - generic [ref=f4e66]: 🍎
+        - generic [ref=f4e67]: 과일
+    - group "3 / 12" [ref=f4e68] [cursor=pointer]:
+      - link "🥩 정육" [ref=f4e69]:
+        - /url: "#meat"
+        - generic [ref=f4e70]: 🥩
+        - generic [ref=f4e71]: 정육
+    - group "4 / 12" [ref=f4e72] [cursor=pointer]:
+      - link "🐟 수산" [ref=f4e73]:
+        - /url: "#meat"
+        - generic [ref=f4e74]: 🐟
+        - generic [ref=f4e75]: 수산
+    - group "5 / 12" [ref=f4e76] [cursor=pointer]:
+      - link "🥚 계란" [ref=f4e77]:
+        - /url: "#sale"
+        - generic [ref=f4e78]: 🥚
+        - generic [ref=f4e79]: 계란
+    - group "6 / 12" [ref=f4e80] [cursor=pointer]:
+      - link "🧂 양념·소스" [ref=f4e81]:
+        - /url: "#processed"
+        - generic [ref=f4e82]: 🧂
+        - generic [ref=f4e83]: 양념·소스
+    - group "7 / 12" [ref=f4e84] [cursor=pointer]:
+      - link "🧊 냉장·냉동" [ref=f4e85]:
+        - /url: "#processed"
+        - generic [ref=f4e86]: 🧊
+        - generic [ref=f4e87]: 냉장·냉동
+    - group "8 / 12" [ref=f4e88] [cursor=pointer]:
+      - link "🍜 라면·면" [ref=f4e89]:
+        - /url: "#processed"
+        - generic [ref=f4e90]: 🍜
+        - generic [ref=f4e91]: 라면·면
+    - group "9 / 12" [ref=f4e92] [cursor=pointer]:
+      - link "🛒 생활용품" [ref=f4e93]:
+        - /url: "#"
+        - generic [ref=f4e94]: 🛒
+        - generic [ref=f4e95]: 생활용품
+    - group "10 / 12" [ref=f4e96] [cursor=pointer]:
+      - link "🍶 주방용품" [ref=f4e97]:
+        - /url: "#"
+        - generic [ref=f4e98]: 🍶
+        - generic [ref=f4e99]: 주방용품
+    - group "11 / 12" [ref=f4e100] [cursor=pointer]:
+      - link "🐾 반려동물" [ref=f4e101]:
+        - /url: "#"
+        - generic [ref=f4e102]: 🐾
+        - generic [ref=f4e103]: 반려동물
+    - group "12 / 12" [ref=f4e104] [cursor=pointer]:
+      - link "💊 건강식품" [ref=f4e105]:
+        - /url: "#"
+        - generic [ref=f4e106]: 💊
+        - generic [ref=f4e107]: 건강식품
+  - main [ref=f4e108]:
+    - generic [ref=f4e109]:
+      - generic [ref=f4e110]:
+        - group "1 / 3" [ref=f4e111]:
+          - generic [ref=f4e112]:
+            - generic [ref=f4e113]:
+              - paragraph [ref=f4e114]: FILLMART 구미 인동점
+              - heading "매일 직송, 신선함이 다릅니다" [level=2] [ref=f4e115]: 매일 직송,신선함이 다릅니다
+              - link "오늘의 특가 보기 →" [ref=f4e116] [cursor=pointer]:
+                - /url: "#sale"
+            - generic: 🥬
+        - group "2 / 3" [ref=f4e117]:
+          - generic [ref=f4e118]:
+            - generic [ref=f4e119]:
+              - paragraph [ref=f4e120]: 이번 주 특가
+              - heading "신선 축산물 최대 30% 할인" [level=2] [ref=f4e121]: 신선 축산물최대 30% 할인
+              - link "축산 특가 보기 →" [ref=f4e122] [cursor=pointer]:
+                - /url: "#meat"
+            - generic: 🥩
+        - group "3 / 3" [ref=f4e123]:
+          - generic [ref=f4e124]:
+            - generic [ref=f4e125]:
+              - paragraph [ref=f4e126]: 1+1 행사
+              - heading "사면 하나 더! 1+1 행사 모음" [level=2] [ref=f4e127]: 사면 하나 더!1+1 행사 모음
+              - link "행사 상품 보기 →" [ref=f4e128] [cursor=pointer]:
+                - /url: "#"
+            - generic: 🎁
+      - generic [ref=f4e129]:
+        - button "Go to slide 1" [ref=f4e130] [cursor=pointer]
+        - button "Go to slide 2" [ref=f4e131] [cursor=pointer]
+        - button "Go to slide 3" [ref=f4e132] [cursor=pointer]
+      - button "Previous slide" [ref=f4e133] [cursor=pointer]: prev
+      - button "Next slide" [ref=f4e134] [cursor=pointer]: next
+    - generic [ref=f4e135]:
+      - generic [ref=f4e136]:
+        - generic [ref=f4e137]:
+          - generic [ref=f4e138]: 🔥
+          - heading "이번주 특가" [level=2] [ref=f4e139]
+          - generic [ref=f4e140]: SALE
+        - link "더보기 →" [ref=f4e141] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f4e142]:
+        - generic [ref=f4e143]:
+          - group "1 / 6" [ref=f4e144]:
+            - generic [ref=f4e145]:
+              - generic [ref=f4e146]:
+                - img "sale1" [ref=f4e148]
+                - generic [ref=f4e149]: 특가
+              - generic [ref=f4e150]:
+                - paragraph [ref=f4e151]: 국내산
+                - heading "국내산 삼겹살 500g" [level=3] [ref=f4e152]
+                - generic [ref=f4e153]:
+                  - text: 12,900원
+                  - paragraph [ref=f4e154]: 9,900원
+                - button " 담기" [ref=f4e155] [cursor=pointer]:
+                  - generic [ref=f4e156]: 
+                  - text: 담기
+          - group "2 / 6" [ref=f4e157]:
+            - generic [ref=f4e158]:
+              - generic [ref=f4e159]:
+                - img "sale2" [ref=f4e161]
+                - generic [ref=f4e162]: 35%↓
+              - generic [ref=f4e163]:
+                - paragraph [ref=f4e164]: 국산
+                - heading "양파 3kg 망" [level=3] [ref=f4e165]
+                - generic [ref=f4e166]:
+                  - text: 6,900원
+                  - paragraph [ref=f4e167]: 4,500원
+                - button " 담기" [ref=f4e168] [cursor=pointer]:
+                  - generic [ref=f4e169]: 
+                  - text: 담기
+          - group "3 / 6" [ref=f4e170]:
+            - generic [ref=f4e171]:
+              - generic [ref=f4e172]:
+                - img "sale3" [ref=f4e174]
+                - generic [ref=f4e175]: 특가
+              - generic [ref=f4e176]:
+                - paragraph [ref=f4e177]: 국내산
+                - heading "계란 30구 특란" [level=3] [ref=f4e178]
+                - generic [ref=f4e179]:
+                  - text: 10,900원
+                  - paragraph [ref=f4e180]: 8,900원
+                - button " 담기" [ref=f4e181] [cursor=pointer]:
+                  - generic [ref=f4e182]: 
+                  - text: 담기
+          - group "4 / 6" [ref=f4e183]:
+            - generic [ref=f4e184]:
+              - generic [ref=f4e185]:
+                - img "sale4" [ref=f4e187]
+                - generic [ref=f4e188]: 25%↓
+              - generic [ref=f4e189]:
+                - paragraph [ref=f4e190]: 국내산
+                - heading "닭가슴살 1kg" [level=3] [ref=f4e191]
+                - generic [ref=f4e192]:
+                  - text: 10,500원
+                  - paragraph [ref=f4e193]: 7,900원
+                - button " 담기" [ref=f4e194] [cursor=pointer]:
+                  - generic [ref=f4e195]: 
+                  - text: 담기
+          - group "5 / 6" [ref=f4e196]:
+            - generic [ref=f4e197]:
+              - generic [ref=f4e198]:
+                - img "sale5" [ref=f4e200]
+                - generic [ref=f4e201]: 특가
+              - generic [ref=f4e202]:
+                - paragraph [ref=f4e203]: 국산
+                - heading "고등어 2마리" [level=3] [ref=f4e204]
+                - generic [ref=f4e205]:
+                  - text: 7,900원
+                  - paragraph [ref=f4e206]: 5,900원
+                - button " 담기" [ref=f4e207] [cursor=pointer]:
+                  - generic [ref=f4e208]: 
+                  - text: 담기
+          - group "6 / 6" [ref=f4e209]:
+            - generic [ref=f4e210]:
+              - generic [ref=f4e211]:
+                - img "sale6" [ref=f4e213]
+                - generic [ref=f4e214]: 26%↓
+              - generic [ref=f4e215]:
+                - paragraph [ref=f4e216]: 국산콩
+                - heading "국산 두부 2개입" [level=3] [ref=f4e217]
+                - generic [ref=f4e218]:
+                  - text: 3,900원
+                  - paragraph [ref=f4e219]: 2,900원
+                - button " 담기" [ref=f4e220] [cursor=pointer]:
+                  - generic [ref=f4e221]: 
+                  - text: 담기
+        - generic [ref=f4e222] [cursor=pointer]: prev
+        - generic [ref=f4e223] [cursor=pointer]: next
+    - generic [ref=f4e224]:
+      - generic [ref=f4e225]:
+        - generic [ref=f4e226]:
+          - generic [ref=f4e227]: 🥬
+          - heading "신선 채소·과일" [level=2] [ref=f4e228]
+          - generic [ref=f4e229]: 매일 아침 직송
+        - link "더보기 →" [ref=f4e230] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f4e231]:
+        - generic [ref=f4e232]:
+          - group "1 / 8" [ref=f4e233]:
+            - generic [ref=f4e234]:
+              - img "veg1" [ref=f4e236]
+              - generic [ref=f4e237]:
+                - paragraph [ref=f4e238]: 국산
+                - heading "양배추 1통" [level=3] [ref=f4e239]
+                - generic [ref=f4e240]:
+                  - text: 4,500원
+                  - paragraph [ref=f4e241]: 3,500원
+                - button " 담기" [ref=f4e242] [cursor=pointer]:
+                  - generic [ref=f4e243]: 
+                  - text: 담기
+          - group "2 / 8" [ref=f4e244]:
+            - generic [ref=f4e245]:
+              - img "veg2" [ref=f4e247]
+              - generic [ref=f4e248]:
+                - paragraph [ref=f4e249]: 국산
+                - heading "대파 1단" [level=3] [ref=f4e250]
+                - generic [ref=f4e251]:
+                  - text: 2,500원
+                  - paragraph [ref=f4e252]: 1,900원
+                - button " 담기" [ref=f4e253] [cursor=pointer]:
+                  - generic [ref=f4e254]: 
+                  - text: 담기
+          - group "3 / 8" [ref=f4e255]:
+            - generic [ref=f4e256]:
+              - img "veg3" [ref=f4e258]
+              - generic [ref=f4e259]:
+                - paragraph [ref=f4e260]: 국산
+                - heading "햇감자 2.5kg" [level=3] [ref=f4e261]
+                - generic [ref=f4e262]:
+                  - text: 7,900원
+                  - paragraph [ref=f4e263]: 5,900원
+                - button " 담기" [ref=f4e264] [cursor=pointer]:
+                  - generic [ref=f4e265]: 
+                  - text: 담기
+          - group "4 / 8" [ref=f4e266]:
+            - generic [ref=f4e267]:
+              - img "veg4" [ref=f4e269]
+              - generic [ref=f4e270]:
+                - paragraph [ref=f4e271]: 국산
+                - heading "당근 1kg" [level=3] [ref=f4e272]
+                - generic [ref=f4e273]:
+                  - text: 3,900원
+                  - paragraph [ref=f4e274]: 2,900원
+                - button " 담기" [ref=f4e275] [cursor=pointer]:
+                  - generic [ref=f4e276]: 
+                  - text: 담기
+          - group "5 / 8" [ref=f4e277]:
+            - generic [ref=f4e278]:
+              - img "veg5" [ref=f4e280]
+              - generic [ref=f4e281]:
+                - paragraph [ref=f4e282]: 국내산
+                - heading "수박 (소) 1통" [level=3] [ref=f4e283]
+                - generic [ref=f4e284]:
+                  - text: 16,900원
+                  - paragraph [ref=f4e285]: 12,900원
+                - button " 담기" [ref=f4e286] [cursor=pointer]:
+                  - generic [ref=f4e287]: 
+                  - text: 담기
+          - group "6 / 8" [ref=f4e288]:
+            - generic [ref=f4e289]:
+              - img "veg6" [ref=f4e291]
+              - generic [ref=f4e292]:
+                - paragraph [ref=f4e293]: 국내산
+                - heading "복숭아 1.5kg" [level=3] [ref=f4e294]
+                - generic [ref=f4e295]:
+                  - text: 11,900원
+                  - paragraph [ref=f4e296]: 8,900원
+                - button " 담기" [ref=f4e297] [cursor=pointer]:
+                  - generic [ref=f4e298]: 
+                  - text: 담기
+          - group "7 / 8" [ref=f4e299]:
+            - generic [ref=f4e300]:
+              - img "veg7" [ref=f4e302]
+              - generic [ref=f4e303]:
+                - paragraph [ref=f4e304]: 국내산
+                - heading "포도 2kg" [level=3] [ref=f4e305]
+                - generic [ref=f4e306]:
+                  - text: 13,900원
+                  - paragraph [ref=f4e307]: 9,900원
+                - button " 담기" [ref=f4e308] [cursor=pointer]:
+                  - generic [ref=f4e309]: 
+                  - text: 담기
+          - group "8 / 8" [ref=f4e310]:
+            - generic [ref=f4e311]:
+              - img "veg8" [ref=f4e313]
+              - generic [ref=f4e314]:
+                - paragraph [ref=f4e315]: 국내산
+                - heading "방울토마토 1kg" [level=3] [ref=f4e316]
+                - generic [ref=f4e317]:
+                  - text: 6,900원
+                  - paragraph [ref=f4e318]: 4,900원
+                - button " 담기" [ref=f4e319] [cursor=pointer]:
+                  - generic [ref=f4e320]: 
+                  - text: 담기
+        - generic [ref=f4e321] [cursor=pointer]: prev
+        - generic [ref=f4e322] [cursor=pointer]: next
+    - generic [ref=f4e323]:
+      - generic [ref=f4e324]:
+        - generic [ref=f4e325]:
+          - generic [ref=f4e326]: 🥩
+          - heading "인기 축산·수산" [level=2] [ref=f4e327]
+          - generic [ref=f4e328]: BEST
+        - link "더보기 →" [ref=f4e329] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f4e330]:
+        - generic [ref=f4e331]:
+          - group "1 / 6" [ref=f4e332]:
+            - generic [ref=f4e333]:
+              - img "meat1" [ref=f4e335]
+              - generic [ref=f4e336]:
+                - paragraph [ref=f4e337]: 1등급↑
+                - heading "한우 불고기 300g" [level=3] [ref=f4e338]
+                - generic [ref=f4e339]:
+                  - text: 21,900원
+                  - paragraph [ref=f4e340]: 16,900원
+                - button " 담기" [ref=f4e341] [cursor=pointer]:
+                  - generic [ref=f4e342]: 
+                  - text: 담기
+          - group "2 / 6" [ref=f4e343]:
+            - generic [ref=f4e344]:
+              - img "meat2" [ref=f4e346]
+              - generic [ref=f4e347]:
+                - paragraph [ref=f4e348]: 국내산
+                - heading "돼지 목살 500g" [level=3] [ref=f4e349]
+                - generic [ref=f4e350]:
+                  - text: 9,900원
+                  - paragraph [ref=f4e351]: 7,900원
+                - button " 담기" [ref=f4e352] [cursor=pointer]:
+                  - generic [ref=f4e353]: 
+                  - text: 담기
+          - group "3 / 6" [ref=f4e354]:
+            - generic [ref=f4e355]:
+              - img "meat3" [ref=f4e357]
+              - generic [ref=f4e358]:
+                - paragraph [ref=f4e359]: 국내산
+                - heading "닭볶음탕용 1kg" [level=3] [ref=f4e360]
+                - generic [ref=f4e361]:
+                  - text: 8,900원
+                  - paragraph [ref=f4e362]: 6,900원
+                - button " 담기" [ref=f4e363] [cursor=pointer]:
+                  - generic [ref=f4e364]: 
+                  - text: 담기
+          - group "4 / 6" [ref=f4e365]:
+            - generic [ref=f4e366]:
+              - img "fish1" [ref=f4e368]
+              - generic [ref=f4e369]:
+                - paragraph [ref=f4e370]: 국산
+                - heading "오징어 2마리" [level=3] [ref=f4e371]
+                - generic [ref=f4e372]:
+                  - text: 9,900원
+                  - paragraph [ref=f4e373]: 7,900원
+                - button " 담기" [ref=f4e374] [cursor=pointer]:
+                  - generic [ref=f4e375]: 
+                  - text: 담기
+          - group "5 / 6" [ref=f4e376]:
+            - generic [ref=f4e377]:
+              - img "fish2" [ref=f4e379]
+              - generic [ref=f4e380]:
+                - paragraph [ref=f4e381]: 국산
+                - heading "생새우 500g" [level=3] [ref=f4e382]
+                - generic [ref=f4e383]:
+                  - text: 15,900원
+                  - paragraph [ref=f4e384]: 12,900원
+                - button " 담기" [ref=f4e385] [cursor=pointer]:
+                  - generic [ref=f4e386]: 
+                  - text: 담기
+          - group "6 / 6" [ref=f4e387]:
+            - generic [ref=f4e388]:
+              - img "fish3" [ref=f4e390]
+              - generic [ref=f4e391]:
+                - paragraph [ref=f4e392]: 국산
+                - heading "손질 고등어 4토막" [level=3] [ref=f4e393]
+                - generic [ref=f4e394]:
+                  - text: 8,900원
+                  - paragraph [ref=f4e395]: 6,900원
+                - button " 담기" [ref=f4e396] [cursor=pointer]:
+                  - generic [ref=f4e397]: 
+                  - text: 담기
+        - generic [ref=f4e398] [cursor=pointer]: prev
+        - generic [ref=f4e399] [cursor=pointer]: next
+    - generic [ref=f4e400]:
+      - generic [ref=f4e401]:
+        - generic [ref=f4e402]:
+          - generic [ref=f4e403]: 🧊
+          - heading "가공·냉장" [level=2] [ref=f4e404]
+        - link "더보기 →" [ref=f4e405] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f4e406]:
+        - generic [ref=f4e407]:
+          - group "1 / 6" [ref=f4e408]:
+            - generic [ref=f4e409]:
+              - img "proc1" [ref=f4e411]
+              - generic [ref=f4e412]:
+                - paragraph [ref=f4e413]: 농심
+                - heading "신라면 멀티 5개입" [level=3] [ref=f4e414]
+                - generic [ref=f4e415]:
+                  - text: 5,000원
+                  - paragraph [ref=f4e416]: 4,200원
+                - button " 담기" [ref=f4e417] [cursor=pointer]:
+                  - generic [ref=f4e418]: 
+                  - text: 담기
+          - group "2 / 6" [ref=f4e419]:
+            - generic [ref=f4e420]:
+              - img "proc2" [ref=f4e422]
+              - generic [ref=f4e423]:
+                - paragraph [ref=f4e424]: 국산콩
+                - heading "부침두부 2개입" [level=3] [ref=f4e425]
+                - generic [ref=f4e426]:
+                  - text: 3,200원
+                  - paragraph [ref=f4e427]: 2,500원
+                - button " 담기" [ref=f4e428] [cursor=pointer]:
+                  - generic [ref=f4e429]: 
+                  - text: 담기
+          - group "3 / 6" [ref=f4e430]:
+            - generic [ref=f4e431]:
+              - img "proc3" [ref=f4e433]
+              - generic [ref=f4e434]:
+                - paragraph [ref=f4e435]: 사조
+                - heading "사각어묵 400g" [level=3] [ref=f4e436]
+                - generic [ref=f4e437]:
+                  - text: 4,900원
+                  - paragraph [ref=f4e438]: 3,900원
+                - button " 담기" [ref=f4e439] [cursor=pointer]:
+                  - generic [ref=f4e440]: 
+                  - text: 담기
+          - group "4 / 6" [ref=f4e441]:
+            - generic [ref=f4e442]:
+              - img "proc4" [ref=f4e444]
+              - generic [ref=f4e445]:
+                - paragraph [ref=f4e446]: CJ
+                - heading "스팸 클래식 340g" [level=3] [ref=f4e447]
+                - generic [ref=f4e448]:
+                  - text: 5,900원
+                  - paragraph [ref=f4e449]: 4,900원
+                - button " 담기" [ref=f4e450] [cursor=pointer]:
+                  - generic [ref=f4e451]: 
+                  - text: 담기
+          - group "5 / 6" [ref=f4e452]:
+            - generic [ref=f4e453]:
+              - img "proc5" [ref=f4e455]
+              - generic [ref=f4e456]:
+                - paragraph [ref=f4e457]: 서울우유
+                - heading "슬라이스 치즈 20장" [level=3] [ref=f4e458]
+                - generic [ref=f4e459]:
+                  - text: 7,500원
+                  - paragraph [ref=f4e460]: 5,900원
+                - button " 담기" [ref=f4e461] [cursor=pointer]:
+                  - generic [ref=f4e462]: 
+                  - text: 담기
+          - group "6 / 6" [ref=f4e463]:
+            - generic [ref=f4e464]:
+              - img "proc6" [ref=f4e466]
+              - generic [ref=f4e467]:
+                - paragraph [ref=f4e468]: 빙그레
+                - heading "떠먹는 요거트 3개입" [level=3] [ref=f4e469]
+                - generic [ref=f4e470]:
+                  - text: 4,900원
+                  - paragraph [ref=f4e471]: 3,900원
+                - button " 담기" [ref=f4e472] [cursor=pointer]:
+                  - generic [ref=f4e473]: 
+                  - text: 담기
+        - generic [ref=f4e474] [cursor=pointer]: prev
+        - generic [ref=f4e475] [cursor=pointer]: next
+  - text:     
+  - contentinfo [ref=f4e476]:
+    - generic [ref=f4e477]:
+      - generic [ref=f4e478]:
+        - generic [ref=f4e479]:
+          - img [ref=f4e480]:
+            - generic [ref=f4e481]: FILL
+            - generic [ref=f4e483]: M
+            - generic [ref=f4e484]: ART
+          - paragraph [ref=f4e485]: 매일 아침 직송하는 신선한 식재료로더 건강한 식탁을 만들어 드립니다.
+          - generic [ref=f4e486]:
+            - link "" [ref=f4e487] [cursor=pointer]:
+              - /url: https://www.facebook.com/p/%ED%95%84%EB%A7%88%ED%8A%B8-100072231188870/
+            - link "" [ref=f4e489] [cursor=pointer]:
+              - /url: "#"
+        - generic [ref=f4e491]:
+          - heading "고객센터" [level=3] [ref=f4e492]
+          - paragraph [ref=f4e493]: 054-473-2841
+          - paragraph [ref=f4e494]: 평일·주말 09:00 ~ 22:00
+          - generic [ref=f4e495]:
+            - link "자주 하는 질문" [ref=f4e496] [cursor=pointer]:
+              - /url: "#"
+            - link "1:1 문의" [ref=f4e497] [cursor=pointer]:
+              - /url: "#"
+            - link "공지사항" [ref=f4e498] [cursor=pointer]:
+              - /url: "#"
+        - generic [ref=f4e499]:
+          - heading "회사 정보" [level=3] [ref=f4e500]
+          - generic [ref=f4e501]:
+            - paragraph [ref=f4e502]: 상호명 필마트 구미 인동점
+            - paragraph [ref=f4e503]: 주소 경북 구미시 인의동 485번지
+            - paragraph [ref=f4e504]: 대표 (대표자명)
+            - paragraph [ref=f4e505]: 사업자 (사업자등록번호)
+          - generic [ref=f4e506]:
+            - link "이용약관" [ref=f4e507] [cursor=pointer]:
+              - /url: "#"
+            - link "개인정보처리방침" [ref=f4e508] [cursor=pointer]:
+              - /url: "#"
+      - generic [ref=f4e509]: Copyright © 2025 필마트. All rights reserved.
+  - text: 

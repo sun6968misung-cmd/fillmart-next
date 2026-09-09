@@ -1,0 +1,64 @@
+[     471ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[     494ms] [LOG] [HMR] connected @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  127214ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  127244ms] [LOG] [HMR] connected @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  147204ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  147299ms] [LOG] [Fast Refresh] done in 202ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  147571ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  148114ms] [LOG] [Fast Refresh] done in 708ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  300378ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  301363ms] [LOG] [Fast Refresh] done in 1090ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  301588ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  301940ms] [LOG] [Fast Refresh] done in 467ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  306823ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  307362ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  307444ms] [LOG] [Fast Refresh] done in 668ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  307779ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  307840ms] [LOG] [Fast Refresh] done in 170ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  309095ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  309409ms] [LOG] [HMR] connected @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  319075ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  319505ms] [LOG] [Fast Refresh] done in 523ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  319506ms] [LOG] [Fast Refresh] done in 523ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  319507ms] [LOG] [Fast Refresh] done in 523ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  319512ms] [LOG] [Fast Refresh] done in 523ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  319588ms] [LOG] [Fast Refresh] done in 523ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  346709ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  347773ms] [LOG] [Fast Refresh] done in 296ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  347774ms] [LOG] [Fast Refresh] done in 296ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  353775ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  353945ms] [LOG] [Fast Refresh] done in 198ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  358427ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  358448ms] [LOG] [Fast Refresh] done in 151ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  358523ms] [LOG] [Fast Refresh] done in 151ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  358569ms] [LOG] [Fast Refresh] done in 151ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  362910ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  363038ms] [LOG] [Fast Refresh] done in 113ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  367730ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  367963ms] [LOG] [Fast Refresh] done in 342ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  368166ms] [LOG] [Fast Refresh] done in 342ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  368266ms] [LOG] [Fast Refresh] done in 342ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  399449ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  401105ms] [LOG] [Fast Refresh] done in 1543ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  401384ms] [LOG] [Fast Refresh] done in 1543ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  415412ms] [LOG] [Fast Refresh] done in 1543ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  415644ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  415987ms] [LOG] [Fast Refresh] done in 428ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  427277ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  427344ms] [LOG] [Fast Refresh] done in 183ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  427403ms] [LOG] [Fast Refresh] done in 183ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  427475ms] [LOG] [Fast Refresh] done in 183ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  427477ms] [LOG] [Fast Refresh] done in 183ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  438666ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  438814ms] [LOG] [Fast Refresh] done in 187ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  438989ms] [LOG] [Fast Refresh] done in 187ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  466648ms] [LOG] [Fast Refresh] rebuilding @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  466851ms] [LOG] [Fast Refresh] done in 296ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  467030ms] [LOG] [Fast Refresh] done in 296ms @ http://192.168.0.15:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776

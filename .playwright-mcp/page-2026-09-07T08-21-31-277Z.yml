@@ -1,0 +1,155 @@
+- generic [active] [ref=f20e1]:
+  - banner [ref=f20e2]:
+    - generic [ref=f20e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f20e5]:
+      - link "필마트 필마트" [ref=f20e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f20e7]
+        - generic [ref=f20e8]: 필마트
+      - generic [ref=f20e9]:
+        - textbox "상품을 검색해보세요!" [ref=f20e10]
+        - button [ref=f20e11]
+      - generic [ref=f20e15]:
+        - link "로그인" [ref=f20e16] [cursor=pointer]:
+          - /url: /auth
+        - link "나의 찜" [ref=f20e21] [cursor=pointer]:
+          - /url: /wishlist
+        - button "장바구니" [ref=f20e26]
+    - generic [ref=f20e35]:
+      - generic [ref=f20e36]:
+        - button "카테고리" [ref=f20e37]
+        - navigation [ref=f20e39]:
+          - link "홈" [ref=f20e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f20e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f20e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f20e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f20e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f20e45]:
+        - link "로그인" [ref=f20e46] [cursor=pointer]:
+          - /url: /auth
+        - link "회원가입" [ref=f20e47] [cursor=pointer]:
+          - /url: /auth
+        - link "고객센터" [ref=f20e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f20e49]:
+    - generic [ref=f20e50]:
+      - generic [ref=f20e51]:
+        - link "홈" [ref=f20e52] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f20e55]: 조리도구
+      - generic [ref=f20e56]:
+        - complementary [ref=f20e57]:
+          - generic [ref=f20e58]:
+            - heading "카테고리" [level=3] [ref=f20e59]
+            - list [ref=f20e60]:
+              - listitem [ref=f20e61]:
+                - button "전체(2)" [ref=f20e62]
+              - listitem [ref=f20e63]: 조리도구(2)
+          - generic [ref=f20e64]:
+            - heading "혜택" [level=3] [ref=f20e65]
+            - generic [ref=f20e66] [cursor=pointer]:
+              - checkbox "할인상품(2)" [ref=f20e67]
+              - text: 할인상품(2)
+          - generic [ref=f20e68]:
+            - heading "가격" [level=3] [ref=f20e69]
+            - list [ref=f20e70]:
+              - listitem [ref=f20e71]:
+                - button "전체" [ref=f20e72]
+              - listitem [ref=f20e73]:
+                - button "5,000원 이하" [ref=f20e74]
+              - listitem [ref=f20e75]:
+                - button "5,000 ~ 10,000원" [ref=f20e76]
+              - listitem [ref=f20e77]:
+                - button "10,000 ~ 20,000원" [ref=f20e78]
+              - listitem [ref=f20e79]:
+                - button "20,000원 이상" [ref=f20e80]
+        - generic [ref=f20e81]:
+          - generic [ref=f20e82]:
+            - heading "조리도구" [level=1] [ref=f20e83]
+            - generic [ref=f20e84]:
+              - text: 총
+              - strong [ref=f20e85]: "2"
+              - text: 개 상품
+          - generic [ref=f20e86]:
+            - button "추천순" [ref=f20e87]
+            - button "낮은가격순" [ref=f20e88]
+            - button "높은가격순" [ref=f20e89]
+            - button "할인율순" [ref=f20e90]
+          - generic [ref=f20e91]:
+            - generic [ref=f20e92]:
+              - generic [ref=f20e93]:
+                - link "실리콘 주걱 3종 세트 24%" [ref=f20e94] [cursor=pointer]:
+                  - /url: /product/tool1
+                  - img "실리콘 주걱 3종 세트" [ref=f20e95]
+                  - generic [ref=f20e96]: 24%
+                - button [ref=f20e97]
+                - button "담기" [ref=f20e101]
+              - link "실리콘 주걱 3종 세트 3종 · 국내산 24% 16,900원 12,900원" [ref=f20e107] [cursor=pointer]:
+                - /url: /product/tool1
+                - paragraph [ref=f20e108]: 실리콘 주걱 3종 세트
+                - paragraph [ref=f20e109]: 3종 · 국내산
+                - generic [ref=f20e110]:
+                  - generic [ref=f20e111]: 24%
+                  - generic [ref=f20e112]: 16,900원
+                - paragraph [ref=f20e113]: 12,900원
+            - generic [ref=f20e114]:
+              - generic [ref=f20e115]:
+                - link "스텐 주방가위 29%" [ref=f20e116] [cursor=pointer]:
+                  - /url: /product/tool2
+                  - img "스텐 주방가위" [ref=f20e117]
+                  - generic [ref=f20e118]: 29%
+                - button [ref=f20e119]
+                - button "담기" [ref=f20e123]
+              - link "스텐 주방가위 1개 · 국내산 29% 13,900원 9,900원" [ref=f20e129] [cursor=pointer]:
+                - /url: /product/tool2
+                - paragraph [ref=f20e130]: 스텐 주방가위
+                - paragraph [ref=f20e131]: 1개 · 국내산
+                - generic [ref=f20e132]:
+                  - generic [ref=f20e133]: 29%
+                  - generic [ref=f20e134]: 13,900원
+                - paragraph [ref=f20e135]: 9,900원
+  - contentinfo [ref=f20e136]:
+    - generic [ref=f20e137]:
+      - generic [ref=f20e138]:
+        - generic [ref=f20e139]:
+          - heading "필마트" [level=3] [ref=f20e140]
+          - paragraph [ref=f20e141]: 신선식품 당일배송고객 만족 최우선
+        - generic [ref=f20e142]:
+          - heading "고객지원" [level=3] [ref=f20e143]
+          - list [ref=f20e144]:
+            - listitem [ref=f20e145]:
+              - link "공지사항" [ref=f20e146] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f20e147]:
+              - link "자주 묻는 질문" [ref=f20e148] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f20e149]:
+              - link "고객문의" [ref=f20e150] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f20e151]:
+          - heading "약관" [level=3] [ref=f20e152]
+          - list [ref=f20e153]:
+            - listitem [ref=f20e154]:
+              - link "이용약관" [ref=f20e155] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f20e156]:
+              - link "개인정보처리방침" [ref=f20e157] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f20e158]:
+          - heading "주문" [level=3] [ref=f20e159]
+          - list [ref=f20e160]:
+            - listitem [ref=f20e161]:
+              - link "주문내역" [ref=f20e162] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f20e163]:
+              - link "찜 목록" [ref=f20e164] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f20e165]
+      - paragraph [ref=f20e166]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f20e172] [cursor=pointer]

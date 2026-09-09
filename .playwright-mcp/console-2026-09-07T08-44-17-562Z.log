@@ -1,0 +1,371 @@
+[     190ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/admin:0
+[     232ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[     255ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  570487ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  570628ms] [LOG] [Fast Refresh] done in 246ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  596867ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/admin:0
+[  596912ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  596935ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  693106ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  693358ms] [LOG] [Fast Refresh] done in 287ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  693465ms] [LOG] [Fast Refresh] done in 287ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  697964ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  698054ms] [LOG] [Fast Refresh] done in 198ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  703803ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  703860ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  703969ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  712946ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  712997ms] [LOG] [Fast Refresh] done in 61ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  713127ms] [LOG] [Fast Refresh] done in 61ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  717070ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  717135ms] [LOG] [Fast Refresh] done in 50ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  717241ms] [LOG] [Fast Refresh] done in 50ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  722359ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  722406ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  722531ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  728896ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  729004ms] [LOG] [Fast Refresh] done in 119ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  734319ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  734379ms] [LOG] [Fast Refresh] done in 156ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  734395ms] [LOG] [Fast Refresh] done in 156ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  734532ms] [LOG] [Fast Refresh] done in 156ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  734627ms] [LOG] [Fast Refresh] done in 156ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  737835ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  737924ms] [LOG] [Fast Refresh] done in 84ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  749740ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[  749843ms] [LOG] [Fast Refresh] done in 188ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1043121ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1043319ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1095678ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1095949ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1366953ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1367329ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1376248ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1376428ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1379998ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1380164ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1380231ms] [LOG] [Fast Refresh] done in 311ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1380550ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1380712ms] [LOG] [Fast Refresh] done in 271ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1381576ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/admin:0
+[ 1381793ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1381826ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1386611ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1386775ms] [LOG] [Fast Refresh] done in 282ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1404511ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1404614ms] [LOG] [Fast Refresh] done in 150ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1409648ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1409812ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1409817ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1409817ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1409895ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/admin:0
+[ 1413087ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1413314ms] [LOG] [Fast Refresh] done in 336ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1413326ms] [LOG] [Fast Refresh] done in 336ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1413421ms] [LOG] [Fast Refresh] done in 336ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1422480ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1422538ms] [LOG] [Fast Refresh] done in 138ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1422552ms] [LOG] [Fast Refresh] done in 138ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1422716ms] [LOG] [Fast Refresh] done in 138ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1426305ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1426377ms] [LOG] [Fast Refresh] done in 98ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1430543ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1431075ms] [LOG] [Fast Refresh] done in 666ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1431077ms] [LOG] [Fast Refresh] done in 666ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1431079ms] [LOG] [Fast Refresh] done in 666ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1431079ms] [LOG] [Fast Refresh] done in 666ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1464622ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1464948ms] [LOG] [Fast Refresh] done in 429ms @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1498018ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1498233ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1512082ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1512095ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1525179ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1525184ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1557756ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1557926ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1568130ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1568238ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1568428ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1568675ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1568826ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:776
+[ 1570015ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1576239ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1576346ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1577311ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1577405ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1578011ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052
+[ 1578124ms] [ERROR] ./app/admin/page.tsx:1047:5
+Error: Expected ',', got '{'
+  1045 |     </div>
+  1046 |
+> 1047 |     {/* ── 상품 편집 모달 ── */}
+       |     ^
+  1048 |     {prodModal.open && (
+  1049 |       <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/...
+  1050 |         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] ov...
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/admin/page.tsx [Client Component Browser]
+    ./app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/admin/page.tsx [Client Component SSR]
+    ./app/admin/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/1-hf_next_dist_0rj6-9x._.js:1052

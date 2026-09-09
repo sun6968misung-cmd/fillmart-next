@@ -28,7 +28,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
           <div>
-            <h3 className="font-semibold mb-3">필마트</h3>
+            <h3 className="font-semibold mb-3">필식자재마마트 다사점</h3>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p>{address}</p>
               <p>
@@ -72,7 +72,7 @@ export function Footer() {
         <Separator className="my-6" />
         <div className="text-xs text-muted-foreground text-center space-y-1">
           <p>주식회사 필식자재마트 · 대표 서익준 · 사업자등록번호 702-85-01475</p>
-          <p>© 2026 필마트. All rights reserved.</p>
+          <p>© 2026 필식자재마마트 다사점. All rights reserved.</p>
         </div>
       </div>
     </footer>

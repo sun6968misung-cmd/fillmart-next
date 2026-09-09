@@ -1,0 +1,87 @@
+﻿616b891 fix: checkout redirect in useEffect + add 100k minimum check on page
+d59f0fb feat: verify production build passes
+0935fc5 feat: add info pages (notice, faq, contact, terms, privacy, naver-callback)
+e80d5b3 feat: add orders, wishlist, admin pages
+c6feaca feat: add auth, checkout, success/fail pages
+7d3b660 feat: add home page and product pages
+743ccf0 feat: add layout components (Navbar, Footer, CartSheet)
+cb2c38d feat: add React Context state management (cart, wishlist, auth) + Toss payment hook
+18951d4 feat: add TypeScript types and data layer (products, storage, utils)
+4723920 feat: scaffold Next.js 15 + shadcn/ui pilmart-next project
+---STAT---
+ pilmart-next/.gitignore                            |   41 +
+ pilmart-next/AGENTS.md                             |    9 +
+ pilmart-next/CLAUDE.md                             |    1 +
+ pilmart-next/README.md                             |   36 +
+ pilmart-next/app/admin/page.tsx                    |  213 +
+ pilmart-next/app/auth/page.tsx                     |  100 +
+ pilmart-next/app/checkout/page.tsx                 |  139 +
+ pilmart-next/app/contact/page.tsx                  |   37 +
+ pilmart-next/app/fail/page.tsx                     |   27 +
+ pilmart-next/app/faq/page.tsx                      |   25 +
+ pilmart-next/app/favicon.ico                       |  Bin 0 -> 25931 bytes
+ pilmart-next/app/flash-product/[idx]/page.tsx      |   82 +
+ pilmart-next/app/globals.css                       |  130 +
+ pilmart-next/app/layout.tsx                        |   33 +
+ pilmart-next/app/naver-callback/page.tsx           |   25 +
+ pilmart-next/app/notice/page.tsx                   |   38 +
+ pilmart-next/app/orders/page.tsx                   |   58 +
+ pilmart-next/app/page.tsx                          |   18 +
+ pilmart-next/app/privacy/page.tsx                  |   12 +
+ pilmart-next/app/product/[id]/page.tsx             |   86 +
+ pilmart-next/app/success/page.tsx                  |   58 +
+ pilmart-next/app/terms/page.tsx                    |   14 +
+ pilmart-next/app/wishlist/page.tsx                 |   30 +
+ pilmart-next/components.json                       |   25 +
+ pilmart-next/components/home/FlashSaleSection.tsx  |   73 +
+ pilmart-next/components/home/HeroBanner.tsx        |   31 +
+ pilmart-next/components/layout/CartSheet.tsx       |   75 +
+ pilmart-next/components/layout/Footer.tsx          |   43 +
+ pilmart-next/components/layout/Navbar.tsx          |   88 +
+ pilmart-next/components/product/CategoryFilter.tsx |   27 +
+ pilmart-next/components/product/ProductCard.tsx    |   67 +
+ pilmart-next/components/product/ProductGrid.tsx    |   32 +
+ pilmart-next/components/ui/accordion.tsx           |   71 +
+ pilmart-next/components/ui/avatar.tsx              |  108 +
+ pilmart-next/components/ui/badge.tsx               |   51 +
+ pilmart-next/components/ui/button.tsx              |   57 +
+ pilmart-next/components/ui/card.tsx                |  102 +
+ pilmart-next/components/ui/command.tsx             |  196 +
+ pilmart-next/components/ui/dialog.tsx              |  160 +
+ pilmart-next/components/ui/input-group.tsx         |  158 +
+ pilmart-next/components/ui/input.tsx               |   19 +
+ pilmart-next/components/ui/label.tsx               |   19 +
+ pilmart-next/components/ui/navigation-menu.tsx     |  167 +
+ pilmart-next/components/ui/radio-group.tsx         |   37 +
+ pilmart-next/components/ui/select.tsx              |  200 +
+ pilmart-next/components/ui/separator.tsx           |   24 +
+ pilmart-next/components/ui/sheet.tsx               |  138 +
+ pilmart-next/components/ui/skeleton.tsx            |   13 +
+ pilmart-next/components/ui/table.tsx               |  115 +
+ pilmart-next/components/ui/tabs.tsx                |   81 +
+ pilmart-next/components/ui/textarea.tsx            |   17 +
+ pilmart-next/components/ui/toggle-group.tsx        |   89 +
+ pilmart-next/components/ui/toggle.tsx              |   44 +
+ pilmart-next/context/StoreProvider.tsx             |  207 +
+ pilmart-next/eslint.config.mjs                     |   18 +
+ pilmart-next/hooks/useAuth.ts                      |    1 +
+ pilmart-next/hooks/useCart.ts                      |    1 +
+ pilmart-next/hooks/useTossPayment.ts               |   22 +
+ pilmart-next/hooks/useWishlist.ts                  |    1 +
+ pilmart-next/lib/products.ts                       |   70 +
+ pilmart-next/lib/storage.ts                        |   32 +
+ pilmart-next/lib/utils.ts                          |    5 +
+ pilmart-next/next.config.ts                        |    7 +
+ pilmart-next/package.json                          |   36 +
+ pilmart-next/pnpm-lock.yaml                        | 6521 ++++++++++++++++++++
+ pilmart-next/pnpm-workspace.yaml                   |    3 +
+ pilmart-next/postcss.config.mjs                    |    7 +
+ pilmart-next/public/file.svg                       |    1 +
+ pilmart-next/public/globe.svg                      |    1 +
+ pilmart-next/public/logo.png                       |   28 +
+ pilmart-next/public/next.svg                       |    1 +
+ pilmart-next/public/vercel.svg                     |    1 +
+ pilmart-next/public/window.svg                     |    1 +
+ pilmart-next/tsconfig.json                         |   34 +
+ pilmart-next/types/index.ts                        |   71 +
+ 75 files changed, 10608 insertions(+)

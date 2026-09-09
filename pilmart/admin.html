@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>필마트 관리자</title>
+  <title>필식자재마마트 다사점 관리자</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -41,7 +41,7 @@
       <i class="fas fa-shield-halved text-2xl text-primary"></i>
     </div>
     <h2 class="text-xl font-black text-gray-800 mb-1">관리자 로그인</h2>
-    <p class="text-sm text-gray-400 mb-6">필마트 관리자 페이지</p>
+    <p class="text-sm text-gray-400 mb-6">필식자재마마트 다사점 관리자</p>
     <input type="password" x-model="pwInput" placeholder="비밀번호 입력"
            @keydown.enter="login()"
            class="w-full border border-gray-300 rounded-xl px-4 py-3 text-center text-lg tracking-widest focus:outline-none focus:border-primary mb-3">
@@ -385,7 +385,7 @@
         <p class="text-xs text-gray-400 mb-4">홈 최상단 빨간 바에 표시되는 문구입니다. HTML 태그 사용 가능.</p>
         <textarea x-model="siteSettings.announce" rows="2"
                   class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
-                  placeholder="주문금액 제한없는 <strong>당일배송</strong> &amp;nbsp;·&amp;nbsp; 구미 인동점"></textarea>
+                  placeholder="주문금액 제한없는 <strong>당일배송</strong> &amp;nbsp;·&amp;nbsp; 다사점"></textarea>
         <button @click="saveSiteSettings()"
                 class="mt-3 bg-accent text-white font-bold px-5 py-2 rounded-xl text-sm hover:bg-red-700 transition-colors">저장</button>
       </div>
@@ -416,17 +416,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="text-xs text-gray-500 font-medium block mb-1">상호명</label>
-            <input type="text" x-model="siteSettings.storeInfo.name" placeholder="필마트 구미 인동점"
+            <input type="text" x-model="siteSettings.storeInfo.name" placeholder="필식자재마마트 다사점"
                    class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary">
           </div>
           <div>
             <label class="text-xs text-gray-500 font-medium block mb-1">고객센터 전화번호</label>
-            <input type="text" x-model="siteSettings.storeInfo.phone" placeholder="054-473-2841"
+            <input type="text" x-model="siteSettings.storeInfo.phone" placeholder="053-593-8253"
                    class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary">
           </div>
           <div class="sm:col-span-2">
             <label class="text-xs text-gray-500 font-medium block mb-1">주소</label>
-            <input type="text" x-model="siteSettings.storeInfo.address" placeholder="경북 구미시 인의동 485번지"
+            <input type="text" x-model="siteSettings.storeInfo.address" placeholder="대구광역시 달성군 다사읍 달구벌대로 858"
                    class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary">
           </div>
           <div>
@@ -1023,7 +1023,7 @@
         logoUrl: '',
         storeInfo: { name:'', phone:'', address:'', rep:'', bizNo:'' },
         banners: [
-          { badge:'FILLMART 구미 인동점', title:'매일 직송,\n신선함이 다릅니다', btnText:'오늘의 특가 보기 →', link:'#sale', emoji:'🥬' },
+          { badge:'필식자재마마트 다사점', title:'매일 직송,\n신선함이 다릅니다', btnText:'오늘의 특가 보기 →', link:'#sale', emoji:'🥬' },
           { badge:'이번 주 특가', title:'신선 축산물\n최대 30% 할인', btnText:'축산 특가 보기 →', link:'#meat', emoji:'🥩' },
           { badge:'1+1 행사', title:'사면 하나 더!\n1+1 행사 모음', btnText:'행사 상품 보기 →', link:'#sale', emoji:'🎁' }
         ]
@@ -1118,7 +1118,7 @@
           </style>
         </head><body>
           <h1>FILLMART</h1>
-          <p class="sub">구미 인동점 · 054-473-2841 · 관리자 출력본</p>
+          <p class="sub">다사점 · 053-593-8253 · 관리자 출력본</p>
           <hr>
           <table class="info-table">
             <tr><td>주문번호</td><td><strong>${o.orderId}</strong></td></tr>
@@ -1136,7 +1136,7 @@
             <tr><td style="color:#888;font-size:13px;">배송비</td><td style="text-align:right;font-size:13px;">${deliveryFee}</td></tr>
           </table>
           <table><tr class="total-row"><td>결제금액</td><td style="text-align:right;">${Number(o.amount).toLocaleString('ko-KR')}원</td></tr></table>
-          <p class="footer">필마트 구미 인동점 · 관리자 출력본 · ${new Date().toLocaleString('ko-KR')}</p>
+          <p class="footer">필식자재마마트 다사점 · 관리자 출력본 · ${new Date().toLocaleString('ko-KR')}</p>
         </body></html>`;
         const win = window.open('', '_blank', 'width=640,height=750');
         win.document.write(html);
@@ -1167,7 +1167,7 @@
           { id:2, date:'2026-08-28', title:'추석 연휴 배송 안내', important:true,
             content:'추석 연휴 기간(2026.09.28 ~ 10.01) 배송이 중단됩니다.\n10월 2일(목)부터 배송 재개됩니다.' },
           { id:3, date:'2026-08-15', title:'당일배송 서비스 지역 안내', important:false,
-            content:'당일배송 가능 지역: 구미시 인동, 진미동, 양호동, 광평동 일대\n배송 가능 여부는 고객센터(054-473-2841)로 문의해 주세요.' },
+            content:'당일배송 가능 지역: 달성군 다사읍 일대\n배송 가능 여부는 고객센터(053-593-8253)로 문의해 주세요.' },
         ];
         const saved = JSON.parse(localStorage.getItem('pilmart_notices') || 'null');
         this.notices = saved || defaultNotices;

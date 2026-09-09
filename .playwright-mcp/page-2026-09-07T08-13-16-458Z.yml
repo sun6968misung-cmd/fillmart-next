@@ -1,0 +1,255 @@
+- generic [active] [ref=f15e1]:
+  - banner [ref=f15e2]:
+    - generic [ref=f15e3]: 🚚 오전 주문 시 당일 배송 · 신선식품 직송
+    - generic [ref=f15e5]:
+      - link "필마트 필마트" [ref=f15e6] [cursor=pointer]:
+        - /url: /
+        - img "필마트" [ref=f15e7]
+        - generic [ref=f15e8]: 필마트
+      - generic [ref=f15e9]:
+        - textbox "상품을 검색해보세요!" [ref=f15e10]
+        - button [ref=f15e11]
+      - generic [ref=f15e15]:
+        - link "로그인" [ref=f15e16] [cursor=pointer]:
+          - /url: /auth
+        - link "나의 찜" [ref=f15e21] [cursor=pointer]:
+          - /url: /wishlist
+        - button "장바구니" [ref=f15e26]
+    - generic [ref=f15e35]:
+      - generic [ref=f15e36]:
+        - button "카테고리" [ref=f15e37]
+        - navigation [ref=f15e39]:
+          - link "홈" [ref=f15e40] [cursor=pointer]:
+            - /url: /
+          - link "이번주특가" [ref=f15e41] [cursor=pointer]:
+            - /url: /?cat=이번주특가
+          - link "공지사항" [ref=f15e42] [cursor=pointer]:
+            - /url: /notice
+          - link "FAQ" [ref=f15e43] [cursor=pointer]:
+            - /url: /faq
+          - link "고객문의" [ref=f15e44] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=f15e45]:
+        - link "로그인" [ref=f15e46] [cursor=pointer]:
+          - /url: /auth
+        - link "회원가입" [ref=f15e47] [cursor=pointer]:
+          - /url: /auth
+        - link "고객센터" [ref=f15e48] [cursor=pointer]:
+          - /url: /contact
+  - main [ref=f15e49]:
+    - generic [ref=f15e50]:
+      - generic [ref=f15e51]:
+        - link "홈" [ref=f15e52] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f15e55]: 조리도구
+      - generic [ref=f15e56]:
+        - complementary [ref=f15e57]:
+          - generic [ref=f15e58]:
+            - heading "카테고리" [level=3] [ref=f15e59]
+            - list [ref=f15e60]:
+              - listitem [ref=f15e61]:
+                - link "이번주특가" [ref=f15e62] [cursor=pointer]:
+                  - /url: /?cat=%EC%9D%B4%EB%B2%88%EC%A3%BC%ED%8A%B9%EA%B0%80
+              - listitem [ref=f15e63]:
+                - link "야채/채소" [ref=f15e64] [cursor=pointer]:
+                  - /url: /?cat=%EC%95%BC%EC%B1%84%2F%EC%B1%84%EC%86%8C
+              - listitem [ref=f15e65]:
+                - link "과일" [ref=f15e66] [cursor=pointer]:
+                  - /url: /?cat=%EA%B3%BC%EC%9D%BC
+              - listitem [ref=f15e67]:
+                - link "쌀/잡곡" [ref=f15e68] [cursor=pointer]:
+                  - /url: /?cat=%EC%8C%80%2F%EC%9E%A1%EA%B3%A1
+              - listitem [ref=f15e69]:
+                - link "축산/계란" [ref=f15e70] [cursor=pointer]:
+                  - /url: /?cat=%EC%B6%95%EC%82%B0%2F%EA%B3%84%EB%9E%80
+              - listitem [ref=f15e71]:
+                - link "수산/건어물" [ref=f15e72] [cursor=pointer]:
+                  - /url: /?cat=%EC%88%98%EC%82%B0%2F%EA%B1%B4%EC%96%B4%EB%AC%BC
+              - listitem [ref=f15e73]:
+                - link "견과" [ref=f15e74] [cursor=pointer]:
+                  - /url: /?cat=%EA%B2%AC%EA%B3%BC
+              - listitem [ref=f15e75]:
+                - link "고추장/된장/간장류" [ref=f15e76] [cursor=pointer]:
+                  - /url: /?cat=%EA%B3%A0%EC%B6%94%EC%9E%A5%2F%EB%90%9C%EC%9E%A5%2F%EA%B0%84%EC%9E%A5%EB%A5%98
+              - listitem [ref=f15e77]:
+                - link "양념/소스/육수" [ref=f15e78] [cursor=pointer]:
+                  - /url: /?cat=%EC%96%91%EB%85%90%2F%EC%86%8C%EC%8A%A4%2F%EC%9C%A1%EC%88%98
+              - listitem [ref=f15e79]:
+                - link "식용유/조미료" [ref=f15e80] [cursor=pointer]:
+                  - /url: /?cat=%EC%8B%9D%EC%9A%A9%EC%9C%A0%2F%EC%A1%B0%EB%AF%B8%EB%A3%8C
+              - listitem [ref=f15e81]:
+                - link "밀가루/라면/면" [ref=f15e82] [cursor=pointer]:
+                  - /url: /?cat=%EB%B0%80%EA%B0%80%EB%A3%A8%2F%EB%9D%BC%EB%A9%B4%2F%EB%A9%B4
+              - listitem [ref=f15e83]:
+                - link "유제품/냉장/냉동" [ref=f15e84] [cursor=pointer]:
+                  - /url: /?cat=%EC%9C%A0%EC%A0%9C%ED%92%88%2F%EB%83%89%EC%9E%A5%2F%EB%83%89%EB%8F%99
+              - listitem [ref=f15e85]:
+                - link "캔/통조림" [ref=f15e86] [cursor=pointer]:
+                  - /url: /?cat=%EC%BA%94%2F%ED%86%B5%EC%A1%B0%EB%A6%BC
+              - listitem [ref=f15e87]:
+                - link "김/편의식/반찬" [ref=f15e88] [cursor=pointer]:
+                  - /url: /?cat=%EA%B9%80%2F%ED%8E%B8%EC%9D%98%EC%8B%9D%2F%EB%B0%98%EC%B0%AC
+              - listitem [ref=f15e89]:
+                - link "생수/음료" [ref=f15e90] [cursor=pointer]:
+                  - /url: /?cat=%EC%83%9D%EC%88%98%2F%EC%9D%8C%EB%A3%8C
+              - listitem [ref=f15e91]:
+                - link "커피믹스/티백" [ref=f15e92] [cursor=pointer]:
+                  - /url: /?cat=%EC%BB%A4%ED%94%BC%EB%AF%B9%EC%8A%A4%2F%ED%8B%B0%EB%B0%B1
+              - listitem [ref=f15e93]:
+                - link "빵/스낵/안주류" [ref=f15e94] [cursor=pointer]:
+                  - /url: /?cat=%EB%B9%B5%2F%EC%8A%A4%EB%82%B5%2F%EC%95%88%EC%A3%BC%EB%A5%98
+              - listitem [ref=f15e95]:
+                - link "헬스/건강식품" [ref=f15e96] [cursor=pointer]:
+                  - /url: /?cat=%ED%97%AC%EC%8A%A4%2F%EA%B1%B4%EA%B0%95%EC%8B%9D%ED%92%88
+              - listitem [ref=f15e97]:
+                - link "반려동물용품" [ref=f15e98] [cursor=pointer]:
+                  - /url: /?cat=%EB%B0%98%EB%A0%A4%EB%8F%99%EB%AC%BC%EC%9A%A9%ED%92%88
+              - listitem [ref=f15e99]:
+                - link "소모품/일회용품" [ref=f15e100] [cursor=pointer]:
+                  - /url: /?cat=%EC%86%8C%EB%AA%A8%ED%92%88%2F%EC%9D%BC%ED%9A%8C%EC%9A%A9%ED%92%88
+              - listitem [ref=f15e101]:
+                - link "조리도구" [ref=f15e102] [cursor=pointer]:
+                  - /url: /?cat=%EC%A1%B0%EB%A6%AC%EB%8F%84%EA%B5%AC
+              - listitem [ref=f15e103]:
+                - link "식기/밀폐용기" [ref=f15e104] [cursor=pointer]:
+                  - /url: /?cat=%EC%8B%9D%EA%B8%B0%2F%EB%B0%80%ED%8F%90%EC%9A%A9%EA%B8%B0
+              - listitem [ref=f15e105]:
+                - link "주방잡화" [ref=f15e106] [cursor=pointer]:
+                  - /url: /?cat=%EC%A3%BC%EB%B0%A9%EC%9E%A1%ED%99%94
+              - listitem [ref=f15e107]:
+                - link "욕실잡화" [ref=f15e108] [cursor=pointer]:
+                  - /url: /?cat=%EC%9A%95%EC%8B%A4%EC%9E%A1%ED%99%94
+              - listitem [ref=f15e109]:
+                - link "생활잡화" [ref=f15e110] [cursor=pointer]:
+                  - /url: /?cat=%EC%83%9D%ED%99%9C%EC%9E%A1%ED%99%94
+              - listitem [ref=f15e111]:
+                - link "캠핑용품" [ref=f15e112] [cursor=pointer]:
+                  - /url: /?cat=%EC%BA%A0%ED%95%91%EC%9A%A9%ED%92%88
+              - listitem [ref=f15e113]:
+                - link "사무/자동차용품" [ref=f15e114] [cursor=pointer]:
+                  - /url: /?cat=%EC%82%AC%EB%AC%B4%2F%EC%9E%90%EB%8F%99%EC%B0%A8%EC%9A%A9%ED%92%88
+              - listitem [ref=f15e115]:
+                - link "대용량 농산물" [ref=f15e116] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EB%86%8D%EC%82%B0%EB%AC%BC
+              - listitem [ref=f15e117]:
+                - link "대용량 축산물" [ref=f15e118] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%B6%95%EC%82%B0%EB%AC%BC
+              - listitem [ref=f15e119]:
+                - link "대용량 수산물" [ref=f15e120] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%88%98%EC%82%B0%EB%AC%BC
+              - listitem [ref=f15e121]:
+                - link "대용량 장류/양념" [ref=f15e122] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%9E%A5%EB%A5%98%2F%EC%96%91%EB%85%90
+              - listitem [ref=f15e123]:
+                - link "대용량 냉장/냉동" [ref=f15e124] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EB%83%89%EC%9E%A5%2F%EB%83%89%EB%8F%99
+              - listitem [ref=f15e125]:
+                - link "대용량 가공식품" [ref=f15e126] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EA%B0%80%EA%B3%B5%EC%8B%9D%ED%92%88
+              - listitem [ref=f15e127]:
+                - link "대용량 커피/음료" [ref=f15e128] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%BB%A4%ED%94%BC%2F%EC%9D%8C%EB%A3%8C
+              - listitem [ref=f15e129]:
+                - link "대용량 소모품/세제" [ref=f15e130] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%86%8C%EB%AA%A8%ED%92%88%2F%EC%84%B8%EC%A0%9C
+              - listitem [ref=f15e131]:
+                - link "대용량 식기/도구" [ref=f15e132] [cursor=pointer]:
+                  - /url: /?cat=%EB%8C%80%EC%9A%A9%EB%9F%89%20%EC%8B%9D%EA%B8%B0%2F%EB%8F%84%EA%B5%AC
+          - generic [ref=f15e133]:
+            - heading "가격대" [level=3] [ref=f15e134]
+            - list [ref=f15e135]:
+              - listitem [ref=f15e136]:
+                - button "전체" [ref=f15e137]
+              - listitem [ref=f15e138]:
+                - button "5,000원 이하" [ref=f15e139]
+              - listitem [ref=f15e140]:
+                - button "5,000 ~ 10,000원" [ref=f15e141]
+              - listitem [ref=f15e142]:
+                - button "10,000 ~ 20,000원" [ref=f15e143]
+              - listitem [ref=f15e144]:
+                - button "20,000원 이상" [ref=f15e145]
+        - generic [ref=f15e146]:
+          - generic [ref=f15e147]:
+            - heading "조리도구" [level=1] [ref=f15e148]
+            - generic [ref=f15e149]:
+              - text: 총
+              - strong [ref=f15e150]: "2"
+              - text: 개 상품
+          - generic [ref=f15e151]:
+            - button "추천순" [ref=f15e152]
+            - button "낮은가격순" [ref=f15e153]
+            - button "높은가격순" [ref=f15e154]
+            - button "할인율순" [ref=f15e155]
+          - generic [ref=f15e156]:
+            - generic [ref=f15e157]:
+              - generic [ref=f15e158]:
+                - link "실리콘 주걱 3종 세트 24%" [ref=f15e159] [cursor=pointer]:
+                  - /url: /product/tool1
+                  - img "실리콘 주걱 3종 세트" [ref=f15e160]
+                  - generic [ref=f15e161]: 24%
+                - button [ref=f15e162]
+                - button "담기" [ref=f15e166]
+              - link "실리콘 주걱 3종 세트 3종 · 국내산 24% 16,900원 12,900원" [ref=f15e172] [cursor=pointer]:
+                - /url: /product/tool1
+                - paragraph [ref=f15e173]: 실리콘 주걱 3종 세트
+                - paragraph [ref=f15e174]: 3종 · 국내산
+                - generic [ref=f15e175]:
+                  - generic [ref=f15e176]: 24%
+                  - generic [ref=f15e177]: 16,900원
+                - paragraph [ref=f15e178]: 12,900원
+            - generic [ref=f15e179]:
+              - generic [ref=f15e180]:
+                - link "스텐 주방가위 29%" [ref=f15e181] [cursor=pointer]:
+                  - /url: /product/tool2
+                  - img "스텐 주방가위" [ref=f15e182]
+                  - generic [ref=f15e183]: 29%
+                - button [ref=f15e184]
+                - button "담기" [ref=f15e188]
+              - link "스텐 주방가위 1개 · 국내산 29% 13,900원 9,900원" [ref=f15e194] [cursor=pointer]:
+                - /url: /product/tool2
+                - paragraph [ref=f15e195]: 스텐 주방가위
+                - paragraph [ref=f15e196]: 1개 · 국내산
+                - generic [ref=f15e197]:
+                  - generic [ref=f15e198]: 29%
+                  - generic [ref=f15e199]: 13,900원
+                - paragraph [ref=f15e200]: 9,900원
+  - contentinfo [ref=f15e201]:
+    - generic [ref=f15e202]:
+      - generic [ref=f15e203]:
+        - generic [ref=f15e204]:
+          - heading "필마트" [level=3] [ref=f15e205]
+          - paragraph [ref=f15e206]: 신선식품 당일배송고객 만족 최우선
+        - generic [ref=f15e207]:
+          - heading "고객지원" [level=3] [ref=f15e208]
+          - list [ref=f15e209]:
+            - listitem [ref=f15e210]:
+              - link "공지사항" [ref=f15e211] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=f15e212]:
+              - link "자주 묻는 질문" [ref=f15e213] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=f15e214]:
+              - link "고객문의" [ref=f15e215] [cursor=pointer]:
+                - /url: /contact
+        - generic [ref=f15e216]:
+          - heading "약관" [level=3] [ref=f15e217]
+          - list [ref=f15e218]:
+            - listitem [ref=f15e219]:
+              - link "이용약관" [ref=f15e220] [cursor=pointer]:
+                - /url: /terms
+            - listitem [ref=f15e221]:
+              - link "개인정보처리방침" [ref=f15e222] [cursor=pointer]:
+                - /url: /privacy
+        - generic [ref=f15e223]:
+          - heading "주문" [level=3] [ref=f15e224]
+          - list [ref=f15e225]:
+            - listitem [ref=f15e226]:
+              - link "주문내역" [ref=f15e227] [cursor=pointer]:
+                - /url: /orders
+            - listitem [ref=f15e228]:
+              - link "찜 목록" [ref=f15e229] [cursor=pointer]:
+                - /url: /wishlist
+      - separator [ref=f15e230]
+      - paragraph [ref=f15e231]: © 2026 필마트. All rights reserved.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f15e237] [cursor=pointer]

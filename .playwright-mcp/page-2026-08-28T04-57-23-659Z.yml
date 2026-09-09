@@ -1,0 +1,25 @@
+- generic [ref=e2]:
+  - generic [ref=e6]: 사 전 예 약
+  - generic [ref=e10]: RESERVATION ONLY
+  - img "LA갈비 이미지" [ref=e12]
+  - generic [ref=e15]:
+    - generic [ref=e16]: PREMIUM LA GALBI
+    - generic [ref=e17]: LA 갈 비
+  - generic [ref=e19]:
+    - generic [ref=e20]: 2.7 kg
+    - generic [ref=e21]: 89,000원
+    - generic [ref=e22]:
+      - text: 선물 포장 포함 시
+      - strong [ref=e23]: 92,000원
+  - generic [ref=e24]:
+    - generic [ref=e25]:
+      - generic [ref=e32]: 예약 기간
+      - generic [ref=e33]: "|"
+      - generic [ref=e34]: 2026년 9월 1일(월) ~ 9월 18일(목)
+    - generic [ref=e35]:
+      - generic [ref=e42]: 수령 기간
+      - generic [ref=e43]: "|"
+      - generic [ref=e44]: 2026년 9월 14일(일) ~ 9월 23일(화)
+  - generic [ref=e49]:
+    - generic [ref=e50]: 필 마 트
+    - generic [ref=e51]: PHILMART

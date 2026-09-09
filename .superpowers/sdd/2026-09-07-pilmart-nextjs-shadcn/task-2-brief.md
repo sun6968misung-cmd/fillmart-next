@@ -1,0 +1,239 @@
+# Task 2: 타입 정의 + 데이터 레이어
+
+## Context
+Task 1에서 `pilmart-next/` Next.js 16 + shadcn/ui 프로젝트가 생성되었다.
+이 태스크는 TypeScript 타입, localStorage 유틸, 상품 데이터, 포맷 함수를 작성한다.
+이후 모든 태스크가 이 파일들에 의존한다.
+
+## Global Constraints
+- 작업 디렉터리: `C:\Users\USER\.antigravity-ide\pilmart-next\`
+- pnpm 사용
+- TypeScript strict 모드
+- localStorage 키 10개는 변경 금지: `pilmart_cart`, `pilmart_wishlist`, `pilmart_session`, `pilmart_orders`, `pilmart_pending_order`, `pilmart_products`, `pilmart_notices`, `pilmart_flash_sale`, `pilmart_store_info`, `pilmart_admin_pw`
+- 기존 `pilmart/` 폴더 절대 수정 금지
+
+## Files to Create/Modify
+
+### 1. `pilmart-next/types/index.ts` (새 파일)
+
+```typescript
+export interface Product {
+  id: string;
+  name: string;
+  emoji: string;
+  price: number;
+  originalPrice: number;
+  section: 'sale' | 'veg' | 'meat' | 'proc';
+  origin: string;
+  category: '야채/채소' | '과일' | '축산/계란' | '수산/건어물' | '라면/면류' | '유제품/냉장/냉동' | '캔/통조림';
+  storage: string;
+  unit: string;
+  desc: string;
+  imageUrl?: string;
+}
+
+export interface CartItem extends Product {
+  qty: number;
+}
+
+export interface Order {
+  orderId: string;
+  items: CartItem[];
+  total: number;
+  method: string;
+  createdAt: number;
+  paymentKey?: string;
+}
+
+export interface Session {
+  name: string;
+  phone: string;
+  loginAt: number;
+  provider?: 'local' | 'naver' | 'kakao' | 'google';
+}
+
+export interface Notice {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: number;
+  important?: boolean;
+}
+
+export interface FlashProduct {
+  idx: number;
+  name: string;
+  price: number;
+  originalPrice: number;
+  imageUrl?: string;
+  desc?: string;
+  maxPerCustomer: number;
+}
+
+export interface FlashSaleConfig {
+  startHour: number;
+  endHour: number;
+  products: FlashProduct[];
+}
+
+export interface StoreInfo {
+  name: string;
+  phone: string;
+  address: string;
+  hours?: string;
+}
+
+export interface ProductOverride {
+  name?: string;
+  price?: number;
+  imageUrl?: string;
+}
+```
+
+### 2. `pilmart-next/lib/storage.ts` (새 파일)
+
+```typescript
+export const KEYS = {
+  cart: 'pilmart_cart',
+  wishlist: 'pilmart_wishlist',
+  session: 'pilmart_session',
+  orders: 'pilmart_orders',
+  pendingOrder: 'pilmart_pending_order',
+  products: 'pilmart_products',
+  notices: 'pilmart_notices',
+  flashSale: 'pilmart_flash_sale',
+  storeInfo: 'pilmart_store_info',
+  adminPw: 'pilmart_admin_pw',
+} as const;
+
+export function lsGet<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function lsSet(key: string, value: unknown): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+export function lsRemove(key: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(key);
+}
+```
+
+### 3. `pilmart-next/lib/products.ts` (새 파일)
+
+기존 `pilmart/js/products.js` 의 PRODUCTS 배열과 PRODUCT_IMAGES를 TypeScript로 변환:
+
+```typescript
+import { Product, ProductOverride } from '@/types';
+import { KEYS, lsGet } from '@/lib/storage';
+
+export const PRODUCTS: Product[] = [
+  { id:'sale1', name:'국내산 삼겹살 500g',  emoji:'🥩', price:9900,  originalPrice:13900, section:'sale', origin:'국내산 (경북)',   category:'축산/계란',         storage:'냉장보관', unit:'500g',  desc:'국내산 한돈 직송. 두툼하고 쫄깃한 삼겹살.' },
+  { id:'sale2', name:'양파 3kg',            emoji:'🧅', price:3900,  originalPrice:5900,  section:'sale', origin:'국산',           category:'야채/채소',          storage:'상온보관', unit:'3kg',   desc:'청정 지역 농가 직송. 아삭하고 달콤한 양파.' },
+  { id:'sale3', name:'계란 30구 특란',       emoji:'🥚', price:8900,  originalPrice:10900, section:'sale', origin:'국내산',          category:'축산/계란',         storage:'냉장보관', unit:'30구',  desc:'국내산 신선 특란 30구. 단백질 가득.' },
+  { id:'sale4', name:'닭가슴살 1kg',         emoji:'🍗', price:7900,  originalPrice:10500, section:'sale', origin:'국내산',          category:'축산/계란',         storage:'냉장보관', unit:'1kg',   desc:'국내산 냉장 닭가슴살. 고단백 저지방.' },
+  { id:'sale5', name:'고등어 2마리',         emoji:'🐟', price:5900,  originalPrice:7900,  section:'sale', origin:'국산',           category:'수산/건어물',       storage:'냉장보관', unit:'2마리', desc:'국산 당일 손질 고등어. 오메가-3 풍부.' },
+  { id:'sale6', name:'국산 두부 2개입',       emoji:'🟨', price:2900,  originalPrice:3900,  section:'sale', origin:'국산콩',          category:'야채/채소',          storage:'냉장보관', unit:'2모',   desc:'국산콩 100% 부드러운 두부.' },
+  { id:'veg1',  name:'양배추 1통',           emoji:'🥬', price:3500,  originalPrice:4500,  section:'veg',  origin:'국산',           category:'야채/채소',          storage:'냉장보관', unit:'1통',   desc:'아삭한 국산 양배추. 겉절이·볶음에 딱.' },
+  { id:'veg2',  name:'대파 1단',             emoji:'🌿', price:1900,  originalPrice:2500,  section:'veg',  origin:'국산',           category:'야채/채소',          storage:'냉장보관', unit:'1단',   desc:'향긋한 국산 대파 한 단. 국물 요리 필수.' },
+  { id:'veg3',  name:'햇감자 2.5kg',         emoji:'🥔', price:5900,  originalPrice:7900,  section:'veg',  origin:'국산',           category:'야채/채소',          storage:'상온보관', unit:'2.5kg', desc:'국산 햇감자. 포슬포슬 볶음·찜용.' },
+  { id:'veg4',  name:'당근 1kg',             emoji:'🥕', price:2900,  originalPrice:3900,  section:'veg',  origin:'국산',           category:'야채/채소',          storage:'냉장보관', unit:'1kg',   desc:'달콤한 국산 당근. 샐러드·볶음밥 활용.' },
+  { id:'veg5',  name:'수박 (소) 1통',         emoji:'🍉', price:12900, originalPrice:16900, section:'veg',  origin:'국내산',          category:'과일',              storage:'냉장보관', unit:'1통',   desc:'국내산 시원한 수박. 여름 제철 과일.' },
+  { id:'veg6',  name:'복숭아 1.5kg',         emoji:'🍑', price:8900,  originalPrice:11900, section:'veg',  origin:'국내산',          category:'과일',              storage:'상온보관', unit:'1.5kg', desc:'국내산 달콤한 복숭아. 직송 신선함.' },
+  { id:'veg7',  name:'포도 2kg',             emoji:'🍇', price:9900,  originalPrice:13900, section:'veg',  origin:'국내산',          category:'과일',              storage:'냉장보관', unit:'2kg',   desc:'국내산 달달한 포도. 직송 신선함.' },
+  { id:'veg8',  name:'방울토마토 1kg',        emoji:'🍅', price:4900,  originalPrice:6900,  section:'veg',  origin:'국내산',          category:'야채/채소',          storage:'냉장보관', unit:'1kg',   desc:'국내산 당도 높은 방울토마토. 간식·샐러드용.' },
+  { id:'meat1', name:'한우 불고기 300g',      emoji:'🥩', price:16900, originalPrice:21900, section:'meat', origin:'국내산 (1등급↑)', category:'축산/계란',         storage:'냉장보관', unit:'300g',  desc:'1등급 이상 한우 불고기. 달큰한 양념 직송.' },
+  { id:'meat2', name:'돼지 목살 500g',        emoji:'🐷', price:7900,  originalPrice:9900,  section:'meat', origin:'국내산',          category:'축산/계란',         storage:'냉장보관', unit:'500g',  desc:'국내산 냉장 목살. 삼겹살보다 쫄깃하고 담백.' },
+  { id:'meat3', name:'닭볶음탕용 1kg',        emoji:'🍗', price:6900,  originalPrice:8900,  section:'meat', origin:'국내산',          category:'축산/계란',         storage:'냉장보관', unit:'1kg',   desc:'국내산 닭볶음탕용. 매운 볶음탕 OK.' },
+  { id:'fish1', name:'오징어 2마리',          emoji:'🦑', price:7900,  originalPrice:9900,  section:'meat', origin:'국산',           category:'수산/건어물',       storage:'냉장보관', unit:'2마리', desc:'국산 오징어 2마리. 볶음·찌개·덮밥 활용.' },
+  { id:'fish2', name:'생새우 500g',           emoji:'🦐', price:12900, originalPrice:15900, section:'meat', origin:'국산',           category:'수산/건어물',       storage:'냉장보관', unit:'500g',  desc:'국산 생새우. 구이·볶음·전 최적.' },
+  { id:'fish3', name:'손질 고등어 4토막',      emoji:'🐠', price:6900,  originalPrice:8900,  section:'meat', origin:'국산',           category:'수산/건어물',       storage:'냉장보관', unit:'4토막', desc:'국산 고등어 손질 완료 4토막. 바로 구이·조림.' },
+  { id:'proc1', name:'신라면 멀티 5개입',      emoji:'🍜', price:4200,  originalPrice:5000,  section:'proc', origin:'국내산',          category:'라면/면류',         storage:'상온보관', unit:'5개입', desc:'국민 라면 신라면 5개 묶음. 얼큰한 맛.' },
+  { id:'proc2', name:'부침두부 2개입',         emoji:'⬜', price:2500,  originalPrice:3200,  section:'proc', origin:'국산콩',          category:'유제품/냉장/냉동',  storage:'냉장보관', unit:'2개입', desc:'국산콩 부침두부 2모. 두부전·된장찌개 활용.' },
+  { id:'proc3', name:'사각어묵 400g',          emoji:'🟡', price:3900,  originalPrice:4900,  section:'proc', origin:'국산',           category:'유제품/냉장/냉동',  storage:'냉장보관', unit:'400g',  desc:'사조 사각어묵 400g. 떡볶이·어묵탕에 딱.' },
+  { id:'proc4', name:'스팸 클래식 340g',       emoji:'🥫', price:4900,  originalPrice:5900,  section:'proc', origin:'국내산',          category:'캔/통조림',         storage:'상온보관', unit:'340g',  desc:'CJ 스팸 클래식. 밥반찬·도시락 최강 조합.' },
+  { id:'proc5', name:'슬라이스 치즈 20장',     emoji:'🧀', price:5900,  originalPrice:7500,  section:'proc', origin:'국내산',          category:'유제품/냉장/냉동',  storage:'냉장보관', unit:'20장',  desc:'서울우유 슬라이스 치즈 20장. 샌드위치·버거용.' },
+  { id:'proc6', name:'떠먹는 요거트 3개입',    emoji:'🥛', price:3900,  originalPrice:4900,  section:'proc', origin:'국내산',          category:'유제품/냉장/냉동',  storage:'냉장보관', unit:'3개입', desc:'빙그레 떠먹는 요거트 3개 묶음. 아침 간편식.' },
+];
+
+export const PRODUCT_IMAGES: Record<string, string> = {
+  'sale1':'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&h=400&q=80',
+  'sale2':'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=400&h=400&q=80',
+  'sale3':'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?auto=format&fit=crop&w=400&h=400&q=80',
+  'sale4':'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&h=400&q=80',
+  'sale5':'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=400&h=400&q=80',
+  'sale6':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg1' :'https://images.unsplash.com/photo-1568158879083-c42860933ed7?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg2' :'https://images.unsplash.com/photo-1604866830893-c13cafa515d5?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg3' :'https://images.unsplash.com/photo-1518977822534-7049a61ee0c2?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg4' :'https://images.unsplash.com/photo-1447175008436-054170c2e979?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg5' :'https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg6' :'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg7' :'https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=400&h=400&q=80',
+  'veg8' :'https://images.unsplash.com/photo-1524593166156-312f362cada0?auto=format&fit=crop&w=400&h=400&q=80',
+  'meat1':'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=400&h=400&q=80',
+  'meat2':'https://images.unsplash.com/photo-1574691250077-03a929faece5?auto=format&fit=crop&w=400&h=400&q=80',
+  'meat3':'https://images.unsplash.com/photo-1481671703460-040cb8a2d909?auto=format&fit=crop&w=400&h=400&q=80',
+  'fish1':'https://images.unsplash.com/photo-1510130387422-82bed34b37e9?auto=format&fit=crop&w=400&h=400&q=80',
+  'fish2':'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=400&h=400&q=80',
+  'fish3':'https://images.unsplash.com/photo-1535473895227-bdecb20fb157?auto=format&fit=crop&w=400&h=400&q=80',
+  'proc1':'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&h=400&q=80',
+  'proc2':'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&h=400&q=80',
+  'proc3':'https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=400&h=400&q=80',
+  'proc4':'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&h=400&q=80',
+  'proc5':'https://images.unsplash.com/photo-1552767059-ce182ead6c1b?auto=format&fit=crop&w=400&h=400&q=80',
+  'proc6':'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&h=400&q=80',
+};
+
+export function getProductImage(id: string): string {
+  const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+  return overrides[id]?.imageUrl ?? PRODUCT_IMAGES[id] ?? '';
+}
+
+export function getProducts(): Product[] {
+  const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+  return PRODUCTS.map(p => ({ ...p, ...overrides[p.id] }));
+}
+```
+
+### 4. `pilmart-next/lib/utils.ts` (기존 파일에 추가)
+
+shadcn init이 이미 `cn()` 함수를 생성해 두었다. 파일 맨 아래에 다음을 추가한다 (기존 내용 보존):
+
+```typescript
+export function formatPrice(n: number): string {
+  return Number(n).toLocaleString('ko-KR') + '원';
+}
+```
+
+## Verification
+```powershell
+cd C:\Users\USER\.antigravity-ide\pilmart-next
+pnpm tsc --noEmit
+```
+오류 없음 확인.
+
+## Git Commit
+```powershell
+cd C:\Users\USER\.antigravity-ide
+git add pilmart-next/types/ pilmart-next/lib/
+git commit -m "feat: add TypeScript types and data layer (products, storage, utils)"
+```
+
+## Report File
+`C:\Users\USER\.antigravity-ide\.superpowers\sdd\2026-09-07-pilmart-nextjs-shadcn\task-2-report.md` 에 작성:
+
+```
+STATUS: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
+COMMITS: <hash>
+TEST_SUMMARY: pnpm tsc --noEmit 결과
+CONCERNS: (있으면 기재)
+```
