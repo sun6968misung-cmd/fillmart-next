@@ -1511,7 +1511,7 @@ export default function AdminPage() {
                         'bg-orange-100 text-orange-700'
                       }`}>{ROLE_LABEL[r]}</span>
                       <p className="text-[10px] text-gray-400 leading-tight">
-                        {r === 'super' ? '모든 권한' : r === 'product' ? '상품 등록·수정' : '주문 조회·수정'}
+                        {r === 'super' ? '모든 권한' : r === 'product' ? '상품 등록·수정 + 특가' : '주문 조회·수정'}
                       </p>
                     </div>
                   ))}
@@ -1586,7 +1586,7 @@ export default function AdminPage() {
                     <select value={newAdminForm.role}
                       onChange={e => setNewAdminForm(f => ({ ...f, role: e.target.value as AdminRole }))}
                       className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary">
-                      <option value="product">상품등록관리자 — 상품 등록·수정만</option>
+                      <option value="product">상품등록관리자 — 상품 등록·수정 + 오늘만 특가</option>
                       <option value="order">주문관리자 — 주문 조회·수정만</option>
                       <option value="super">최고관리자 — 모든 권한</option>
                     </select>
