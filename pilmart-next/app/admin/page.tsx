@@ -83,6 +83,7 @@ export default function AdminPage() {
   const imgInputRef = useRef<HTMLInputElement>(null);
   const detailImgInputRef = useRef<HTMLInputElement>(null);
   const [productSearch, setProductSearch] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const [newNotice, setNewNotice] = useState({ title: '', content: '' });
   const [siteSaved, setSiteSaved] = useState(false);
@@ -127,7 +128,7 @@ export default function AdminPage() {
         }));
         setOrders(mapped);
       });
-    setProducts(getAllProductsAdmin());
+    loadProducts();
     fetch('/api/notices')
       .then(r => r.json())
       .then((rows: Record<string, unknown>[]) => {
@@ -242,32 +243,35 @@ export default function AdminPage() {
   }
 
   function startEdit(p: Product) {
-    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-    const ov = overrides[p.id] ?? {};
     setProdModal({
       open: true, id: p.id, name: p.name, price: String(p.price), original: String(p.originalPrice),
-      category: p.category, imageUrl: ov.imageUrl ?? '', detailImageUrl: ov.detailImageUrl ?? p.detailImageUrl ?? '',
+      category: p.category, imageUrl: p.imageUrl ?? '', detailImageUrl: p.detailImageUrl ?? '',
       desc: p.desc ?? '', unit: p.unit, origin: p.origin, storage: p.storage,
       expiryDate: p.expiryDate ?? '', productInfo: p.productInfo ?? '', customerServiceNo: p.customerServiceNo ?? '',
       taxType: (p.taxType ?? 'taxFree') as 'taxFree' | 'tax',
     });
   }
 
-  function saveProductEdit() {
+  async function saveProductEdit() {
     if (!prodModal.id) return;
-    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-    overrides[prodModal.id] = {
-      name: prodModal.name, price: Number(prodModal.price), originalPrice: Number(prodModal.original),
-      imageUrl: prodModal.imageUrl || undefined, detailImageUrl: prodModal.detailImageUrl || undefined,
-      category: prodModal.category,
-      desc: prodModal.desc, unit: prodModal.unit, origin: prodModal.origin, storage: prodModal.storage,
+    const override: Partial<ProductOverride> = {
+      name: prodModal.name, price: Number(prodModal.price),
+      originalPrice: Number(prodModal.original),
+      imageUrl: prodModal.imageUrl || undefined,
+      detailImageUrl: prodModal.detailImageUrl || undefined,
+      category: prodModal.category, desc: prodModal.desc,
+      unit: prodModal.unit, origin: prodModal.origin, storage: prodModal.storage,
       expiryDate: prodModal.expiryDate || undefined,
       productInfo: prodModal.productInfo || undefined,
       customerServiceNo: prodModal.customerServiceNo || undefined,
       taxType: prodModal.taxType,
     };
-    lsSet(KEYS.products, overrides);
-    setProducts(getAllProductsAdmin());
+    await fetch('/api/products', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: prodModal.id, override }),
+    });
+    await loadProducts();
     notifyProductsChanged();
     addLog('상품 수정', prodModal.id, prodModal.name);
     setProdModal(m => ({ ...m, open: false }));
@@ -367,13 +371,21 @@ export default function AdminPage() {
         }
       }
 
-      lsSet(KEYS.products, overrides);
-      if (newProducts.length > 0) {
-        const existing = lsGet<Product[]>(KEYS.customProducts, []);
-        const merged = [...existing.filter(p => !newProducts.find(n => n.id === p.id)), ...newProducts];
-        lsSet(KEYS.customProducts, merged);
+      for (const [id, ov] of Object.entries(overrides)) {
+        await fetch('/api/products', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: id, override: ov }),
+        });
       }
-      setProducts(getAllProductsAdmin());
+      for (const p of newProducts) {
+        await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(p),
+        });
+      }
+      await loadProducts();
       notifyProductsChanged();
       alert(`✅ 엑셀 가져오기 완료\n기존 상품 업데이트: ${rows.length - newProducts.length}개\n신규 상품 추가: ${newProducts.length}개`);
     } catch {
@@ -415,16 +427,14 @@ export default function AdminPage() {
     if (detailImgInputRef.current) detailImgInputRef.current.value = '';
   }
 
-  function resetProduct(id: string) {
-    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-    delete overrides[id];
-    lsSet(KEYS.products, overrides);
-    // 엑셀로 추가된 커스텀 상품이면 목록에서 완전 삭제
-    const custom = lsGet<Product[]>(KEYS.customProducts, []);
-    if (custom.some(p => p.id === id)) {
-      lsSet(KEYS.customProducts, custom.filter(p => p.id !== id));
-    }
-    setProducts(getAllProductsAdmin());
+  async function resetProduct(id: string) {
+    const isCustom = lsGet<Product[]>(KEYS.customProducts, []).some(p => p.id === id);
+    await fetch('/api/products', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: isCustom ? 'remove' : 'show', productId: id }),
+    });
+    await loadProducts();
     notifyProductsChanged();
     setProdModal(m => ({ ...m, open: false }));
   }
@@ -442,60 +452,56 @@ export default function AdminPage() {
     setAuditLogs(next);
   }
 
+  async function loadProducts() {
+    const res = await fetch('/api/products');
+    if (!res.ok) return;
+    const data: { overrides: Record<string, ProductOverride>; customs: Product[] } = await res.json();
+    lsSet(KEYS.products, data.overrides);
+    lsSet(KEYS.customProducts, data.customs);
+    setProducts(getAllProductsAdmin());
+  }
+
   function notifyProductsChanged() {
     window.dispatchEvent(new CustomEvent('pilmart:products-changed'));
   }
 
-  function deleteProduct(id: string) {
-    if (!window.confirm('이 상품을 삭제할까요?')) return;
-    const custom = lsGet<Product[]>(KEYS.customProducts, []);
-    const isCustom = custom.some(p => p.id === id);
+  async function deleteProduct(id: string) {
     const name = products.find(p => p.id === id)?.name ?? id;
-    if (isCustom) {
-      lsSet(KEYS.customProducts, custom.filter(p => p.id !== id));
-      const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-      delete overrides[id];
-      lsSet(KEYS.products, overrides);
-    } else {
-      const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-      overrides[id] = { ...overrides[id], hidden: true };
-      lsSet(KEYS.products, overrides);
-    }
-    setProducts(getAllProductsAdmin());
+    const isCustom = lsGet<Product[]>(KEYS.customProducts, []).some(p => p.id === id);
+    await fetch('/api/products', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: isCustom ? 'remove' : 'hide', productId: id }),
+    });
+    await loadProducts();
     notifyProductsChanged();
     addLog('상품 삭제', id, name);
+    setConfirmDeleteId(null);
   }
 
-  function deleteAllProducts() {
+  async function deleteAllProducts() {
     const visibleCount = products.filter(p => !p.hidden).length;
-    if (!window.confirm(`현재 표시 중인 상품 ${visibleCount}개를 모두 삭제할까요?`)) return;
     addLog('상품 전체 삭제', `${visibleCount}개`);
-    const customIds = new Set(lsGet<Product[]>(KEYS.customProducts, []).map(p => p.id));
-    lsSet(KEYS.customProducts, []);
-    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-    products.filter(p => !p.hidden).forEach(p => {
-      if (customIds.has(p.id)) {
-        delete overrides[p.id];
-      } else {
-        overrides[p.id] = { ...overrides[p.id], hidden: true };
-      }
-    });
-    lsSet(KEYS.products, overrides);
-    setProducts(getAllProductsAdmin());
+    for (const p of products.filter(p => !p.hidden)) {
+      const isCustom = lsGet<Product[]>(KEYS.customProducts, []).some(c => c.id === p.id);
+      await fetch('/api/products', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: isCustom ? 'remove' : 'hide', productId: p.id }),
+      });
+    }
+    await loadProducts();
     notifyProductsChanged();
   }
 
-  function restoreProduct(id: string) {
+  async function restoreProduct(id: string) {
     const name = products.find(p => p.id === id)?.name ?? id;
-    const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-    if (overrides[id]) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { hidden: _h, ...rest } = overrides[id];
-      if (Object.keys(rest).length === 0) delete overrides[id];
-      else overrides[id] = rest;
-    }
-    lsSet(KEYS.products, overrides);
-    setProducts(getAllProductsAdmin());
+    await fetch('/api/products', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'show', productId: id }),
+    });
+    await loadProducts();
     notifyProductsChanged();
     addLog('상품 복원', id, name);
   }
@@ -1190,10 +1196,23 @@ export default function AdminPage() {
                                   <RotateCcw className="h-3 w-3" />
                                 </button>
                               )}
-                              <button onClick={() => deleteProduct(p.id)} title="삭제"
-                                className="text-xs text-red-400 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
-                                <Trash2 className="h-3 w-3" />
-                              </button>
+                              {confirmDeleteId === p.id ? (
+                                <div className="flex gap-1">
+                                  <button onClick={() => deleteProduct(p.id)}
+                                    className="text-xs text-red-600 px-2 py-1 border border-red-300 rounded">
+                                    확인
+                                  </button>
+                                  <button onClick={() => setConfirmDeleteId(null)}
+                                    className="text-xs text-gray-500 px-2 py-1 border rounded">
+                                    취소
+                                  </button>
+                                </div>
+                              ) : (
+                                <button onClick={() => setConfirmDeleteId(p.id)} title="삭제"
+                                  className="text-xs text-red-400 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
