@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { requireAdmin } from '@/lib/admin-session'
-import type { AdminSession } from '@/lib/admin-session'
 import type { Product, ProductOverride } from '@/types'
 
 export const runtime = 'nodejs'

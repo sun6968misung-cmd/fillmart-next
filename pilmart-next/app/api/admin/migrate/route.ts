@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { createHash } from 'crypto'
 import { createServiceClient } from '@/lib/supabase-server'
 import { requireSuper } from '@/lib/admin-session'
 import type { ProductOverride, Product, AdminAccount } from '@/types'
 
 export const runtime = 'nodejs'
-
-function sha256hex(str: string): string {
-  return createHash('sha256').update(str).digest('hex')
-}
 
 export async function POST(req: NextRequest) {
   const authResult = await requireSuper(req)
@@ -76,11 +71,14 @@ export async function POST(req: NextRequest) {
 
   // 3. admin_accounts UPSERT (bcrypt 해시)
   for (const acct of body.adminAccounts ?? []) {
-    // 기존 해시가 SHA-256이면 bcrypt로 재해시
     let pwHash = acct.passwordHash
-    if (!/^\$2[ab]\$/.test(pwHash)) {
-      // SHA-256 hex or plaintext — bcrypt hash
-      pwHash = await bcrypt.hash(pwHash.length === 64 ? pwHash : acct.passwordHash, 12)
+    if (/^\$2[ab]\$/.test(pwHash)) {
+      // already bcrypt — keep as-is
+    } else if (/^[0-9a-f]{64}$/.test(pwHash)) {
+      // SHA-256 hex — keep as-is, login route rehashes on next login
+    } else {
+      // plaintext — bcrypt now
+      pwHash = await bcrypt.hash(pwHash, 12)
     }
     await supabase.from('admin_accounts').upsert({
       username: acct.username,
@@ -92,13 +90,17 @@ export async function POST(req: NextRequest) {
 
   // 4. __super__ 비밀번호 설정 (superPw → bcrypt)
   if (body.superPw) {
-    // superPw는 localStorage의 adminPw (SHA-256 해시 또는 평문)
-    // 평문인 경우 (기본값 '1234' 등) bcrypt로 직접 해시
-    const plainPw = body.superPw
-    const newHash = await bcrypt.hash(plainPw, 12)
+    let pwHash: string
+    if (/^\$2[ab]\$/.test(body.superPw)) {
+      pwHash = body.superPw
+    } else if (/^[0-9a-f]{64}$/.test(body.superPw)) {
+      pwHash = body.superPw  // SHA-256 — login route rehashes on next login
+    } else {
+      pwHash = await bcrypt.hash(body.superPw, 12)  // plaintext
+    }
     await supabase
       .from('admin_accounts')
-      .update({ password_hash: newHash })
+      .update({ password_hash: pwHash })
       .eq('username', '__super__')
   }
 
