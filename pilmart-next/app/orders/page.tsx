@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Order } from '@/types';
 import { createClient } from '@/lib/supabase';
 import { formatPrice } from '@/lib/utils';
@@ -25,13 +26,18 @@ export default function OrdersPage() {
   const [orders, setOrders]       = useState<Order[]>([]);
   const [expanded, setExpanded]   = useState<Record<string, boolean>>({});
   const [confirm, setConfirm]     = useState<CancelTarget | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     void (async () => {
       const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.replace('/auth?redirect=/orders'); return; }
+
       const { data } = await supabase
         .from('orders')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       if (!data) return;
       const mapped: Order[] = data.map(row => ({

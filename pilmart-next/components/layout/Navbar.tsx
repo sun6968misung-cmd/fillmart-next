@@ -136,10 +136,16 @@ export function Navbar() {
 
           <div className="flex items-center gap-5 shrink-0">
             {isLoggedIn ? (
-              <Link href="/orders" className="hidden sm:flex flex-col items-center gap-0.5 text-gray-600 hover:text-primary transition-colors">
-                <Package className="h-5 w-5" />
-                <span className="text-[10px]">주문내역</span>
-              </Link>
+              <>
+                <Link href="/orders" className="hidden sm:flex flex-col items-center gap-0.5 text-gray-600 hover:text-primary transition-colors">
+                  <Package className="h-5 w-5" />
+                  <span className="text-[10px]">주문내역</span>
+                </Link>
+                <Link href="/profile" className="hidden sm:flex flex-col items-center gap-0.5 text-gray-600 hover:text-primary transition-colors">
+                  <User className="h-5 w-5" />
+                  <span className="text-[10px]">마이페이지</span>
+                </Link>
+              </>
             ) : (
               <Link href="/auth" className="hidden sm:flex flex-col items-center gap-0.5 text-gray-600 hover:text-primary transition-colors">
                 <User className="h-5 w-5" />
@@ -193,9 +199,10 @@ export function Navbar() {
           <div className="hidden md:flex items-center text-xs text-gray-500 divide-x divide-gray-200">
             {isLoggedIn ? (
               <>
-                <span className="px-3 text-gray-700 font-medium">{user?.name}님</span>
+                <Link href="/profile" className="px-3 text-gray-700 font-medium hover:text-primary transition-colors">{user?.name}님</Link>
                 <button onClick={logout} className="px-3 hover:text-primary transition-colors">로그아웃</button>
                 <Link href="/orders" className="px-3 hover:text-primary transition-colors">주문내역</Link>
+                <Link href="/profile" className="px-3 hover:text-primary transition-colors">마이페이지</Link>
               </>
             ) : (
               <>
