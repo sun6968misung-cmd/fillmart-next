@@ -19,7 +19,7 @@ Stack: **Next.js 16 App Router · React 19 · Tailwind CSS v4 · shadcn/ui · Ty
 
 ## Architecture
 
-### Provider hierarchy (app/layout.tsx)
+### Provider hierarchy (`app/layout.tsx`)
 
 ```
 StoreProvider (context/StoreProvider.tsx)
@@ -27,117 +27,128 @@ StoreProvider (context/StoreProvider.tsx)
         └── Navbar · <main>{children}</main> · Footer · Toaster
 ```
 
-`StoreProvider` holds Cart, Wishlist, Auth contexts in one file. Import `useCart`, `useWishlist`, `useAuth` directly from `@/context/StoreProvider` — the separate `hooks/` directory has been removed.
+`StoreProvider` holds Cart, Wishlist, Auth contexts. Import `useCart`, `useWishlist`, `useAuth` directly from `@/context/StoreProvider` — the separate `hooks/` directory has been removed.
 
-`ServerSyncProvider` fetches product overrides and custom products from Supabase via `GET /api/products` on every page load, overwrites localStorage, then fires `pilmart:products-changed` and `pilmart:store-synced`. It also runs `migrateCustomerPhone()` (`lib/migrations.ts`) once per browser (flagged by a localStorage key).
+`ServerSyncProvider` fetches product overrides and custom products from Supabase via `GET /api/products` on every page load, caches them to localStorage, then fires `pilmart:products-changed` and `pilmart:store-synced`. Also runs `migrateCustomerPhone()` once per browser.
 
-### Storage: localStorage (cache layer only)
+### Storage (`lib/storage.ts`)
 
-All data is accessed via `lsGet<T>(key, fallback)` / `lsSet(key, val)` / `lsRemove(key)` from `lib/storage.ts`. Always use these helpers — never call `localStorage` directly.
-
-`lsSet`/`lsRemove` are now pure localStorage operations — there is no automatic server sync side effect. `lib/serverSync.ts` and `/api/store` have been deleted.
-
-#### Storage: localStorage (cache layer only)
-
-All data is accessed via `lsGet`/`lsSet`/`lsRemove` from `lib/storage.ts`. `lsSet`/`lsRemove` are now pure localStorage operations — there is no automatic server sync side effect.
-
-Product overrides and custom products are fetched from Supabase via `GET /api/products` on every page load (in `ServerSyncProvider`) and cached in localStorage. `lib/serverSync.ts` and `/api/store` have been deleted.
-
-#### Storage key reference
+All data is accessed via `lsGet<T>(key, fallback)` / `lsSet(key, val)` / `lsRemove(key)` — never call `localStorage` directly. `lsSet`/`lsRemove` are pure localStorage operations with no server side effects.
 
 | Key | Contents |
 |---|---|
 | `pilmart_cart` | `CartItem[]` |
 | `pilmart_wishlist` | `string[]` of product IDs |
-| `pilmart_session` | `Session` (30-day TTL) |
+| `pilmart_session` | Customer `Session` (30-day TTL) |
 | `pilmart_pending_order` | Written before payment, cleared on success |
-| `pilmart_admin_active` | (legacy) admin logged-in flag — no longer used after cookie auth |
 | `pilmart_logo` | Base64 PNG |
-| `pilmart_products` | `Record<id, ProductOverride>` — cached from Supabase via /api/products |
-| `pilmart_custom_products` | `Product[]` — cached from Supabase via /api/products |
-| `pilmart_users` | `StoredUser[]` — registered accounts (일반·카카오·네이버) |
-| `pilmart_orders` | Completed orders (last 30) — synced via /api/orders |
-| `pilmart_notices` | `Notice[]` — synced via /api/notices |
-| `pilmart_flash_sale` | `FlashSaleConfig` — synced via /api/flash-sale |
-| `pilmart_store_info` | `StoreInfo` — synced via /api/store-info |
-| `pilmart_admin_pw` | (legacy) super admin pw hash — migrated to Supabase admin_accounts |
-| `pilmart_admin_accounts` | (legacy) sub-admin list — migrated to Supabase admin_accounts |
-| `pilmart_audit_logs` | (legacy) audit log cache — now stored in Supabase audit_logs table |
+| `pilmart_products` | `Record<id, ProductOverride>` — Supabase cache via `/api/products` |
+| `pilmart_custom_products` | `Product[]` — Supabase cache via `/api/products` |
+| `pilmart_users` | `StoredUser[]` — registered customer accounts |
+| `pilmart_orders` | Completed orders (last 30) |
+| `pilmart_notices` | `Notice[]` cache |
+| `pilmart_flash_sale` | `FlashSaleConfig` cache |
+| `pilmart_store_info` | `StoreInfo` cache |
 
 ### Products (`lib/products.ts`)
 
-`PRODUCTS` is a static array of ~60 items. `OVERRIDE_KEYS` lists every overridable field.
+`PRODUCTS` is a static array of ~60 base items. `getProducts()` merges Supabase overrides + custom products and filters hidden items (store-facing). `getAllProductsAdmin()` includes hidden items.
 
-- **`getProducts()`** — store-facing; merges overrides + custom products, filters hidden.
-- **`getAllProductsAdmin()`** — same but includes hidden.
+`taxType` defaults to `'taxFree'`. `'tax'` items show VAT breakdown (supply = price ÷ 1.1) on product detail, cart, checkout, orders, and admin print.
 
-`taxType` defaults to `'taxFree'`. `'tax'` items show VAT breakdown: supply = price ÷ 1.1, VAT = price − supply. This badge and breakdown appears on product detail, cart, checkout, orders, and admin order print.
+### Admin authentication (`lib/admin-session.ts`)
+
+Admin auth uses HMAC-SHA256 signed session cookies (`admin_session`, HttpOnly, SameSite=Strict, 24h). The session payload is `{ username, role }`.
+
+```typescript
+// In any server route handler:
+const authResult = await requireAdmin(req)   // → AdminSession | Response(401)
+if (authResult instanceof Response) return authResult
+
+const authResult = await requireSuper(req)   // → AdminSession | Response(401/403)
+if (authResult instanceof Response) return authResult
+```
+
+All routes using `requireAdmin`/`requireSuper` or `bcryptjs` must declare `export const runtime = 'nodejs'` (bcrypt requires Node.js, not Edge).
+
+Password storage: bcrypt cost 12. Login route auto-upgrades SHA-256 hex hashes to bcrypt on first login (legacy migration path). `__PENDING__` bootstrap accepts '1234' only.
 
 ### Admin page (`app/admin/page.tsx`)
 
 Renders with `fixed inset-0 z-[9999]` — overlays the store layout.
 
-#### Auth state restoration
+#### Auth and session restore
 
-On page load, `useEffect` checks `lsGet(KEYS.adminActive)`. If true, sets `authed(true)` and reads `sessionStorage.getItem('pilmart_admin_user')` to restore the logged-in sub-admin (and their role/tabs). Super-admin stores `'__super__'` as the sessionStorage value. Logout clears both `adminActive` and `sessionStorage`.
+On mount, `useEffect` fetches `GET /api/admin/accounts` (super-only), chains into `GET /api/admin/session` to restore the logged-in session from the cookie. Login calls `POST /api/admin/login`; logout calls `POST /api/admin/logout` + clears React state.
 
 #### Tabs and roles
 
 `Tab = 'dashboard' | 'orders' | 'products' | 'deals' | 'notices' | 'site' | 'members' | 'account' | 'logs'`
 
 `ROLE_TABS`: `super` → all tabs; `product` → dashboard, products, deals; `order` → dashboard, orders.  
-`members`, `account`, `logs` tabs have an extra `myRole === 'super'` content guard inside.
+`members`, `account`, `logs` have an extra `myRole === 'super'` content guard.
 
-Login: empty username → single-password super-admin (backward compat). Username filled → looks up `adminAccounts`.
+#### Audit log
 
-#### Order management
+`addLog(action, target, detail?)` fire-and-forgets `POST /api/admin/logs`. The server extracts the actor from the session cookie — do not send an `actor` field in the body.
 
-Clicking an order number opens a 상세 모달 with full info, per-item 면세/과세 badge, status dropdown, print, and delete. Print template includes customer name, phone, address, memo.
+#### Destructive action pattern
 
-#### Audit log system
+`window.confirm` is prohibited. Use inline confirm state (e.g. `confirmDeleteId`, `confirmClearLogs`). Irreversible actions (전체 삭제, 데이터 초기화) additionally require typing the store name (`storeInfo.name`) into an input before the confirm button enables.
 
-`addLog(action, target, detail?)` — prepends to state + localStorage, capped at 500. Covers: login, order status/delete, product edit/delete/restore, notice add/remove, flash config, store info, password change, admin account add/remove/toggle, member delete, data reset.
+### Admin API routes
+
+All admin API routes require `export const runtime = 'nodejs'`.
+
+| Route | Auth | Methods |
+|---|---|---|
+| `/api/admin/login` | public | POST — bcrypt + SHA-256 rehash + `__PENDING__` bootstrap |
+| `/api/admin/logout` | public | POST — clears cookie |
+| `/api/admin/session` | public | GET — returns `{ username, role }` or 401 |
+| `/api/admin/accounts` | requireSuper | GET/POST/PATCH/DELETE — PATCH supports `{ selfPw: true, newPassword }` for own pw |
+| `/api/admin/logs` | requireAdmin | GET (latest 500) / POST (no DELETE endpoint) |
+| `/api/admin/migrate` | requireSuper | POST — one-time localStorage→Supabase migration |
+| `/api/admin/orders` | requireAdmin | GET (excludes `status='삭제됨'`) / PATCH / DELETE (single: hard; all: soft) |
+| `/api/admin/members` | requireAdmin | GET / DELETE |
+| `/api/products` | GET public, writes requireAdmin | GET→`{overrides, customs}` / POST custom / PATCH override / DELETE hide\|show\|remove |
+| `/api/notices` | GET public, POST/DELETE requireAdmin | |
+| `/api/flash-sale` | GET public, POST requireAdmin | |
+| `/api/store-info` | GET public, POST requireAdmin | |
 
 ### Admin sub-pages
 
-`/admin/member/[phone]` and `/admin/member/[phone]/day/[date]` are separate Next.js pages that use the **same `fixed inset-0 z-[9999]` overlay pattern** as the main admin page. They include `<AdminSidebar activeTab="members" />` (`components/admin/AdminSidebar.tsx`) on the left. Auth guard: `if (!lsGet(KEYS.adminActive, false)) router.replace('/admin')`.
+`/admin/member/[phone]` and `/admin/member/[phone]/day/[date]` use the same `fixed inset-0 z-[9999]` overlay. They include `<AdminSidebar activeTab="members" />`.
 
-`AdminSidebar` reads order count for the badge, handles logout (clears `adminActive` + `sessionStorage`), and navigates via `href="/admin#${tabId}"`.
+Auth guard uses `GET /api/admin/session` (cookie-based). `AdminSidebar` logout calls `POST /api/admin/logout`.
 
-### Auth (`app/auth/page.tsx`)
+### Customer auth (`app/auth/page.tsx`)
 
-Registration requires: name, phone, address (Daum Postcode API), password. Password is SHA-256 hashed via `lib/crypto.ts`. `crypto.subtle` is unavailable on HTTP LAN IPs — login falls back to plaintext comparison on non-HTTPS origins.
-
-Social login (Kakao/Naver): OAuth 2.0 implicit grant. Keys in `.env.local`:
-```
-NEXT_PUBLIC_KAKAO_APP_KEY=
-NEXT_PUBLIC_NAVER_CLIENT_ID=
-```
-
-Social callbacks (`kakao-callback`, `naver-callback`) save to `pilmart_users` on first login (dedup by phone + provider).
+Registration: name, phone, Daum Postcode address, password (SHA-256 via `lib/crypto.ts`). Social login (Kakao/Naver) via OAuth 2.0 implicit grant; keys in `.env.local` as `NEXT_PUBLIC_KAKAO_APP_KEY` and `NEXT_PUBLIC_NAVER_CLIENT_ID`.
 
 ### Payment flow
 
-1. `checkout/page.tsx` — loads `StoredUser.address` as default delivery address. Two-tab selector: 기본 배송지 (read-only stored address) vs 다른 배송지 (Daum Postcode search). Writes `pilmart_pending_order` including `address`, `memo`, `customerName`, `customerPhone`.
-2. Toss Payments SDK (online card/transfer) or direct redirect (만나서).
-3. `success/page.tsx` — reads pending order → appends to `pilmart_orders` → `clearCart()`.
+1. `checkout/page.tsx` writes `pilmart_pending_order` (includes address, memo, customerName, customerPhone).
+2. Toss Payments SDK → `success.html` or direct redirect for 만나서 payment.
+3. `success/page.tsx` reads pending order → appends to orders → `clearCart()`.
 
-Toss key: `process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
-
-### Orders (`app/orders/page.tsx`)
-
-`Order` fields: `cancelledItems?: string[]`, `orderStatus?: '주문완료'|'배송준비중'|'배송중'|'배송완료'`, `customerPhone?`, `address?`, `memo?`. `배송완료` orders cannot be cancelled.
+Toss key: `NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
 
 ### Flash sale
 
-`FlashSaleConfig = { startHour, endHour, products: FlashProduct[] }`. Section hidden outside active hours. `maxPerCustomer: 0` = unlimited. `product` role admins can manage.
+`FlashSaleConfig = { startHour, endHour, products: FlashProduct[] }`. Section hidden outside active hours. `maxPerCustomer: 0` = unlimited.
+
+### Supabase tables
+
+`product_overrides` (TEXT PK: product_id), `custom_products`, `admin_accounts` (bcrypt, `__super__` row always present), `audit_logs` (auto-trimmed to 1000 rows via trigger), `orders`, `profiles`, `notices`, `flash_sale`, `store_info`.
+
+`createServiceClient()` from `lib/supabase-server.ts` — server-side only, never import in client components.
 
 ### Routes
 
 | Route | Purpose |
 |---|---|
 | `/` | Home: HeroBanner + FlashSaleSection + ProductGrid; `?cat=` filter |
-| `/category/[slug]` | Category landing page; slug mapped via `lib/categoryConfig.ts` |
+| `/category/[slug]` | Category landing; slug mapped via `lib/categoryConfig.ts` |
 | `/product/[id]` | Detail: 상품정보/상품평/배송 tabs; taxType badge + VAT box |
 | `/flash-product/[idx]` | Flash sale per-product detail |
 | `/cart` | Cart with 면세/과세 breakdown |
@@ -147,7 +158,7 @@ Toss key: `process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
 | `/admin/member/[phone]` | Member detail: info card + daily order summaries |
 | `/admin/member/[phone]/day/[date]` | Day detail: expandable order cards |
 | `/auth` | Login/register (일반·사업자) |
-| `/kakao-callback`, `/naver-callback` | OAuth |
+| `/kakao-callback`, `/naver-callback` | OAuth callbacks |
 
 ### Patterns
 
@@ -155,4 +166,5 @@ Toss key: `process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
 - Use `cn()` from the `cn` package (`import { cn } from "cn"`) for conditional classNames.
 - Add shadcn/ui: `pnpm dlx shadcn@latest add <name>`.
 - Event dispatches after data changes: `pilmart:logo-changed`, `pilmart:products-changed`.
-- Admin overlay pages (and sub-pages) use `fixed inset-0 z-[9999] flex bg-gray-50` as root wrapper.
+- Admin overlay pages use `fixed inset-0 z-[9999] flex bg-gray-50` as root wrapper.
+- Category values in use: `야채/채소`, `과일`, `축산/계란`, `수산/건어물`, `라면/면류`, `유제품/냉장/냉동`, `캔/통조림`.
