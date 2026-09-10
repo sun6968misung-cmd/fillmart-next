@@ -63,6 +63,10 @@ export default function AdminPage() {
   const [migrating, setMigrating] = useState(false);
   const [migrated, setMigrated] = useState(false);
   const [confirmClearLogs, setConfirmClearLogs] = useState(false);
+  const [confirmDeleteAllOrders, setConfirmDeleteAllOrders] = useState(false);
+  const [confirmDeleteAllOrdersInput, setConfirmDeleteAllOrdersInput] = useState('');
+  const [confirmResetKey, setConfirmResetKey] = useState<string | null>(null);
+  const [confirmResetInput, setConfirmResetInput] = useState('');
 
   const [orders, setOrders] = useState<OrderWithStatus[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -1034,13 +1038,42 @@ export default function AdminPage() {
                 </div>
                 <div className="ml-auto flex items-center gap-3">
                   <span className="text-sm text-gray-400">{filteredOrders.length}건</span>
-                  <button onClick={() => { if (confirm('모든 주문을 삭제하시겠습니까?')) {
-                    fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ all: true }) });
-                    setOrders([]);
-                  } }}
-                    className="text-sm text-red-400 hover:text-red-600 font-medium flex items-center gap-1.5">
-                    <Trash2 className="h-3.5 w-3.5" /> 전체 삭제
-                  </button>
+                  {confirmDeleteAllOrders ? (
+                    <div className="flex flex-col gap-1.5 items-end">
+                      <p className="text-xs text-gray-500">매장명을 입력하세요: <span className="font-semibold">{storeInfo.name}</span></p>
+                      <div className="flex gap-1">
+                        <input
+                          value={confirmDeleteAllOrdersInput}
+                          onChange={e => setConfirmDeleteAllOrdersInput(e.target.value)}
+                          placeholder={storeInfo.name}
+                          className="text-xs border border-gray-300 rounded px-2 py-1 w-40 focus:outline-none focus:border-red-400"
+                        />
+                        <button
+                          onClick={() => {
+                            if (confirmDeleteAllOrdersInput !== storeInfo.name) return;
+                            fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ all: true }) });
+                            setOrders([]);
+                            addLog('전체 주문 삭제', `${orders.length}건`);
+                            setConfirmDeleteAllOrders(false);
+                            setConfirmDeleteAllOrdersInput('');
+                          }}
+                          disabled={confirmDeleteAllOrdersInput !== storeInfo.name}
+                          className="text-xs text-red-600 px-2 py-1 border border-red-300 rounded disabled:opacity-40">
+                          확인
+                        </button>
+                        <button
+                          onClick={() => { setConfirmDeleteAllOrders(false); setConfirmDeleteAllOrdersInput(''); }}
+                          className="text-xs text-gray-500 px-2 py-1 border rounded">
+                          취소
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => setConfirmDeleteAllOrders(true)}
+                      className="text-sm text-red-400 hover:text-red-600 font-medium flex items-center gap-1.5">
+                      <Trash2 className="h-3.5 w-3.5" /> 전체 삭제
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -1994,21 +2027,47 @@ export default function AdminPage() {
                         <p className={`text-sm font-medium ${item.danger ? 'text-red-600' : 'text-gray-700'}`}>{item.label}</p>
                         <p className="text-xs text-gray-400">{item.desc}</p>
                       </div>
-                      <button
-                        onClick={() => {
-                          if (confirm(`${item.label} 하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                            lsRemove(item.key);
-                            item.onDelete();
-                            addLog('데이터 초기화', item.label);
-                          }
-                        }}
-                        className={`text-xs font-medium border px-3 py-1.5 rounded-lg transition-colors ${
-                          item.danger
-                            ? 'text-red-600 border-red-300 hover:bg-red-50 hover:border-red-500'
-                            : 'text-red-400 hover:text-red-600 border-red-200 hover:border-red-400'
-                        }`}>
-                        초기화
-                      </button>
+                      {confirmResetKey === item.key ? (
+                        <div className="flex flex-col gap-1.5 items-end">
+                          <p className="text-xs text-gray-500">매장명 입력: <span className="font-semibold">{storeInfo.name}</span></p>
+                          <div className="flex gap-1">
+                            <input
+                              value={confirmResetInput}
+                              onChange={e => setConfirmResetInput(e.target.value)}
+                              placeholder={storeInfo.name}
+                              className="text-xs border border-gray-300 rounded px-2 py-1 w-36 focus:outline-none focus:border-red-400"
+                            />
+                            <button
+                              onClick={() => {
+                                if (confirmResetInput !== storeInfo.name) return;
+                                lsRemove(item.key);
+                                item.onDelete();
+                                addLog('데이터 초기화', item.label);
+                                setConfirmResetKey(null);
+                                setConfirmResetInput('');
+                              }}
+                              disabled={confirmResetInput !== storeInfo.name}
+                              className="text-xs text-red-600 px-2 py-1 border border-red-300 rounded disabled:opacity-40">
+                              확인
+                            </button>
+                            <button
+                              onClick={() => { setConfirmResetKey(null); setConfirmResetInput(''); }}
+                              className="text-xs text-gray-500 px-2 py-1 border rounded">
+                              취소
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => { setConfirmResetKey(item.key); setConfirmResetInput(''); }}
+                          className={`text-xs font-medium border px-3 py-1.5 rounded-lg transition-colors ${
+                            item.danger
+                              ? 'text-red-600 border-red-300 hover:bg-red-50 hover:border-red-500'
+                              : 'text-red-400 hover:text-red-600 border-red-200 hover:border-red-400'
+                          }`}>
+                          초기화
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
