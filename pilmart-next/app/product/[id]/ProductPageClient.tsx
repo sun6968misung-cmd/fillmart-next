@@ -5,9 +5,7 @@ import { notFound } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Heart, Minus, Plus, Star } from 'lucide-react';
 import { getProducts, getProductImage } from '@/lib/products';
-import { useCart } from '@/hooks/useCart';
-import { useWishlist } from '@/hooks/useWishlist';
-import { useAuth } from '@/hooks/useAuth';
+import { useCart, useWishlist, useAuth } from '@/context/StoreProvider';
 import { formatPrice } from '@/lib/utils';
 
 type TabId = 'info' | 'review' | 'shipping';
@@ -27,7 +25,7 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
   if (!found) notFound();
   const product = found!;
 
-  const { addItem, updateQty } = useCart();
+  const { addItem } = useCart();
   const { has, toggle } = useWishlist();
   const { isLoggedIn } = useAuth();
   const router = useRouter();
@@ -38,6 +36,9 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
   const discount = Math.round((1 - product.price / product.originalPrice) * 100);
   const wished = has(product.id);
   const points = Math.floor(product.price * 0.01);
+  const isTax = product.taxType === 'tax';
+  const supplyAmt = isTax ? Math.round(product.price / 1.1) : 0;
+  const vatAmt    = isTax ? product.price - supplyAmt : 0;
 
   const CROSS_CATEGORY: Record<string, string[]> = {
     '축산/계란':       ['야채/채소', '라면/면류', '캔/통조림'],
@@ -61,8 +62,7 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
 
   function handleAddToCart() {
     if (!isLoggedIn) { router.push('/auth'); return; }
-    addItem(product);
-    if (qty > 1) updateQty(product.id, qty - 1);
+    addItem(product, qty);
   }
 
   function handleToggleWishlist() {
@@ -100,12 +100,17 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
 
           {/* 정보 패널 */}
           <div>
-            <h1 className="text-xl font-bold text-gray-900 mb-0.5">{product.name}</h1>
+            <div className="flex items-start justify-between gap-2 mb-0.5">
+              <h1 className="text-xl font-bold text-gray-900">{product.name}</h1>
+              <span className={`mt-1 shrink-0 text-xs font-bold px-2 py-1 rounded-full ${isTax ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
+                {isTax ? '과세' : '면세'}
+              </span>
+            </div>
             <p className="text-sm text-gray-400 mb-3">{product.unit}</p>
 
             {/* 가격 */}
             {discount > 0 ? (
-              <div className="mb-5">
+              <div className="mb-3">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-primary font-bold text-sm">{discount}%</span>
                   <span className="text-gray-400 line-through text-sm">{formatPrice(product.originalPrice)}</span>
@@ -113,7 +118,16 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
                 <span className="text-[2rem] font-extrabold text-gray-900">{formatPrice(product.price)}</span>
               </div>
             ) : (
-              <p className="text-[2rem] font-extrabold text-gray-900 mb-5">{formatPrice(product.price)}</p>
+              <p className="text-[2rem] font-extrabold text-gray-900 mb-3">{formatPrice(product.price)}</p>
+            )}
+
+            {/* 과세 상품 공급가액/부가세 */}
+            {isTax && (
+              <div className="mb-4 flex items-center gap-3 text-xs text-gray-500 bg-orange-50/60 border border-orange-100 rounded-lg px-3 py-2">
+                <span>공급가액 <strong className="text-gray-700">{formatPrice(supplyAmt)}</strong></span>
+                <span className="text-gray-300">|</span>
+                <span>부가세(VAT 10%) <strong className="text-gray-700">{formatPrice(vatAmt)}</strong></span>
+              </div>
             )}
 
             {/* 정보 행 */}
@@ -269,7 +283,7 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
               <p className="text-base font-bold mb-3">{product.name}</p>
               <p>{product.desc}</p>
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-1.5 text-gray-500">
-                <p>• 오전 10시 이전 주문 시 당일 배송 처리됩니다.</p>
+                <p>• 오후 3시 이전 주문 시 당일 배송 처리됩니다.</p>
                 <p>• 신선도가 마음에 들지 않으시면 수령일 24시간 이내 전액 환불해드립니다.</p>
               </div>
             </div>
@@ -281,9 +295,10 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
                     ['포장단위별 내용물의 용량(중량), 수량, 크기', product.unit],
                     ['원산지', product.origin],
                     ['보관방법', product.storage],
-                    ['소비기한 또는 품질유지기한', '상세페이지 참조'],
+                    ['소비기한 또는 품질유지기한', product.expiryDate ?? '상세페이지 참조'],
                     ['상품구성', product.name],
-                    ['소비자상담 관련 전화번호', '고객센터 참조'],
+                    ['소비자상담 관련 전화번호', product.customerServiceNo ?? '고객센터 참조'],
+                    ['과세구분', isTax ? `과세 (공급가액 ${formatPrice(supplyAmt)} / 부가세 ${formatPrice(vatAmt)})` : '면세'],
                   ].map(([label, value]) => (
                     <tr key={label} className="border-b border-gray-100">
                       <td className="py-3 px-4 bg-gray-50 text-gray-500 w-56">{label}</td>
@@ -323,7 +338,7 @@ export function ProductPageClient({ params }: { params: Promise<{ id: string }> 
             <div>
               <h3 className="font-bold text-base mb-3 pb-2 border-b border-gray-200">배송 안내</h3>
               <ul className="space-y-2 text-gray-600">
-                <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>오전 10시 이전 주문 시 당일 배송 처리됩니다.</li>
+                <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>오후 3시 이전 주문 시 당일 배송 처리됩니다.</li>
                 <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>배송 방법 및 지역에 따라 배송비가 달라질 수 있습니다.</li>
                 <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>제주 및 도서산간 지역은 추가 배송비가 부과됩니다.</li>
                 <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>10만원 이상 주문 시 무료배송입니다.</li>

@@ -13,7 +13,7 @@ const SLIDES = [
     subtitle: '산지 직거래로 더 신선하게, 더 저렴하게',
     cta: '특가 보기',
     href: '/category/vegetables',
-    imgSrc: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&h=420&q=80',
+    imgSrc: 'https://d8j0ntlcm91z4.cloudfront.net/user_3J7JEDYlIoXyMV3Otxzd3ftY0L3/hf_20260910_021507_ba76a9f5-22fd-48b6-af22-972df27c5e1c.png',
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const SLIDES = [
     subtitle: '고추장·된장·간장부터 업소용 대용량까지',
     cta: '지금 보기',
     href: '/category/sauce',
-    imgSrc: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&w=900&h=420&q=80',
+    imgSrc: 'https://d8j0ntlcm91z4.cloudfront.net/user_3J7JEDYlIoXyMV3Otxzd3ftY0L3/hf_20260910_021507_a627e31a-2ea2-48c9-b503-c9f21c826e92.png',
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ const SLIDES = [
     subtitle: '냉장 상태 그대로 오늘 주문, 오늘 배송',
     cta: '축산물 보기',
     href: '/category/meat',
-    imgSrc: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&h=420&q=80',
+    imgSrc: 'https://d8j0ntlcm91z4.cloudfront.net/user_3J7JEDYlIoXyMV3Otxzd3ftY0L3/hf_20260910_021507_7b8fdca0-3f02-4c9d-801e-fd6201b4984f.png',
   },
   {
     id: 4,
@@ -43,10 +43,10 @@ const SLIDES = [
     badgeVar: 'var(--slide-seafood-badge)',
     badge: '🐟 수산/건어물',
     title: '싱싱한 수산물\n산지 당일 직송',
-    subtitle: '오전 주문 시 당일 오후 배송 보장',
+    subtitle: '오후 3시 이전 주문 시 당일 배송 보장',
     cta: '수산물 보기',
     href: '/category/seafood',
-    imgSrc: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=900&h=420&q=80',
+    imgSrc: 'https://d8j0ntlcm91z4.cloudfront.net/user_3J7JEDYlIoXyMV3Otxzd3ftY0L3/hf_20260910_021507_ad203c0e-e4a3-483e-aef6-a00c9e593a20.png',
   },
   {
     id: 5,
@@ -57,7 +57,7 @@ const SLIDES = [
     subtitle: '충남 당진 농협 직송 햇쌀, 지금 특가 중',
     cta: '쌀/잡곡 보기',
     href: '/category/grain',
-    imgSrc: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=900&h=420&q=80',
+    imgSrc: 'https://d8j0ntlcm91z4.cloudfront.net/user_3J7JEDYlIoXyMV3Otxzd3ftY0L3/hf_20260910_021507_43d30500-5188-4286-9f50-fd91a9946b7c.png',
   },
   {
     id: 6,
@@ -68,7 +68,7 @@ const SLIDES = [
     subtitle: '필식자재마마트 다사점 가입 후 첫 구매 시 자동 적용',
     cta: '쿠폰 받기',
     href: '/auth',
-    imgSrc: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&h=420&q=80',
+    imgSrc: 'https://d8j0ntlcm91z4.cloudfront.net/user_3J7JEDYlIoXyMV3Otxzd3ftY0L3/hf_20260910_021507_ac304965-298c-4183-9167-a6081e0e5c35.png',
   },
 ];
 

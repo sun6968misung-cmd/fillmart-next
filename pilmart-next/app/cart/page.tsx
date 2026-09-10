@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { ChevronRight, Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/context/StoreProvider';
 import { formatPrice } from '@/lib/utils';
 import { getProductImage } from '@/lib/products';
 
@@ -68,7 +68,12 @@ export default function CartPage() {
                       className="text-sm font-medium text-gray-800 hover:text-primary transition-colors line-clamp-2 leading-snug">
                       {item.name}
                     </Link>
-                    <p className="text-xs text-gray-400 mt-0.5">{item.unit}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <p className="text-xs text-gray-400">{item.unit}</p>
+                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${item.taxType === 'tax' ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'}`}>
+                        {item.taxType === 'tax' ? '과세' : '면세'}
+                      </span>
+                    </div>
                     <p className="text-sm font-bold text-primary mt-1 sm:hidden">{formatPrice(item.price * item.qty)}</p>
                   </div>
 
@@ -127,30 +132,68 @@ export default function CartPage() {
         </div>
 
         {/* 주문 요약 */}
-        <div className="w-72 shrink-0 border border-gray-100 rounded-xl overflow-hidden sticky top-32">
-          <div className="bg-gray-50 px-5 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-gray-800">주문 요약</h2>
-          </div>
-          <div className="px-5 py-4 space-y-3 text-sm">
-            <div className="flex justify-between text-gray-600">
-              <span>상품 금액</span>
-              <span>{formatPrice(total)}</span>
+        {(() => {
+          const taxItems  = items.filter(i => i.taxType === 'tax');
+          const freeItems = items.filter(i => i.taxType !== 'tax');
+          const taxTotal  = taxItems.reduce((s, i) => s + i.price * i.qty, 0);
+          const freeTotal = freeItems.reduce((s, i) => s + i.price * i.qty, 0);
+          const supplyAmt = taxTotal > 0 ? Math.round(taxTotal / 1.1) : 0;
+          const vatAmt    = taxTotal > 0 ? taxTotal - supplyAmt : 0;
+          return (
+            <div className="w-72 shrink-0 border border-gray-100 rounded-xl overflow-hidden sticky top-32">
+              <div className="bg-gray-50 px-5 py-3 border-b border-gray-100">
+                <h2 className="text-sm font-bold text-gray-800">주문 요약</h2>
+              </div>
+              <div className="px-5 py-4 space-y-2.5 text-sm">
+                {/* 면세 금액 */}
+                {freeTotal > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-blue-400 inline-block"/>
+                      면세 금액
+                    </span>
+                    <span>{formatPrice(freeTotal)}</span>
+                  </div>
+                )}
+                {/* 과세 내역 */}
+                {taxTotal > 0 && (
+                  <>
+                    <div className="flex justify-between text-gray-600">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-orange-400 inline-block"/>
+                        과세 공급가액
+                      </span>
+                      <span>{formatPrice(supplyAmt)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-500 text-xs pl-3.5">
+                      <span>부가세 (VAT 10%)</span>
+                      <span>{formatPrice(vatAmt)}</span>
+                    </div>
+                  </>
+                )}
+                <div className="border-t border-gray-200 pt-2.5 mt-1">
+                  <div className="flex justify-between text-xs text-gray-400 mb-1.5">
+                    <span>상품 합계</span>
+                    <span>{formatPrice(total)}</span>
+                  </div>
+                  <div className="flex justify-between font-bold">
+                    <span className="text-gray-900">최종 결제금액</span>
+                    <span className="text-primary text-lg">{formatPrice(total)}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="px-5 pb-5 space-y-2">
+                <button
+                  onClick={goCheckout}
+                  className="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-primary/90 transition-colors"
+                >
+                  결제하기
+                </button>
+                <p className="text-[11px] text-gray-400 text-center">최소 주문 금액 100,000원</p>
+              </div>
             </div>
-            <div className="border-t border-gray-100 pt-3 flex justify-between font-bold">
-              <span className="text-gray-900">합계</span>
-              <span className="text-primary text-lg">{formatPrice(total)}</span>
-            </div>
-          </div>
-          <div className="px-5 pb-5 space-y-2">
-            <button
-              onClick={goCheckout}
-              className="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-primary/90 transition-colors"
-            >
-              결제하기
-            </button>
-            <p className="text-[11px] text-gray-400 text-center">최소 주문 금액 100,000원</p>
-          </div>
-        </div>
+          );
+        })()}
       </div>
     </div>
   );

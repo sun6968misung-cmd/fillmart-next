@@ -1,8 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { KEYS, lsGet } from '@/lib/storage';
 
 interface StoreInfo {
   phone?: string;
@@ -17,7 +16,10 @@ const DEFAULT: StoreInfo = {
 };
 
 export function Footer() {
-  const [info] = useState<StoreInfo>(() => lsGet<StoreInfo | null>(KEYS.storeInfo, null) ?? DEFAULT);
+  const [info, setInfo] = useState<StoreInfo>(DEFAULT);
+  useEffect(() => {
+    fetch('/api/store-info').then(r => r.json()).then(data => setInfo({ ...DEFAULT, ...data }));
+  }, []);
 
   const phone = info.phone ?? DEFAULT.phone!;
   const address = info.address ?? DEFAULT.address!;

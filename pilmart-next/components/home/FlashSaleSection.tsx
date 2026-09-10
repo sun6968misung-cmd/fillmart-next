@@ -1,14 +1,13 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FlashSaleConfig } from '@/types';
-import { KEYS, lsGet } from '@/lib/storage';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { Zap } from 'lucide-react';
 import Link from 'next/link';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/context/StoreProvider';
 
 const DEFAULT_FLASH_CONFIG: FlashSaleConfig = {
   startHour: 0,
@@ -22,45 +21,34 @@ const DEFAULT_FLASH_CONFIG: FlashSaleConfig = {
 };
 
 export function FlashSaleSection() {
-  // DEFAULT로 초기화 → SSR/hydration 첫 렌더부터 섹션이 DOM에 존재
   const [config, setConfig] = useState<FlashSaleConfig>(DEFAULT_FLASH_CONFIG);
   const [timeLeft, setTimeLeft] = useState('');
   const { items } = useCart();
+  const configRef = useRef<FlashSaleConfig>(DEFAULT_FLASH_CONFIG);
 
   useEffect(() => {
-    function applyConfig() {
-      const stored = lsGet<FlashSaleConfig | null>(KEYS.flashSale, null);
-      const cfg = stored ?? DEFAULT_FLASH_CONFIG;
-      setConfig(cfg);
-      return cfg;
-    }
-
-    applyConfig();
-    window.addEventListener('pilmart:store-synced', applyConfig);
+    fetch('/api/flash-sale')
+      .then(r => r.json())
+      .then((data: FlashSaleConfig) => { setConfig(data); configRef.current = data; });
 
     const tick = () => {
-      const liveCfg = lsGet<FlashSaleConfig | null>(KEYS.flashSale, null) ?? DEFAULT_FLASH_CONFIG;
+      const cfg = configRef.current;
       const h = new Date().getHours();
-      if (h >= liveCfg.startHour && h < liveCfg.endHour) {
+      if (h >= cfg.startHour && h < cfg.endHour) {
         const end = new Date();
-        end.setHours(liveCfg.endHour, 0, 0, 0);
+        end.setHours(cfg.endHour, 0, 0, 0);
         const diff = end.getTime() - Date.now();
         const hh = Math.floor(diff / 3600000);
         const mm = Math.floor((diff % 3600000) / 60000);
         const ss = Math.floor((diff % 60000) / 1000);
-        setTimeLeft(
-          `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`
-        );
+        setTimeLeft(`${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`);
       } else {
         setTimeLeft('');
       }
     };
     tick();
     const id = setInterval(tick, 1000);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener('pilmart:store-synced', applyConfig);
-    };
+    return () => clearInterval(id);
   }, []);
 
   const h = new Date().getHours();

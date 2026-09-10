@@ -3,9 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, Heart, Package, User, Search, AlignJustify, X } from 'lucide-react';
-import { useCart } from '@/hooks/useCart';
-import { useWishlist } from '@/hooks/useWishlist';
-import { useAuth } from '@/hooks/useAuth';
+import { useCart, useWishlist, useAuth } from '@/context/StoreProvider';
 
 const MEGA_MENU = [
   {
@@ -78,14 +76,14 @@ export function Navbar() {
   const { isLoggedIn, user, logout } = useAuth();
   const [catOpen, setCatOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [logoSrc, setLogoSrc] = useState('/logo.png');
+  const [logoSrc, setLogoSrc] = useState('/logo.svg');
   const catRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     function loadLogo() {
       const stored = localStorage.getItem('pilmart_logo');
-      setLogoSrc(stored || '/logo.png');
+      setLogoSrc(stored || '/logo.svg');
     }
     loadLogo();
     window.addEventListener('pilmart:logo-changed', loadLogo);
@@ -113,14 +111,14 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full shadow-sm">
       {/* Row 1: 공지 바 */}
       <div className="bg-primary text-primary-foreground text-center text-xs py-2 font-medium tracking-wide">
-        🚚 오전 주문 시 당일 배송 · 신선식품 직송
+        🚚 오후 3시 이전 주문 시 당일 배송 · 신선식품 직송
       </div>
 
       {/* Row 2: 로고 + 검색바 + 아이콘 버튼 */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-4">
           <Link href="/" className="shrink-0">
-            <img src={logoSrc} alt="필마트" className="h-24 w-auto rounded object-contain" />
+            <img src={logoSrc} alt="필마트" className="h-10 w-auto object-contain" />
           </Link>
 
           <form onSubmit={handleSearch} className="flex-1 relative">

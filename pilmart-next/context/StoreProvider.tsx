@@ -1,7 +1,9 @@
 'use client';
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import type { User } from '@supabase/supabase-js';
 import { CartItem, Product, Session } from '@/types';
 import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
+import { createClient } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -10,7 +12,7 @@ interface CartCtx {
   items: CartItem[];
   count: number;
   total: number;
-  addItem: (product: Product) => void;
+  addItem: (product: Product, qty?: number) => void;
   updateQty: (id: string, delta: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
@@ -26,24 +28,21 @@ function CartProvider({ children }: { children: ReactNode }) {
     setItems(lsGet<CartItem[]>(KEYS.cart, []));
   }, []);
 
-  const persist = useCallback((next: CartItem[]) => {
-    setItems(next);
-    lsSet(KEYS.cart, next);
-  }, []);
-
-  const addItem = useCallback((product: Product) => {
-    const session = lsGet<Session | null>(KEYS.session, null);
-    if (!session) { router.push('/auth'); return; }
-    setItems(prev => {
-      const existing = prev.find(i => i.id === product.id);
-      const next = existing
-        ? prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i)
-        : [...prev, { ...product, qty: 1 }];
-      lsSet(KEYS.cart, next);
-      return next;
+  const addItem = useCallback((product: Product, qty = 1) => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { router.push('/auth'); return; }
+      setItems(prev => {
+        const existing = prev.find(i => i.id === product.id);
+        const next = existing
+          ? prev.map(i => i.id === product.id ? { ...i, qty: i.qty + qty } : i)
+          : [...prev, { ...product, qty }];
+        lsSet(KEYS.cart, next);
+        return next;
+      });
+      router.push('/cart');
+      toast.success(`${product.name} 담았습니다`);
     });
-    router.push('/cart');
-    toast.success(`${product.name} 담았습니다`);
   }, [router]);
 
   const updateQty = useCallback((id: string, delta: number) => {
@@ -82,20 +81,18 @@ function CartProvider({ children }: { children: ReactNode }) {
       toast.error(`최소 주문금액은 100,000원입니다. ${(100000 - total).toLocaleString('ko-KR')}원 더 담아주세요.`);
       return;
     }
-    const session = lsGet<Session | null>(KEYS.session, null);
-    if (!session) { router.push('/auth?redirect=/checkout'); return; }
-    router.push('/checkout');
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { router.push('/auth?redirect=/checkout'); return; }
+      router.push('/checkout');
+    });
   }, [items, router]);
 
   const count = items.reduce((s, i) => s + i.qty, 0);
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
 
   return (
-    <CartContext.Provider value={{
-      items, count, total,
-      addItem, updateQty, removeItem, clearCart,
-      goCheckout,
-    }}>
+    <CartContext.Provider value={{ items, count, total, addItem, updateQty, removeItem, clearCart, goCheckout }}>
       {children}
     </CartContext.Provider>
   );
@@ -119,12 +116,14 @@ function WishlistProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggle = useCallback((id: string) => {
-    const session = lsGet<Session | null>(KEYS.session, null);
-    if (!session) { router.push('/auth'); return; }
-    setIds(prev => {
-      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
-      lsSet(KEYS.wishlist, next);
-      return next;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { router.push('/auth'); return; }
+      setIds(prev => {
+        const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+        lsSet(KEYS.wishlist, next);
+        return next;
+      });
     });
   }, [router]);
 
@@ -144,28 +143,35 @@ interface AuthCtx {
 }
 const AuthContext = createContext<AuthCtx | null>(null);
 
+function toSession(sbUser: User | null): Session | null {
+  if (!sbUser) return null;
+  return {
+    name: sbUser.user_metadata?.name ?? '',
+    phone: sbUser.user_metadata?.phone ?? '',
+    loginAt: Date.now(),
+    provider: sbUser.user_metadata?.provider ?? 'local',
+  };
+}
+
 function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Session | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const raw = lsGet<Session | null>(KEYS.session, null);
-    if (!raw) return;
-    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
-    if (raw.loginAt && Date.now() - raw.loginAt > thirtyDays) {
-      lsRemove(KEYS.session);
-    } else {
-      setUser(raw);
-    }
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(toSession(user)));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(toSession(session?.user ?? null));
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = useCallback((session: Session) => {
-    lsSet(KEYS.session, session);
-    setUser(session);
-  }, []);
+  // 소셜 콜백에서 즉시 UI 반영 용도로 유지
+  const login = useCallback((session: Session) => { setUser(session); }, []);
 
-  const logout = useCallback(() => {
-    lsRemove(KEYS.session);
+  const logout = useCallback(async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setUser(null);
     router.push('/');
   }, [router]);

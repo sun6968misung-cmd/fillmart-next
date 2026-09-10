@@ -3,27 +3,20 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { KEYS, lsGet } from '@/lib/storage';
 
 interface Notice {
-  id?: string | number;
+  id?: string;
   title: string;
-  date?: string;
-  createdAt?: string;
-  content?: string;
+  created_at?: string;
 }
 
 export function NoticePreview() {
   const [notices, setNotices] = useState<Notice[]>([]);
 
   useEffect(() => {
-    function load() {
-      const all = lsGet<Notice[]>(KEYS.notices, []);
-      setNotices([...all].reverse().slice(0, 3));
-    }
-    load();
-    window.addEventListener('pilmart:store-synced', load);
-    return () => window.removeEventListener('pilmart:store-synced', load);
+    fetch('/api/notices')
+      .then(r => r.json())
+      .then((data: Notice[]) => setNotices(data.slice(0, 3)));
   }, []);
 
   if (notices.length === 0) return null;
@@ -42,7 +35,7 @@ export function NoticePreview() {
       </div>
       <div className="rounded-xl border border-border overflow-hidden">
         {notices.map((notice, i) => {
-          const dateStr = notice.date ?? notice.createdAt ?? '';
+          const dateStr = notice.created_at ?? '';
           return (
             <div key={notice.id ?? i}>
               {i > 0 && <Separator />}

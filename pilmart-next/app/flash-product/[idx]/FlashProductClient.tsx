@@ -1,9 +1,8 @@
 'use client';
 import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { KEYS, lsGet } from '@/lib/storage';
 import { FlashSaleConfig } from '@/types';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/context/StoreProvider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Zap, ShoppingCart, Star, ChevronLeft } from 'lucide-react';
@@ -31,8 +30,10 @@ export function FlashProductClient({ params }: { params: Promise<{ idx: string }
   const { items, addItem } = useCart();
 
   useEffect(() => {
-    setConfig(lsGet<FlashSaleConfig | null>(KEYS.flashSale, null));
-    setLoaded(true);
+    fetch('/api/flash-sale')
+      .then(r => r.json())
+      .then((data: FlashSaleConfig) => { setConfig(data); setLoaded(true); })
+      .catch(() => setLoaded(true));
   }, []);
 
   const fp = config?.products[idxNum];
@@ -205,7 +206,7 @@ export function FlashProductClient({ params }: { params: Promise<{ idx: string }
               {fp.desc && <p>{fp.desc}</p>}
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-1.5 text-gray-500">
                 <p>• 오늘 하루만 진행되는 한정 특가 상품입니다.</p>
-                <p>• 오전 10시 이전 주문 시 당일 배송 처리됩니다.</p>
+                <p>• 오후 3시 이전 주문 시 당일 배송 처리됩니다.</p>
                 <p>• 신선도가 마음에 들지 않으시면 수령일 24시간 이내 전액 환불해드립니다.</p>
               </div>
             </div>
@@ -272,7 +273,7 @@ export function FlashProductClient({ params }: { params: Promise<{ idx: string }
             <div>
               <h3 className="font-bold text-base mb-3 pb-2 border-b border-gray-200">배송 안내</h3>
               <ul className="space-y-2 text-gray-600">
-                <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>오전 10시 이전 주문 시 당일 배송 처리됩니다.</li>
+                <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>오후 3시 이전 주문 시 당일 배송 처리됩니다.</li>
                 <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>배송 방법 및 지역에 따라 배송비가 달라질 수 있습니다.</li>
                 <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>제주 및 도서산간 지역은 추가 배송비가 부과됩니다.</li>
                 <li className="flex gap-2"><span className="text-gray-400 shrink-0">•</span>10만원 이상 주문 시 무료배송입니다.</li>

@@ -1,13 +1,24 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Notice } from '@/types';
-import { KEYS, lsGet } from '@/lib/storage';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 
 export default function NoticePage() {
   const [notices, setNotices] = useState<Notice[]>([]);
-  useEffect(() => { setNotices(lsGet<Notice[]>(KEYS.notices, [])); }, []);
+  useEffect(() => {
+    fetch('/api/notices')
+      .then(r => r.json())
+      .then((rows: Record<string, unknown>[]) =>
+        setNotices(rows.map(row => ({
+          id: row.id as string,
+          title: row.title as string,
+          content: row.content as string,
+          createdAt: new Date(row.created_at as string).getTime(),
+          important: row.is_pinned as boolean,
+        })))
+      );
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl space-y-6">

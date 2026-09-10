@@ -46,7 +46,7 @@ export const CATEGORY_CONFIGS: CategoryConfig[] = [
     bg: '#e0f0f8',
     badge: '🐟 수산/건어물',
     title: '싱싱한 수산물\n산지 당일 직송',
-    subtitle: '오전 주문 시 당일 오후 배송 보장',
+    subtitle: '오후 3시 이전 주문 시 당일 배송 보장',
     imgSrc: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=1280&h=380&q=80',
     badgeColor: '#0284c7',
   },

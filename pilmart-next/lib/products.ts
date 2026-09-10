@@ -291,7 +291,7 @@ const PRODUCT_IMAGES: Record<string, string> = {
 const OVERRIDE_KEYS: (keyof ProductOverride)[] = [
   'name', 'price', 'originalPrice', 'imageUrl', 'detailImageUrl',
   'category', 'desc', 'unit', 'origin', 'storage',
-  'expiryDate', 'productInfo', 'customerServiceNo', 'hidden',
+  'expiryDate', 'productInfo', 'customerServiceNo', 'hidden', 'taxType',
 ];
 
 function applyOverride(p: Product, ov: ProductOverride | undefined): Product {
@@ -306,18 +306,19 @@ export function getProductImage(id: string): string {
   return overrides[id]?.imageUrl ?? PRODUCT_IMAGES[id] ?? '';
 }
 
-export function getProducts(): Product[] {
+function buildProductList(): Product[] {
   const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
   const custom = lsGet<Product[]>(KEYS.customProducts, []);
-  const base = PRODUCTS.map(p => applyOverride(p, overrides[p.id]));
-  const customMerged = custom.map(p => applyOverride(p, overrides[p.id]));
-  return [...base, ...customMerged].filter(p => !p.hidden);
+  return [
+    ...PRODUCTS.map(p => applyOverride(p, overrides[p.id])),
+    ...custom.map(p => applyOverride(p, overrides[p.id])),
+  ];
+}
+
+export function getProducts(): Product[] {
+  return buildProductList().filter(p => !p.hidden);
 }
 
 export function getAllProductsAdmin(): Product[] {
-  const overrides = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
-  const custom = lsGet<Product[]>(KEYS.customProducts, []);
-  const base = PRODUCTS.map(p => applyOverride(p, overrides[p.id]));
-  const customMerged = custom.map(p => applyOverride(p, overrides[p.id]));
-  return [...base, ...customMerged];
+  return buildProductList();
 }

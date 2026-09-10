@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/admin-session'
 import { createServiceClient } from '@/lib/supabase-server'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const authResult = await requireAdmin(req)
+  if (authResult instanceof Response) return authResult
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from('orders')
@@ -13,6 +17,9 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const authResult = await requireAdmin(req)
+  if (authResult instanceof Response) return authResult
+
   const { orderId, status, cancelledItems, totalAmount } = await req.json()
   const supabase = createServiceClient()
   const updates: Record<string, unknown> = {}
@@ -25,6 +32,9 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const authResult = await requireAdmin(req)
+  if (authResult instanceof Response) return authResult
+
   const { orderId, all } = await req.json()
   const supabase = createServiceClient()
   if (all) {

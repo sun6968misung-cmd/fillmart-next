@@ -1,3 +1,5 @@
+export type TaxType = 'taxFree' | 'tax';
+
 export interface Product {
   id: string;
   name: string;
@@ -17,6 +19,7 @@ export interface Product {
   productInfo?: string;
   customerServiceNo?: string;
   hidden?: boolean;
+  taxType?: TaxType;
 }
 
 export interface CartItem extends Product {
@@ -31,6 +34,11 @@ export interface Order {
   createdAt: number;
   paymentKey?: string;
   customerName?: string;
+  customerPhone?: string;
+  address?: string;
+  memo?: string;
+  cancelledItems?: string[];
+  orderStatus?: '주문완료' | '배송준비중' | '배송중' | '배송완료';
 }
 
 export interface Session {
@@ -87,17 +95,21 @@ export interface ProductOverride {
   productInfo?: string;
   customerServiceNo?: string;
   hidden?: boolean;
+  taxType?: TaxType;
 }
 
 export interface StoredUser {
   phone: string;
   name: string;
-  passwordHash: string;
+  passwordHash?: string;
+  address?: string;
   userType?: 'personal' | 'business';
   businessNo?: string;
   businessName?: string;
   businessType?: string;
   businessCategory?: string;
+  provider?: 'local' | 'kakao' | 'naver';
+  createdAt?: number;
 }
 
 export type AdminRole = 'super' | 'product' | 'order';

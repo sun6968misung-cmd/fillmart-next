@@ -1,9 +1,7 @@
 'use client';
 import { Product } from '@/types';
 import { Heart, ShoppingCart } from 'lucide-react';
-import { useCart } from '@/hooks/useCart';
-import { useWishlist } from '@/hooks/useWishlist';
-import { useAuth } from '@/hooks/useAuth';
+import { useCart, useWishlist, useAuth } from '@/context/StoreProvider';
 import { formatPrice } from '@/lib/utils';
 import { getProductImage } from '@/lib/products';
 import Link from 'next/link';
@@ -68,7 +66,13 @@ export function ProductCard({ product }: ProductCardProps) {
         <p className="text-sm text-gray-800 line-clamp-2 leading-snug mb-1 hover:text-primary transition-colors">
           {product.name}
         </p>
-        <p className="text-xs text-gray-400 mb-1">{product.unit} · {product.origin}</p>
+        <div className="flex items-center gap-1.5 mb-1">
+          <p className="text-xs text-gray-400">{product.unit} · {product.origin}</p>
+          {product.taxType === 'tax'
+            ? <span className="text-[10px] font-semibold text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded-full">과세</span>
+            : <span className="text-[10px] font-semibold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded-full">면세</span>
+          }
+        </div>
         {discount > 0 && (
           <div className="flex items-center gap-1.5 mb-0.5">
             <span className="text-xs font-bold text-primary">{discount}%</span>

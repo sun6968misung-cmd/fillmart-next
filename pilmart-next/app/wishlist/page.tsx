@@ -1,5 +1,5 @@
 'use client';
-import { useWishlist } from '@/hooks/useWishlist';
+import { useWishlist } from '@/context/StoreProvider';
 import { getProducts } from '@/lib/products';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Heart } from 'lucide-react';
