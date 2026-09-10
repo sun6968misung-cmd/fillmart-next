@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Settings, KeyRound,
   LogOut, Store, Trash2, Search, RotateCcw, X, ChevronDown,
-  Bell, Zap, Plus, Printer, ImageIcon, Upload, Download, ClipboardList,
+  Bell, Zap, Plus, Printer, ImageIcon, Upload, Download, ClipboardList, Users,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -21,13 +21,13 @@ import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
 import { hashPassword } from '@/lib/crypto';
 import { getProducts, getAllProductsAdmin, getProductImage } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
-import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole, AuditLog } from '@/types';
+import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole, AuditLog, StoredUser } from '@/types';
 
-type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account' | 'logs';
+type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account' | 'logs' | 'members';
 type OrderStatus = '결제완료' | '준비중' | '배송중' | '완료' | '취소';
 
 const ROLE_TABS: Record<AdminRole, Tab[]> = {
-  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'account', 'logs'],
+  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'members', 'account', 'logs'],
   product: ['dashboard', 'products', 'deals'],
   order:   ['dashboard', 'orders'],
 };
@@ -72,8 +72,12 @@ export default function AdminPage() {
   const [orderSearch, setOrderSearch] = useState('');
   const [orderFilter, setOrderFilter] = useState<'all' | 'online' | 'meet'>('all');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [orderDetail, setOrderDetail] = useState<OrderWithStatus | null>(null);
+  const [members, setMembers] = useState<StoredUser[]>([]);
+  const [memberSearch, setMemberSearch] = useState('');
+  const [memberFilter, setMemberFilter] = useState<'all' | 'local' | 'kakao' | 'naver'>('all');
 
-  const [prodModal, setProdModal] = useState({ open: false, id: '', name: '', price: '', original: '', category: '', imageUrl: '', detailImageUrl: '', desc: '', unit: '', origin: '', storage: '', expiryDate: '', productInfo: '', customerServiceNo: '' });
+  const [prodModal, setProdModal] = useState({ open: false, id: '', name: '', price: '', original: '', category: '', imageUrl: '', detailImageUrl: '', desc: '', unit: '', origin: '', storage: '', expiryDate: '', productInfo: '', customerServiceNo: '', taxType: 'taxFree' as 'taxFree' | 'tax' });
   const [showHidden, setShowHidden] = useState(false);
   const excelInputRef = useRef<HTMLInputElement>(null);
   const imgInputRef = useRef<HTMLInputElement>(null);
@@ -87,6 +91,7 @@ export default function AdminPage() {
 
   const DEFAULT_FLASH: FlashSaleConfig = { startHour: 9, endHour: 22, products: [] };
   const [flashSale, setFlashSale] = useState<FlashSaleConfig>(DEFAULT_FLASH);
+  const [flashSaleId, setFlashSaleId] = useState<string | undefined>(undefined);
   const [flashSaved, setFlashSaved] = useState(false);
   const [flashForm, setFlashForm] = useState({
     show: false, editIdx: -1,
@@ -95,77 +100,104 @@ export default function AdminPage() {
     error: '',
   });
 
+  const DB_TO_ADMIN: Record<string, OrderStatus> = {
+    '주문완료': '결제완료', '배송준비중': '준비중', '배송중': '배송중', '배송완료': '완료', '취소완료': '취소',
+  };
+  const ADMIN_TO_DB: Record<OrderStatus, string> = {
+    '결제완료': '주문완료', '준비중': '배송준비중', '배송중': '배송중', '완료': '배송완료', '취소': '취소완료',
+  };
+
   useEffect(() => {
-    const raw = lsGet<OrderWithStatus[]>(KEYS.orders, []);
-    setOrders([...raw].reverse());
+    fetch('/api/admin/orders')
+      .then(r => r.json())
+      .then((rows: Record<string, unknown>[]) => {
+        const mapped: OrderWithStatus[] = rows.map(row => ({
+          orderId: (row.order_key as string) ?? (row.id as string),
+          items: row.items as Order['items'],
+          total: row.total_amount as number,
+          method: row.payment_method as string ?? '',
+          createdAt: new Date(row.created_at as string).getTime(),
+          paymentKey: (row.payment_key as string) ?? undefined,
+          address: (row.delivery_address as string) ?? undefined,
+          memo: (row.delivery_memo as string) ?? undefined,
+          customerName: (row.customer_name as string) ?? undefined,
+          customerPhone: (row.customer_phone as string) ?? undefined,
+          cancelledItems: (row.cancelled_items as string[]) ?? [],
+          status: DB_TO_ADMIN[row.status as string] ?? '결제완료',
+        }));
+        setOrders(mapped);
+      });
     setProducts(getAllProductsAdmin());
-    setNotices(lsGet<Notice[]>(KEYS.notices, []));
-    setStoreInfo(lsGet<StoreInfo>(KEYS.storeInfo, { name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' }));
-    setFlashSale(lsGet<FlashSaleConfig>(KEYS.flashSale, DEFAULT_FLASH));
+    fetch('/api/notices')
+      .then(r => r.json())
+      .then((rows: Record<string, unknown>[]) => {
+        setNotices(rows.map(row => ({
+          id: row.id as string,
+          title: row.title as string,
+          content: row.content as string,
+          createdAt: new Date(row.created_at as string).getTime(),
+          important: row.is_pinned as boolean,
+        })));
+      });
+    fetch('/api/store-info')
+      .then(r => r.json())
+      .then((data: StoreInfo) => setStoreInfo(s => ({ ...s, ...data })));
+    fetch('/api/flash-sale')
+      .then(r => r.json())
+      .then((data: FlashSaleConfig & { id?: string }) => {
+        const { id, ...rest } = data;
+        setFlashSale(rest);
+        if (id) setFlashSaleId(id);
+      });
     setLogoUrl(localStorage.getItem(KEYS.logo) || '');
-    setAdminAccounts(lsGet<AdminAccount[]>(KEYS.adminAccounts, []));
+    const accounts = lsGet<AdminAccount[]>(KEYS.adminAccounts, []);
+    setAdminAccounts(accounts);
     setAuditLogs(lsGet<AuditLog[]>(KEYS.auditLogs, []));
+    fetch('/api/admin/members').then(r => r.json()).then((rows: Record<string, unknown>[]) => {
+      setMembers(rows.map(row => ({
+        phone: row.phone as string ?? '',
+        name: row.name as string ?? '',
+        provider: (row.provider as StoredUser['provider']) ?? 'local',
+        address: row.address as string | undefined,
+        userType: (row.user_type as StoredUser['userType']) ?? 'personal',
+        businessNo: row.business_no as string | undefined,
+        businessName: row.business_name as string | undefined,
+        businessType: row.business_type as string | undefined,
+        businessCategory: row.business_category as string | undefined,
+      })));
+    });
+
+    // 세션 복원: 쿠키 기반
+    fetch('/api/admin/session')
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { username: string; role: string } | null) => {
+        if (!data) return;
+        setAuthed(true);
+        if (data.username !== '__super__') {
+          const found = adminAccounts.find(a => a.username === data.username);
+          if (found) { setCurrentAdmin(found); setTab(ROLE_TABS[found.role as AdminRole][0]); }
+        }
+      });
   }, []);
 
   async function login() {
-    const canHash = typeof crypto !== 'undefined' && !!crypto.subtle;
-    const accounts = lsGet<AdminAccount[]>(KEYS.adminAccounts, []);
-
-    // 명명된 계정 로그인 (username이 있고 'admin'이 아닐 때)
-    const trimUser = loginUser.trim();
-    if (trimUser && trimUser !== 'admin') {
-      const account = accounts.find(a => a.username === trimUser && a.isActive);
-      if (account) {
-        let matches = false;
-        if (/^[0-9a-f]{64}$/.test(account.passwordHash) && canHash) {
-          try { matches = (await hashPassword(pw)) === account.passwordHash; } catch { matches = false; }
-        } else {
-          matches = pw === account.passwordHash;
-        }
-        if (matches) {
-          const loginLog: AuditLog = { id: Date.now().toString(), adminUsername: account.username, action: '로그인', target: ROLE_LABEL[account.role], detail: '', timestamp: Date.now() };
-          const prevLogs = lsGet<AuditLog[]>(KEYS.auditLogs, []);
-          const nextLogs = [loginLog, ...prevLogs].slice(0, 500);
-          lsSet(KEYS.auditLogs, nextLogs);
-          setAuditLogs(nextLogs);
-          setAuthed(true); setPwError(false); setCurrentAdmin(account);
-          setAdminAccounts(accounts); lsSet(KEYS.adminActive, true);
-          setTab(ROLE_TABS[account.role][0]);
-        } else {
-          setPwError(true);
-        }
-        return;
-      }
-      setPwError(true);
-      return;
-    }
-
-    // 최고관리자 단일 비밀번호 로그인 (기존 방식)
-    const stored = lsGet<string>(KEYS.adminPw, '1234');
-    const isHash = /^[0-9a-f]{64}$/.test(stored);
-    let matches = false;
-    if (!isHash) {
-      matches = pw === stored;
-      if (matches && canHash) {
-        try { lsSet(KEYS.adminPw, await hashPassword(pw)); } catch { /* 무시 */ }
-      }
-    } else if (canHash) {
-      try { matches = (await hashPassword(pw)) === stored; } catch { matches = false; }
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: loginUser.trim() || undefined, password: pw }),
+    });
+    if (!res.ok) { setPwError(true); return; }
+    const data: { username: string; role: AdminRole } = await res.json();
+    setPwError(false);
+    setAuthed(true);
+    if (data.username === '__super__') {
+      setCurrentAdmin(null);
     } else {
-      lsRemove(KEYS.adminPw);
-      matches = pw === '1234';
+      const found = adminAccounts.find(a => a.username === data.username);
+      setCurrentAdmin(found ?? null);
+      setTab(ROLE_TABS[data.role][0]);
     }
-    if (matches) {
-      const loginLog: AuditLog = { id: Date.now().toString(), adminUsername: 'admin', action: '로그인', target: '최고관리자', detail: '', timestamp: Date.now() };
-      const prevLogs = lsGet<AuditLog[]>(KEYS.auditLogs, []);
-      const nextLogs = [loginLog, ...prevLogs].slice(0, 500);
-      lsSet(KEYS.auditLogs, nextLogs);
-      setAuditLogs(nextLogs);
-      setAuthed(true); setPwError(false); setCurrentAdmin(null);
-      setAdminAccounts(accounts); lsSet(KEYS.adminActive, true);
-    } else {
-      setPwError(true);
-    }
+    addLog('로그인', ROLE_LABEL[data.role] ?? data.username);
   }
 
   const totalSales = useMemo(() => orders.reduce((s, o) => s + (o.total || 0), 0), [orders]);
@@ -190,17 +222,22 @@ export default function AdminPage() {
     [visibleProducts, productSearch]);
 
   function updateStatus(orderId: string, status: OrderStatus) {
-    const raw = lsGet<OrderWithStatus[]>(KEYS.orders, []);
-    const next = raw.map(o => o.orderId === orderId ? { ...o, status } : o);
-    lsSet(KEYS.orders, next);
-    setOrders([...next].reverse());
+    fetch('/api/admin/orders', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, status: ADMIN_TO_DB[status] }),
+    });
+    setOrders(prev => prev.map(o => o.orderId === orderId ? { ...o, status } : o));
     addLog('주문 상태 변경', orderId, status);
   }
 
   function deleteOrder(orderId: string) {
-    const next = lsGet<Order[]>(KEYS.orders, []).filter(o => o.orderId !== orderId);
-    lsSet(KEYS.orders, next);
-    setOrders([...next].reverse());
+    fetch('/api/admin/orders', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId }),
+    });
+    setOrders(prev => prev.filter(o => o.orderId !== orderId));
     addLog('주문 삭제', orderId);
   }
 
@@ -212,6 +249,7 @@ export default function AdminPage() {
       category: p.category, imageUrl: ov.imageUrl ?? '', detailImageUrl: ov.detailImageUrl ?? p.detailImageUrl ?? '',
       desc: p.desc ?? '', unit: p.unit, origin: p.origin, storage: p.storage,
       expiryDate: p.expiryDate ?? '', productInfo: p.productInfo ?? '', customerServiceNo: p.customerServiceNo ?? '',
+      taxType: (p.taxType ?? 'taxFree') as 'taxFree' | 'tax',
     });
   }
 
@@ -226,6 +264,7 @@ export default function AdminPage() {
       expiryDate: prodModal.expiryDate || undefined,
       productInfo: prodModal.productInfo || undefined,
       customerServiceNo: prodModal.customerServiceNo || undefined,
+      taxType: prodModal.taxType,
     };
     lsSet(KEYS.products, overrides);
     setProducts(getAllProductsAdmin());
@@ -238,13 +277,13 @@ export default function AdminPage() {
     const headers = [
       '상품ID', '상품명', '카테고리', '이모지', '판매가', '정가',
       '규격/단위', '원산지', '보관방법', '소비기한', '상품고시', '소비자상담번호',
-      '상품설명', '이미지URL', '상세이미지URL', '섹션',
+      '상품설명', '이미지URL', '상세이미지URL', '섹션', '면세/과세',
     ];
     const sample = [{
       '상품ID': 'sample1', '상품명': '예시 상품', '카테고리': '야채/채소', '이모지': '🥬',
       '판매가': 3900, '정가': 4900, '규격/단위': '1kg', '원산지': '국산',
       '보관방법': '냉장보관', '소비기한': '제조일로부터 7일', '상품고시': '농산물',
-      '소비자상담번호': '1588-0000', '상품설명': '신선한 상품입니다', '이미지URL': '', '상세이미지URL': '', '섹션': 'fresh',
+      '소비자상담번호': '1588-0000', '상품설명': '신선한 상품입니다', '이미지URL': '', '상세이미지URL': '', '섹션': 'fresh', '면세/과세': '면세',
     }];
     const ws = XLSX.utils.json_to_sheet(sample, { header: headers });
     const wb = XLSX.utils.book_new();
@@ -260,6 +299,7 @@ export default function AdminPage() {
       '소비기한': p.expiryDate ?? '', '상품고시': p.productInfo ?? '',
       '소비자상담번호': p.customerServiceNo ?? '', '상품설명': p.desc ?? '',
       '이미지URL': p.imageUrl ?? '', '상세이미지URL': p.detailImageUrl ?? '', '섹션': p.section,
+      '면세/과세': p.taxType === 'tax' ? '과세' : '면세',
     }));
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
@@ -298,6 +338,7 @@ export default function AdminPage() {
           desc: String(row['상품설명'] ?? '').trim() || undefined,
           imageUrl: String(row['이미지URL'] ?? '').trim() || undefined,
           detailImageUrl: String(row['상세이미지URL'] ?? '').trim() || undefined,
+          taxType: String(row['면세/과세'] ?? '').trim() === '과세' ? 'tax' : 'taxFree',
         };
 
         if (existingIds.has(id)) {
@@ -321,6 +362,7 @@ export default function AdminPage() {
             expiryDate: String(row['소비기한'] ?? '') || undefined,
             productInfo: String(row['상품고시'] ?? '') || undefined,
             customerServiceNo: String(row['소비자상담번호'] ?? '') || undefined,
+            taxType: String(row['면세/과세'] ?? '').trim() === '과세' ? 'tax' : 'taxFree',
           });
         }
       }
@@ -458,26 +500,43 @@ export default function AdminPage() {
     addLog('상품 복원', id, name);
   }
 
-  function addNotice() {
+  async function addNotice() {
     if (!newNotice.title.trim()) return;
-    const n: Notice = { id: Date.now().toString(), ...newNotice, createdAt: Date.now() };
-    const next = [n, ...notices];
-    setNotices(next);
-    lsSet(KEYS.notices, next);
+    const res = await fetch('/api/notices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newNotice.title, content: newNotice.content, isPinned: false }),
+    });
+    const json = await res.json();
+    const n: Notice = {
+      id: json.id as string,
+      title: newNotice.title,
+      content: newNotice.content,
+      createdAt: new Date(json.created_at as string).getTime(),
+      important: false,
+    };
+    setNotices(prev => [n, ...prev]);
     addLog('공지사항 등록', newNotice.title);
     setNewNotice({ title: '', content: '' });
   }
 
   function removeNotice(id: string) {
     const title = notices.find(n => n.id === id)?.title ?? id;
-    const next = notices.filter(n => n.id !== id);
-    setNotices(next);
-    lsSet(KEYS.notices, next);
+    fetch('/api/notices', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    setNotices(prev => prev.filter(n => n.id !== id));
     addLog('공지사항 삭제', title);
   }
 
   function saveFlashTime() {
-    lsSet(KEYS.flashSale, flashSale);
+    fetch('/api/flash-sale', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: flashSaleId, startHour: flashSale.startHour, endHour: flashSale.endHour, products: flashSale.products }),
+    }).then(r => r.json()).then((data: { id?: string }) => { if (data.id) setFlashSaleId(data.id); });
     addLog('오늘만 특가 시간 저장', `${flashSale.startHour}시~${flashSale.endHour}시`);
     setFlashSaved(true);
     setTimeout(() => setFlashSaved(false), 3000);
@@ -510,20 +569,33 @@ export default function AdminPage() {
       : flashSale.products.map((p, i) => i === flashForm.editIdx ? fp : p);
     const next = { ...flashSale, products: nextProducts };
     setFlashSale(next);
-    lsSet(KEYS.flashSale, next);
+    fetch('/api/flash-sale', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: flashSaleId, startHour: next.startHour, endHour: next.endHour, products: nextProducts }),
+    }).then(r => r.json()).then((data: { id?: string }) => { if (data.id) setFlashSaleId(data.id); });
     setFlashForm(f => ({ ...f, show: false }));
     setFlashSaved(true);
     setTimeout(() => setFlashSaved(false), 3000);
   }
 
   function deleteFlashProduct(idx: number) {
-    const next = { ...flashSale, products: flashSale.products.filter((_, i) => i !== idx) };
+    const nextProducts = flashSale.products.filter((_, i) => i !== idx);
+    const next = { ...flashSale, products: nextProducts };
     setFlashSale(next);
-    lsSet(KEYS.flashSale, next);
+    fetch('/api/flash-sale', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: flashSaleId, startHour: next.startHour, endHour: next.endHour, products: nextProducts }),
+    }).then(r => r.json()).then((data: { id?: string }) => { if (data.id) setFlashSaleId(data.id); });
   }
 
   function saveStoreInfo() {
-    lsSet(KEYS.storeInfo, storeInfo);
+    fetch('/api/store-info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(storeInfo),
+    });
     addLog('매장 정보 저장', storeInfo.name);
     setSiteSaved(true);
     setTimeout(() => setSiteSaved(false), 2000);
@@ -607,7 +679,7 @@ export default function AdminPage() {
   function printOrder(order: OrderWithStatus) {
     const w = window.open('', '_blank', 'width=620,height=820');
     if (!w) return;
-    const info = lsGet<{ name: string; phone: string; address: string }>(KEYS.storeInfo, { name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' });
+    const info = storeInfo;
     const itemRows = (order.items ?? []).map(i => `
       <tr>
         <td>${escapeHtml(i.emoji ?? '')} ${escapeHtml(i.name)}</td>
@@ -661,6 +733,16 @@ export default function AdminPage() {
 </div>
 
 <div class="section">
+  <div class="section-title">고객 정보</div>
+  <div class="info-grid">
+    <div class="info-row"><span class="info-label">성명</span><span>${escapeHtml(order.customerName || '-')}</span></div>
+    <div class="info-row"><span class="info-label">연락처</span><span>${escapeHtml(order.customerPhone || '-')}</span></div>
+    <div class="info-row" style="grid-column:1/-1"><span class="info-label">배송지</span><span>${escapeHtml(order.address || '-')}</span></div>
+    <div class="info-row" style="grid-column:1/-1"><span class="info-label">배송메모</span><span>${escapeHtml(order.memo || '-')}</span></div>
+  </div>
+</div>
+
+<div class="section">
   <div class="section-title">주문 상품</div>
   <table>
     <thead><tr>
@@ -677,7 +759,7 @@ export default function AdminPage() {
   </table>
 </div>
 
-<div class="footer">${escapeHtml(info.name)} · 오전 주문 당일 배송 · 감사합니다 🙏</div>
+<div class="footer">${escapeHtml(info.name)} · 오후 3시 이전 주문 당일 배송 · 감사합니다 🙏</div>
 <script>window.onload=function(){window.print();}<\/script>
 </body></html>`);
     w.document.close();
@@ -693,6 +775,7 @@ export default function AdminPage() {
     { id: 'deals', icon: <Zap className="h-4 w-4" />, label: '오늘만 특가' },
     { id: 'notices', icon: <Bell className="h-4 w-4" />, label: '공지사항' },
     { id: 'site', icon: <Store className="h-4 w-4" />, label: '사이트 설정' },
+    { id: 'members', icon: <Users className="h-4 w-4" />, label: '회원 관리' },
     { id: 'account', icon: <Settings className="h-4 w-4" />, label: '계정/데이터' },
     { id: 'logs', icon: <ClipboardList className="h-4 w-4" />, label: '관리 로그' },
   ];
@@ -701,7 +784,7 @@ export default function AdminPage() {
   const tabTitle: Record<Tab, string> = {
     dashboard: '대시보드', orders: '주문 관리', products: '상품 관리',
     deals: '오늘만 특가', notices: '공지사항', site: '사이트 설정',
-    account: '계정/데이터', logs: '관리 로그',
+    members: '회원 관리', account: '계정/데이터', logs: '관리 로그',
   };
 
   /* ── 비밀번호 게이트 ── */
@@ -793,7 +876,7 @@ export default function AdminPage() {
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors">
             <Store className="h-4 w-4" /> 쇼핑몰 보기
           </Link>
-          <button onClick={() => { setAuthed(false); setPw(''); lsRemove(KEYS.adminActive); }}
+          <button onClick={async () => { await fetch('/api/admin/logout', { method: 'POST' }); setAuthed(false); setPw(''); setCurrentAdmin(null); setTab('dashboard'); }}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
             <LogOut className="h-4 w-4" /> 로그아웃
           </button>
@@ -897,7 +980,10 @@ export default function AdminPage() {
                 </div>
                 <div className="ml-auto flex items-center gap-3">
                   <span className="text-sm text-gray-400">{filteredOrders.length}건</span>
-                  <button onClick={() => { if (confirm('모든 주문을 삭제하시겠습니까?')) { lsSet(KEYS.orders, []); setOrders([]); } }}
+                  <button onClick={() => { if (confirm('모든 주문을 삭제하시겠습니까?')) {
+                    fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ all: true }) });
+                    setOrders([]);
+                  } }}
                     className="text-sm text-red-400 hover:text-red-600 font-medium flex items-center gap-1.5">
                     <Trash2 className="h-3.5 w-3.5" /> 전체 삭제
                   </button>
@@ -929,7 +1015,15 @@ export default function AdminPage() {
                       {filteredOrders.map(order => (
                         <Fragment key={order.orderId}>
                           <tr className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                            <td className="px-5 py-3 font-mono text-xs text-gray-700">{order.orderId?.slice(0, 16)}…</td>
+                            <td className="px-5 py-3">
+                              <button
+                                onClick={() => setOrderDetail(order)}
+                                className="font-mono text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors text-left"
+                                title="주문 상세 보기"
+                              >
+                                {order.orderId?.slice(0, 16)}…
+                              </button>
+                            </td>
                             <td className="px-5 py-3 text-xs text-gray-700 font-medium">{order.customerName || '-'}</td>
                             <td className="px-5 py-3 text-xs text-gray-500">{fmtDate(order.createdAt)}</td>
                             <td className="px-5 py-3 text-xs text-gray-600">{METHOD[order.method] || order.method}</td>
@@ -1066,7 +1160,12 @@ export default function AdminPage() {
                             <p className="text-xs text-gray-400">{p.unit}</p>
                           </td>
                           <td className="px-4 py-2.5">
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{p.category}</span>
+                            <div className="flex flex-wrap items-center gap-1">
+                              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{p.category}</span>
+                              <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${p.taxType === 'tax' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
+                                {p.taxType === 'tax' ? '과세' : '면세'}
+                              </span>
+                            </div>
                           </td>
                           <td className="px-4 py-2.5 text-right">
                             <span className="text-xs text-gray-400 line-through">{p.originalPrice.toLocaleString('ko-KR')}원</span>
@@ -1493,6 +1592,137 @@ export default function AdminPage() {
           )}
 
           {/* ── 계정/데이터 ── */}
+          {/* ── 회원 관리 ── */}
+          {tab === 'members' && myRole === 'super' && (() => {
+            const PROVIDER_LABEL: Record<string, string> = { local: '일반', kakao: '카카오', naver: '네이버' };
+            const PROVIDER_STYLE: Record<string, string> = {
+              local:  'bg-gray-100 text-gray-600',
+              kakao:  'bg-yellow-100 text-yellow-700',
+              naver:  'bg-green-100 text-green-700',
+            };
+            const filteredMembers = members.filter(m => {
+              const provider = m.provider ?? 'local';
+              if (memberFilter !== 'all' && provider !== memberFilter) return false;
+              if (memberSearch) {
+                const q = memberSearch.toLowerCase();
+                return m.name.toLowerCase().includes(q) || m.phone.includes(q);
+              }
+              return true;
+            });
+            const counts = {
+              all:   members.length,
+              local: members.filter(m => (m.provider ?? 'local') === 'local').length,
+              kakao: members.filter(m => m.provider === 'kakao').length,
+              naver: members.filter(m => m.provider === 'naver').length,
+            };
+            function maskPhone(p: string) {
+              if (p.length >= 10) return p.slice(0, 3) + '-****-' + p.slice(-4);
+              return p;
+            }
+            function deleteMember(phone: string, provider: string) {
+              fetch('/api/admin/members', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, provider }),
+              });
+              setMembers(prev => prev.filter(m => !(m.phone === phone && (m.provider ?? 'local') === provider)));
+              addLog('회원 삭제', phone, provider);
+            }
+            return (
+              <div className="p-8 max-w-4xl">
+                {/* 상단 통계 */}
+                <div className="grid grid-cols-4 gap-3 mb-6">
+                  {([['all','전체','bg-gray-800 text-white'], ['local','일반','bg-gray-100 text-gray-700'], ['kakao','카카오','bg-yellow-100 text-yellow-700'], ['naver','네이버','bg-green-100 text-green-700']] as const).map(([key, label, cls]) => (
+                    <button key={key} onClick={() => setMemberFilter(key)}
+                      className={`rounded-2xl p-4 text-left transition-all border-2 ${memberFilter === key ? 'border-primary shadow-sm' : 'border-transparent'} ${key === 'all' ? 'bg-gray-800 text-white' : 'bg-white border border-gray-100'}`}>
+                      <p className={`text-2xl font-black ${key === 'all' ? 'text-white' : 'text-gray-800'}`}>{counts[key]}</p>
+                      <p className={`text-xs mt-0.5 ${key === 'all' ? 'text-gray-300' : 'text-gray-500'}`}>{label} 회원</p>
+                    </button>
+                  ))}
+                </div>
+
+                {/* 검색 */}
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
+                  <input
+                    value={memberSearch}
+                    onChange={e => setMemberSearch(e.target.value)}
+                    placeholder="이름 또는 전화번호 검색..."
+                    className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                {/* 회원 테이블 */}
+                {filteredMembers.length === 0 ? (
+                  <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center">
+                    <Users className="h-10 w-10 text-gray-200 mx-auto mb-3" />
+                    <p className="text-gray-400">해당하는 회원이 없습니다</p>
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50 border-b border-gray-100">
+                        <tr className="text-xs text-gray-500 font-medium">
+                          <th className="text-left px-5 py-3">이름</th>
+                          <th className="text-left px-5 py-3">전화번호</th>
+                          <th className="text-left px-5 py-3">가입유형</th>
+                          <th className="text-left px-5 py-3">사업자</th>
+                          <th className="text-left px-5 py-3">가입일</th>
+                          <th className="text-center px-5 py-3">삭제</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {filteredMembers.map((m, i) => {
+                          const provider = m.provider ?? 'local';
+                          return (
+                            <tr key={`${m.phone}-${provider}-${i}`} className="hover:bg-gray-50 transition-colors">
+                              <td className="px-5 py-3 font-medium text-gray-800">
+                                <Link
+                                  href={`/admin/member/${encodeURIComponent(m.phone)}`}
+                                  className="hover:text-primary underline-offset-2 hover:underline transition-colors"
+                                >
+                                  {m.name}
+                                </Link>
+                              </td>
+                              <td className="px-5 py-3 font-mono text-xs text-gray-500">{maskPhone(m.phone)}</td>
+                              <td className="px-5 py-3">
+                                <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${PROVIDER_STYLE[provider] ?? PROVIDER_STYLE.local}`}>
+                                  {PROVIDER_LABEL[provider] ?? provider}
+                                </span>
+                              </td>
+                              <td className="px-5 py-3">
+                                {m.userType === 'business' ? (
+                                  <span className="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">사업자</span>
+                                ) : (
+                                  <span className="text-[11px] text-gray-300">-</span>
+                                )}
+                              </td>
+                              <td className="px-5 py-3 text-xs text-gray-400">
+                                {m.createdAt ? new Date(m.createdAt).toLocaleDateString('ko-KR') : '-'}
+                              </td>
+                              <td className="px-5 py-3 text-center">
+                                <button
+                                  onClick={() => deleteMember(m.phone, provider)}
+                                  className="text-gray-300 hover:text-red-500 transition-colors"
+                                  title="회원 삭제"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-400">
+                      총 {filteredMembers.length}명 / 전체 {members.length}명
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
           {tab === 'account' && myRole === 'super' && (
             <div className="p-8 max-w-2xl space-y-6">
 
@@ -1629,13 +1859,26 @@ export default function AdminPage() {
                 </p>
                 <div className="divide-y divide-gray-50">
                   {([
-                    { label: '주문 내역 삭제', key: KEYS.orders, desc: `현재 ${orders.length}건`, onDelete: () => setOrders([]) },
+                    { label: '주문 내역 삭제', key: 'orders_supabase', desc: `현재 ${orders.length}건`, onDelete: () => {
+                      fetch('/api/admin/orders', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ all: true }) });
+                      setOrders([]);
+                    }},
                     { label: '상품 수정 초기화', key: KEYS.products, desc: '수정·삭제된 상품 모두 원래대로', onDelete: () => { lsRemove(KEYS.customProducts); setProducts(getAllProductsAdmin()); notifyProductsChanged(); } },
-                    { label: '공지사항 삭제', key: KEYS.notices, desc: `현재 ${notices.length}건`, onDelete: () => setNotices([]) },
-                    { label: '오늘 특가 설정 초기화', key: KEYS.flashSale, desc: `특가 상품 ${flashSale.products.length}개 포함`, onDelete: () => setFlashSale(DEFAULT_FLASH) },
-                    { label: '매장 정보 초기화', key: KEYS.storeInfo, desc: '상호명·전화번호·주소 초기화', onDelete: () => setStoreInfo({ name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' }) },
+                    { label: '공지사항 삭제', key: 'notices_supabase', desc: `현재 ${notices.length}건`, onDelete: () => {
+                      fetch('/api/notices', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ all: true }) });
+                      setNotices([]);
+                    }},
+                    { label: '오늘 특가 설정 초기화', key: 'flash_sale_supabase', desc: `특가 상품 ${flashSale.products.length}개 포함`, onDelete: () => {
+                      fetch('/api/flash-sale', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: flashSaleId, startHour: 9, endHour: 22, products: [] }) });
+                      setFlashSale(DEFAULT_FLASH);
+                    }},
+                    { label: '매장 정보 초기화', key: 'store_info_supabase', desc: '상호명·전화번호·주소 초기화', onDelete: () => {
+                      const defaults = { name: '필식자재마마트 다사점', phone: '053-593-8253', address: '대구광역시 달성군 다사읍 달구벌대로 858' };
+                      fetch('/api/store-info', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(defaults) });
+                      setStoreInfo(defaults);
+                    }},
                     { label: '회원 세션 종료', key: KEYS.session, desc: '현재 로그인 세션만 삭제', onDelete: () => {} },
-                    { label: '회원 계정 전체 삭제', key: KEYS.users, desc: '가입된 모든 회원 데이터 삭제', onDelete: () => {}, danger: true },
+                    { label: '회원 계정 전체 삭제', key: 'members_supabase', desc: '가입된 모든 회원 데이터 삭제', onDelete: () => setMembers([]), danger: true },
                   ] as Array<{ label: string; key: string; desc: string; onDelete: () => void; danger?: boolean }>).map(item => (
                     <div key={item.key} className="flex items-center justify-between py-3">
                       <div>
@@ -1746,6 +1989,161 @@ export default function AdminPage() {
         </div>
       </main>
     </div>
+
+    {/* ── 주문 상세 모달 ── */}
+    {orderDetail && (() => {
+      const o = orderDetail;
+      const cancelled  = o.cancelledItems ?? [];
+      const taxItems   = (o.items ?? []).filter(i => i.taxType === 'tax' && !cancelled.includes(i.id));
+      const freeItems  = (o.items ?? []).filter(i => i.taxType !== 'tax' && !cancelled.includes(i.id));
+      const taxTotal   = taxItems.reduce((s, i) => s + i.price * i.qty, 0);
+      const freeTotal  = freeItems.reduce((s, i) => s + i.price * i.qty, 0);
+      const supplyAmt  = taxTotal > 0 ? Math.round(taxTotal / 1.1) : 0;
+      const vatAmt     = taxTotal > 0 ? taxTotal - supplyAmt : 0;
+      const cancelAmt  = (o.items ?? []).filter(i => cancelled.includes(i.id)).reduce((s, i) => s + i.price * i.qty, 0);
+      const finalTotal = o.total;
+      return (
+        <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/50 p-4" onClick={() => setOrderDetail(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            {/* 헤더 */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+              <div>
+                <h2 className="font-bold text-gray-800 text-base">주문 상세</h2>
+                <p className="font-mono text-xs text-gray-400 mt-0.5 select-all">{o.orderId}</p>
+              </div>
+              <button onClick={() => setOrderDetail(null)} className="text-gray-400 hover:text-gray-700 transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* 기본 정보 */}
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {[
+                  ['주문자',   o.customerName || '-'],
+                  ['주문일시', new Date(o.createdAt).toLocaleString('ko-KR')],
+                  ['결제수단', METHOD[o.method] || o.method],
+                  ['상태',     o.status || '결제완료'],
+                ].map(([label, value]) => (
+                  <div key={label} className="bg-gray-50 rounded-xl px-4 py-3">
+                    <p className="text-xs text-gray-400 mb-0.5">{label}</p>
+                    <p className="font-semibold text-gray-800 text-sm">{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* 상태 변경 */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold text-gray-500 w-20 shrink-0">상태 변경</span>
+                <select
+                  value={o.status || '결제완료'}
+                  onChange={e => {
+                    const next = e.target.value as OrderStatus;
+                    updateStatus(o.orderId, next);
+                    setOrderDetail(prev => prev ? { ...prev, status: next } : null);
+                  }}
+                  className={`flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none cursor-pointer ${STATUS_STYLE[o.status || '결제완료']}`}
+                >
+                  {['결제완료', '준비중', '배송중', '완료', '취소'].map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 상품 목록 */}
+              <div>
+                <p className="text-xs font-semibold text-gray-500 mb-2">주문 상품 ({(o.items ?? []).length}개)</p>
+                <div className="border border-gray-100 rounded-xl overflow-hidden divide-y divide-gray-50">
+                  {(o.items ?? []).map(item => {
+                    const isCancelled = cancelled.includes(item.id);
+                    const isTax = item.taxType === 'tax';
+                    return (
+                      <div key={item.id} className={`flex items-center gap-3 px-4 py-3 ${isCancelled ? 'opacity-40' : ''}`}>
+                        <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden text-lg">
+                          {item.imageUrl
+                            ? <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                            : item.emoji || '📦'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium truncate ${isCancelled ? 'line-through text-gray-400' : 'text-gray-800'}`}>{item.name}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="text-xs text-gray-400">{item.qty}개 · {formatPrice(item.price)}</span>
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${isTax ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'}`}>
+                              {isTax ? '과세' : '면세'}
+                            </span>
+                            {isCancelled && <span className="text-[10px] text-red-400 font-medium">취소됨</span>}
+                          </div>
+                        </div>
+                        <p className={`text-sm font-bold shrink-0 ${isCancelled ? 'line-through text-gray-300' : 'text-gray-800'}`}>
+                          {formatPrice(item.price * item.qty)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 결제 내역 */}
+              <div className="bg-gray-50 rounded-xl px-4 py-4 space-y-2 text-sm">
+                <p className="text-xs font-semibold text-gray-500 mb-3">결제 내역</p>
+                {freeTotal > 0 && (
+                  <div className="flex justify-between text-gray-600 text-xs">
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-400 inline-block"/>면세 금액</span>
+                    <span>{formatPrice(freeTotal)}</span>
+                  </div>
+                )}
+                {taxTotal > 0 && (
+                  <>
+                    <div className="flex justify-between text-gray-600 text-xs">
+                      <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-orange-400 inline-block"/>과세 공급가액</span>
+                      <span>{formatPrice(supplyAmt)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-500 text-xs pl-3.5">
+                      <span>부가세 (VAT 10%)</span>
+                      <span>{formatPrice(vatAmt)}</span>
+                    </div>
+                  </>
+                )}
+                {cancelAmt > 0 && (
+                  <div className="flex justify-between text-red-400 text-xs">
+                    <span>취소 금액</span>
+                    <span>– {formatPrice(cancelAmt)}</span>
+                  </div>
+                )}
+                <div className="border-t border-gray-200 pt-2 flex justify-between font-bold">
+                  <span className="text-gray-800">최종 결제금액</span>
+                  <span className="text-primary text-base">{formatPrice(finalTotal)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 푸터 */}
+            <div className="px-6 pb-6 flex justify-between items-center">
+              <button
+                onClick={() => { deleteOrder(o.orderId); setOrderDetail(null); }}
+                className="flex items-center gap-1.5 text-red-400 hover:text-red-600 text-sm font-medium transition-colors"
+              >
+                <Trash2 className="h-4 w-4" /> 주문 삭제
+              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => printOrder(o)}
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  <Printer className="h-4 w-4" /> 인쇄
+                </button>
+                <button
+                  onClick={() => setOrderDetail(null)}
+                  className="px-5 py-2 text-sm font-bold bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })()}
 
     {/* ── 상품 편집 모달 ── */}
     {prodModal.open && (
@@ -1877,6 +2275,29 @@ export default function AdminPage() {
               <input value={prodModal.productInfo} onChange={e => setProdModal(m => ({ ...m, productInfo: e.target.value }))}
                 placeholder="예: 농산물 / 가공식품 / 축산물 등"
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+            </div>
+
+            {/* 면세/과세 */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-500 block">과세 유형</label>
+              <div className="flex gap-3">
+                {([['taxFree', '면세', '농수축산물·기초식품 등 부가세 없음', 'bg-blue-50 border-blue-300 text-blue-700'], ['tax', '과세', '부가세 10% 포함 (VAT 포함가 입력)', 'bg-orange-50 border-orange-300 text-orange-700']] as const).map(([val, label, desc, cls]) => (
+                  <label key={val} className={`flex-1 flex items-start gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all ${prodModal.taxType === val ? cls + ' border-2' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input
+                      type="radio"
+                      name="taxType"
+                      value={val}
+                      checked={prodModal.taxType === val}
+                      onChange={() => setProdModal(m => ({ ...m, taxType: val }))}
+                      className="mt-0.5 accent-current"
+                    />
+                    <div>
+                      <p className="text-sm font-bold leading-tight">{label}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">{desc}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
             </div>
 
             {/* 상품 설명 */}
