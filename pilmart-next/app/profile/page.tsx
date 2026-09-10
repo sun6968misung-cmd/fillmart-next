@@ -54,11 +54,20 @@ export default function ProfilePage() {
         .from('profiles')
         .select('name, phone, address, user_type, business_no, business_name, business_type, business_category')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setProfile(data as Profile);
         setNewAddress(data.address ?? '');
+      } else {
+        // 소셜 로그인 최초 가입 시 profiles 행이 없을 수 있음 (트리거 미실행 환경 방어)
+        const meta = user.user_metadata ?? {};
+        setProfile({
+          name: meta.name ?? '',
+          phone: meta.phone ?? '',
+          address: '',
+          user_type: 'personal',
+        });
       }
     })();
   }, [router]);
