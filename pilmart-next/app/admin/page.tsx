@@ -18,7 +18,6 @@ const CATEGORIES = [
   '대용량 냉장/냉동','대용량 가공식품','대용량 커피/음료','대용량 소모품/세제','대용량 식기/도구',
 ];
 import { KEYS, lsGet, lsSet, lsRemove } from '@/lib/storage';
-import { hashPassword } from '@/lib/crypto';
 import { getProducts, getAllProductsAdmin, getProductImage } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
 import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole, AuditLog, StoredUser } from '@/types';
@@ -61,6 +60,9 @@ export default function AdminPage() {
   );
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [logFilter, setLogFilter] = useState('');
+  const [migrating, setMigrating] = useState(false);
+  const [migrated, setMigrated] = useState(false);
+  const [confirmClearLogs, setConfirmClearLogs] = useState(false);
 
   const [orders, setOrders] = useState<OrderWithStatus[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -151,9 +153,45 @@ export default function AdminPage() {
         if (id) setFlashSaleId(id);
       });
     setLogoUrl(localStorage.getItem(KEYS.logo) || '');
-    const accounts = lsGet<AdminAccount[]>(KEYS.adminAccounts, []);
-    setAdminAccounts(accounts);
-    setAuditLogs(lsGet<AuditLog[]>(KEYS.auditLogs, []));
+    fetch('/api/admin/accounts')
+      .then(r => r.ok ? r.json() : [])
+      .then((rows: Record<string, unknown>[]) => {
+        const mapped: AdminAccount[] = rows.map(r => ({
+          id: r.id as string,
+          username: r.username as string,
+          passwordHash: '',
+          role: r.role as AdminRole,
+          createdAt: new Date(r.created_at as string).getTime(),
+          createdBy: '',
+          isActive: r.is_active as boolean,
+        }));
+        setAdminAccounts(mapped);
+        return mapped;
+      })
+      .then(loadedAccounts => {
+        fetch('/api/admin/session')
+          .then(r => r.ok ? r.json() : null)
+          .then((data: { username: string; role: string } | null) => {
+            if (!data) return;
+            setAuthed(true);
+            if (data.username !== '__super__') {
+              const found = loadedAccounts.find(a => a.username === data.username);
+              if (found) { setCurrentAdmin(found); setTab(ROLE_TABS[found.role as AdminRole][0]); }
+            }
+          });
+      });
+    fetch('/api/admin/logs')
+      .then(r => r.ok ? r.json() : [])
+      .then((rows: Record<string, unknown>[]) => {
+        setAuditLogs(rows.map(r => ({
+          id: r.id as string,
+          adminUsername: r.actor as string,
+          action: r.action as string,
+          target: r.target as string,
+          detail: (r.detail as string) ?? '',
+          timestamp: new Date(r.created_at as string).getTime(),
+        })));
+      });
     fetch('/api/admin/members').then(r => r.json()).then((rows: Record<string, unknown>[]) => {
       setMembers(rows.map(row => ({
         phone: row.phone as string ?? '',
@@ -167,19 +205,23 @@ export default function AdminPage() {
         businessCategory: row.business_category as string | undefined,
       })));
     });
-
-    // 세션 복원: 쿠키 기반
-    fetch('/api/admin/session')
-      .then(r => r.ok ? r.json() : null)
-      .then((data: { username: string; role: string } | null) => {
-        if (!data) return;
-        setAuthed(true);
-        if (data.username !== '__super__') {
-          const found = adminAccounts.find(a => a.username === data.username);
-          if (found) { setCurrentAdmin(found); setTab(ROLE_TABS[found.role as AdminRole][0]); }
-        }
-      });
   }, []);
+
+  useEffect(() => {
+    if (tab !== 'logs' || !authed) return;
+    fetch('/api/admin/logs')
+      .then(r => r.ok ? r.json() : [])
+      .then((rows: Record<string, unknown>[]) => {
+        setAuditLogs(rows.map(r => ({
+          id: r.id as string,
+          adminUsername: r.actor as string,
+          action: r.action as string,
+          target: r.target as string,
+          detail: (r.detail as string) ?? '',
+          timestamp: new Date(r.created_at as string).getTime(),
+        })));
+      });
+  }, [tab, authed]);
 
   async function login() {
     const res = await fetch('/api/admin/login', {
@@ -440,16 +482,11 @@ export default function AdminPage() {
   }
 
   function addLog(action: string, target: string, detail = '') {
-    const entry: AuditLog = {
-      id: Date.now().toString(),
-      adminUsername: currentAdmin?.username ?? 'admin',
-      action, target, detail,
-      timestamp: Date.now(),
-    };
-    const prev = lsGet<AuditLog[]>(KEYS.auditLogs, []);
-    const next = [entry, ...prev].slice(0, 500);
-    lsSet(KEYS.auditLogs, next);
-    setAuditLogs(next);
+    fetch('/api/admin/logs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, target, detail }),
+    }).catch(() => {});
   }
 
   async function loadProducts() {
@@ -630,8 +667,12 @@ export default function AdminPage() {
   async function changeAdminPw() {
     if (newPw.length < 4) return alert('4자 이상 입력해주세요');
     if (newPw !== newPwConfirm) return alert('비밀번호가 일치하지 않습니다');
-    lsSet(KEYS.adminPw, await hashPassword(newPw));
-    addLog('최고관리자 비밀번호 변경', 'admin');
+    await fetch('/api/admin/accounts', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selfPw: true, newPassword: newPw }),
+    });
+    addLog('비밀번호 변경', '관리자');
     setNewPw(''); setNewPwConfirm('');
     alert('비밀번호가 변경되었습니다');
   }
@@ -639,38 +680,45 @@ export default function AdminPage() {
   async function addAdminAccount() {
     const u = newAdminForm.username.trim();
     if (!u) return setNewAdminForm(f => ({ ...f, error: '아이디를 입력해주세요' }));
-    if (u === 'admin') return setNewAdminForm(f => ({ ...f, error: "'admin'은 예약된 아이디입니다" }));
     if (newAdminForm.password.length < 4) return setNewAdminForm(f => ({ ...f, error: '비밀번호는 4자 이상' }));
-    if (adminAccounts.find(a => a.username === u)) return setNewAdminForm(f => ({ ...f, error: '이미 존재하는 아이디입니다' }));
-    const canHash = typeof crypto !== 'undefined' && !!crypto.subtle;
-    let passwordHash = newAdminForm.password;
-    if (canHash) { try { passwordHash = await hashPassword(newAdminForm.password); } catch {} }
-    const account: AdminAccount = {
-      id: Date.now().toString(), username: u, passwordHash,
-      role: newAdminForm.role, createdAt: Date.now(),
-      createdBy: currentAdmin?.username ?? 'admin', isActive: true,
-    };
-    const next = [...adminAccounts, account];
-    lsSet(KEYS.adminAccounts, next);
-    setAdminAccounts(next);
+    const res = await fetch('/api/admin/accounts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: newAdminForm.password, role: newAdminForm.role }),
+    });
+    const data = await res.json();
+    if (!res.ok) return setNewAdminForm(f => ({ ...f, error: data.error ?? '오류가 발생했습니다' }));
     addLog('관리자 계정 추가', u, ROLE_LABEL[newAdminForm.role]);
     setNewAdminForm({ username: '', password: '', role: 'product', error: '' });
+    const rows = await fetch('/api/admin/accounts').then(r => r.json());
+    setAdminAccounts(rows.map((r: Record<string, unknown>) => ({
+      id: r.id as string, username: r.username as string, passwordHash: '',
+      role: r.role as AdminRole, createdAt: new Date(r.created_at as string).getTime(),
+      createdBy: '', isActive: r.is_active as boolean,
+    })));
   }
 
-  function removeAdminAccount(id: string) {
+  async function removeAdminAccount(id: string) {
     const target = adminAccounts.find(a => a.id === id);
-    const next = adminAccounts.filter(a => a.id !== id);
-    lsSet(KEYS.adminAccounts, next);
-    setAdminAccounts(next);
+    await fetch('/api/admin/accounts', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    setAdminAccounts(prev => prev.filter(a => a.id !== id));
     if (target) addLog('관리자 계정 삭제', target.username, ROLE_LABEL[target.role]);
   }
 
-  function toggleAdminActive(id: string) {
+  async function toggleAdminActive(id: string) {
     const target = adminAccounts.find(a => a.id === id);
-    const next = adminAccounts.map(a => a.id === id ? { ...a, isActive: !a.isActive } : a);
-    lsSet(KEYS.adminAccounts, next);
-    setAdminAccounts(next);
-    if (target) addLog('관리자 계정 상태 변경', target.username, target.isActive ? '비활성' : '활성');
+    if (!target) return;
+    await fetch('/api/admin/accounts', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, isActive: !target.isActive }),
+    });
+    setAdminAccounts(prev => prev.map(a => a.id === id ? { ...a, isActive: !a.isActive } : a));
+    addLog('관리자 계정 상태 변경', target.username, target.isActive ? '비활성' : '활성');
   }
 
   function fmtDate(ts: number) {
@@ -1871,6 +1919,48 @@ export default function AdminPage() {
                 </button>
               </div>
 
+              {!migrated && (
+                <div className="bg-white rounded-2xl border border-amber-200 p-6">
+                  <h3 className="font-bold text-amber-800 mb-1">Supabase 데이터 마이그레이션</h3>
+                  <p className="text-xs text-amber-600 mb-3">
+                    localStorage의 상품·관리자 계정 데이터를 Supabase로 이관합니다. 완료 후 1회만 실행됩니다.
+                  </p>
+                  <button
+                    disabled={migrating}
+                    onClick={async () => {
+                      setMigrating(true);
+                      const products = lsGet<Record<string, ProductOverride>>(KEYS.products, {});
+                      const customProducts = lsGet<Product[]>(KEYS.customProducts, []);
+                      const adminAccountsData = lsGet<AdminAccount[]>(KEYS.adminAccounts, []);
+                      const superPw = lsGet<string>(KEYS.adminPw, '1234');
+                      const res = await fetch('/api/admin/migrate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ products, customProducts, adminAccounts: adminAccountsData, superPw }),
+                      });
+                      if (res.ok) {
+                        lsRemove(KEYS.products);
+                        lsRemove(KEYS.customProducts);
+                        lsRemove(KEYS.adminAccounts);
+                        lsRemove(KEYS.adminPw);
+                        setMigrated(true);
+                        alert('마이그레이션 완료! 이제 Supabase에서 데이터를 관리합니다.');
+                      } else {
+                        alert('마이그레이션 실패. 콘솔을 확인해주세요.');
+                      }
+                      setMigrating(false);
+                    }}
+                    className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg disabled:opacity-50">
+                    {migrating ? '이관 중...' : 'Supabase로 이관'}
+                  </button>
+                </div>
+              )}
+              {migrated && (
+                <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
+                  <p className="text-sm text-green-700 font-semibold">✅ 마이그레이션 완료</p>
+                </div>
+              )}
+
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h3 className="font-bold text-gray-800 mb-1">데이터 초기화</h3>
                 <p className="text-xs text-gray-400 mb-5">
@@ -1946,16 +2036,27 @@ export default function AdminPage() {
                         className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-primary w-44"
                       />
                     </div>
-                    <button
-                      onClick={() => {
-                        if (window.confirm('로그를 전체 삭제하시겠습니까?')) {
-                          lsRemove(KEYS.auditLogs);
-                          setAuditLogs([]);
-                        }
-                      }}
-                      className="text-xs text-red-400 border border-red-200 px-3 py-1.5 rounded-lg hover:text-red-600 hover:border-red-400 transition-colors">
-                      전체 삭제
-                    </button>
+                    {confirmClearLogs ? (
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-gray-500">삭제할까요?</span>
+                        <button
+                          onClick={() => { setAuditLogs([]); setConfirmClearLogs(false); }}
+                          className="text-xs text-red-600 px-2 py-1 border border-red-300 rounded">
+                          확인
+                        </button>
+                        <button
+                          onClick={() => setConfirmClearLogs(false)}
+                          className="text-xs text-gray-500 px-2 py-1 border rounded">
+                          취소
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmClearLogs(true)}
+                        className="text-xs text-red-400 border border-red-200 px-3 py-1.5 rounded-lg hover:text-red-600 hover:border-red-400 transition-colors">
+                        전체 삭제
+                      </button>
+                    )}
                   </div>
                 </div>
 
