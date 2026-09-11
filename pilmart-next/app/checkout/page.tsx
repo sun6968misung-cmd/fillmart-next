@@ -57,7 +57,7 @@ export default function CheckoutPage() {
   // 최종 배송지
   const address = addressMode === 'default' ? defaultAddress : newAddress;
 
-  const orderId = useMemo(() => `pilmart_${Date.now()}`, []);
+  const orderKey = useMemo(() => `pilmart_${Date.now()}`, []);
 
   useEffect(() => {
     if (items.length === 0) router.push('/');
@@ -106,8 +106,41 @@ export default function CheckoutPage() {
     }
     setLoading(true);
 
-    const pendingOrder = {
-      orderId,
+    // VAT 계산
+    const taxTotal = items.filter(i => i.taxType === 'tax').reduce((s, i) => s + i.price * i.qty, 0);
+    const vatAmt = taxTotal - Math.round(taxTotal / 1.1);
+
+    // pending 주문 사전 생성
+    let order_id: string;
+    try {
+      const res = await fetch('/api/orders/pending', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          order_key: orderKey,
+          items,
+          total_amount: total,
+          vat_amount: vatAmt,
+          payment_method: method,
+          delivery_address: address,
+          delivery_memo: memo,
+          customer_name: user?.name ?? '비회원',
+          customer_phone: user?.phone ?? '',
+        }),
+      });
+      if (!res.ok) throw new Error('pending failed');
+      const json = await res.json();
+      order_id = json.order_id;
+    } catch {
+      toast.error('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setLoading(false);
+      return;
+    }
+
+    // localStorage에 pending 스냅샷 저장 (success 페이지용)
+    lsSet(KEYS.pendingOrder, {
+      orderId: orderKey,   // human-readable key
+      order_id,            // UUID — confirm API에서 사용
       items,
       total,
       method,
@@ -116,19 +149,18 @@ export default function CheckoutPage() {
       memo,
       customerName: user?.name,
       customerPhone: user?.phone,
-    };
-    lsSet(KEYS.pendingOrder, pendingOrder);
+    });
 
     const selectedMethod = METHODS.find(m => m.value === method)!;
     if (!selectedMethod.toss) {
-      router.push(`/success?method=${method}&orderId=${orderId}&amount=${total}`);
+      router.push(`/success?method=${method}&orderId=${order_id}&amount=${total}`);
       return;
     }
 
     try {
       await requestPayment(method, {
         amount: total,
-        orderId,
+        orderId: order_id,   // Toss orderId = orders.id (UUID)
         orderName: `필마트 주문 (${items.length}개 상품)`,
         customerName: user?.name ?? '고객',
       });

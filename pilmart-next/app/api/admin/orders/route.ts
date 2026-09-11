@@ -2,11 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin-session'
 import { createServiceClient } from '@/lib/supabase-server'
 
+export const runtime = 'nodejs'
+
 export async function GET(req: NextRequest) {
   const authResult = await requireAdmin(req)
   if (authResult instanceof Response) return authResult
 
   const supabase = createServiceClient()
+
+  // 결제대기 만료 처리: pending_expires_at이 지난 주문을 취소완료로 전환
+  await supabase
+    .from('orders')
+    .update({ status: '취소완료' })
+    .eq('status', '결제대기')
+    .lt('pending_expires_at', new Date().toISOString())
+
   const { data, error } = await supabase
     .from('orders')
     .select('*')

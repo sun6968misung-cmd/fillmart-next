@@ -113,6 +113,28 @@ function WishlistProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setIds(lsGet<string[]>(KEYS.wishlist, []));
+
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+        try {
+          const res = await fetch('/api/wishlist');
+          if (res.ok) {
+            const { product_ids } = await res.json() as { product_ids: string[] };
+            setIds(prev => {
+              const merged = [...new Set([...prev, ...product_ids])];
+              lsSet(KEYS.wishlist, merged);
+              return merged;
+            });
+          }
+        } catch { /* localStorage 상태 유지 */ }
+      }
+      if (event === 'SIGNED_OUT') {
+        setIds([]);
+        lsRemove(KEYS.wishlist);
+      }
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const toggle = useCallback((id: string) => {
@@ -120,8 +142,14 @@ function WishlistProvider({ children }: { children: ReactNode }) {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) { router.push('/auth'); return; }
       setIds(prev => {
-        const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+        const adding = !prev.includes(id);
+        const next = adding ? [...prev, id] : prev.filter(x => x !== id);
         lsSet(KEYS.wishlist, next);
+        void fetch('/api/wishlist', {
+          method: adding ? 'POST' : 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: id }),
+        });
         return next;
       });
     });

@@ -29,26 +29,26 @@ StoreProvider (context/StoreProvider.tsx)
 
 `StoreProvider` holds Cart, Wishlist, Auth contexts. Import `useCart`, `useWishlist`, `useAuth` directly from `@/context/StoreProvider` — the separate `hooks/` directory has been removed.
 
-`ServerSyncProvider` fetches product overrides and custom products from Supabase via `GET /api/products` on every page load, caches them to localStorage, then fires `pilmart:products-changed` and `pilmart:store-synced`. Also runs `migrateCustomerPhone()` once per browser.
+`ServerSyncProvider` fetches product overrides and custom products from Supabase via `GET /api/products` on every page load, caches them to localStorage, then fires `pilmart:products-changed` and `pilmart:store-synced`. Also runs `migrateCustomerPhone()` (from `lib/migrations.ts`) once per browser. Events are also dispatched in the `.catch()` branch so listeners always fire.
 
 ### Storage (`lib/storage.ts`)
 
-All data is accessed via `lsGet<T>(key, fallback)` / `lsSet(key, val)` / `lsRemove(key)` — never call `localStorage` directly. `lsSet`/`lsRemove` are pure localStorage operations with no server side effects.
+All data is accessed via `lsGet<T>(key, fallback)` / `lsSet(key, val)` / `lsRemove(key)` — never call `localStorage` directly.
 
-| Key | Contents |
-|---|---|
-| `pilmart_cart` | `CartItem[]` |
-| `pilmart_wishlist` | `string[]` of product IDs |
-| `pilmart_session` | Customer `Session` (30-day TTL) |
-| `pilmart_pending_order` | Written before payment, cleared on success |
-| `pilmart_logo` | Base64 PNG |
-| `pilmart_products` | `Record<id, ProductOverride>` — Supabase cache via `/api/products` |
-| `pilmart_custom_products` | `Product[]` — Supabase cache via `/api/products` |
-| `pilmart_users` | `StoredUser[]` — registered customer accounts |
-| `pilmart_orders` | Completed orders (last 30) |
-| `pilmart_notices` | `Notice[]` cache |
-| `pilmart_flash_sale` | `FlashSaleConfig` cache |
-| `pilmart_store_info` | `StoreInfo` cache |
+| Key | Contents | Status |
+|---|---|---|
+| `pilmart_cart` | `CartItem[]` | Active |
+| `pilmart_wishlist` | `string[]` of product IDs | Active |
+| `pilmart_pending_order` | Written before payment, cleared on success | Active |
+| `pilmart_products` | `Record<id, ProductOverride>` — Supabase cache via `/api/products` | Active |
+| `pilmart_custom_products` | `Product[]` — Supabase cache via `/api/products` | Active |
+| `pilmart_logo` | Base64 PNG | Active |
+| `pilmart_users` | `StoredUser[]` — read by `migrateCustomerPhone()` only | Legacy (not written) |
+| `pilmart_session` | Customer session | Legacy (Supabase auth handles sessions) |
+| `pilmart_orders` | Completed orders | Legacy (orders now in Supabase) |
+| `pilmart_notices` | `Notice[]` cache | Legacy |
+| `pilmart_flash_sale` | `FlashSaleConfig` cache | Legacy |
+| `pilmart_store_info` | `StoreInfo` cache | Legacy |
 
 ### Products (`lib/products.ts`)
 
@@ -96,6 +96,10 @@ On mount, `useEffect` fetches `GET /api/admin/accounts` (super-only), chains int
 
 `window.confirm` is prohibited. Use inline confirm state (e.g. `confirmDeleteId`, `confirmClearLogs`). Irreversible actions (전체 삭제, 데이터 초기화) additionally require typing the store name (`storeInfo.name`) into an input before the confirm button enables.
 
+#### Admin order status values
+
+The admin UI displays labels (`'결제완료'`, `'준비중'`, `'배송중'`, `'완료'`, `'취소'`) that map to the DB Korean strings (`'주문완료'`, `'배송준비중'`, `'배송중'`, `'배송완료'`, `'취소완료'`). Always use the DB Korean strings when writing to Supabase. `'삭제됨'` is a soft-delete status (excluded from admin GET, used in all-orders soft DELETE).
+
 ### Admin API routes
 
 All admin API routes require `export const runtime = 'nodejs'`.
@@ -108,7 +112,7 @@ All admin API routes require `export const runtime = 'nodejs'`.
 | `/api/admin/accounts` | requireSuper | GET/POST/PATCH/DELETE — PATCH supports `{ selfPw: true, newPassword }` for own pw |
 | `/api/admin/logs` | requireAdmin | GET (latest 500) / POST (no DELETE endpoint) |
 | `/api/admin/migrate` | requireSuper | POST — one-time localStorage→Supabase migration |
-| `/api/admin/orders` | requireAdmin | GET (excludes `status='삭제됨'`) / PATCH / DELETE (single: hard; all: soft) |
+| `/api/admin/orders` | requireAdmin | GET (excludes `status='삭제됨'`) / PATCH / DELETE (single: hard; all: soft `status='삭제됨'`) |
 | `/api/admin/members` | requireAdmin | GET / DELETE |
 | `/api/products` | GET public, writes requireAdmin | GET→`{overrides, customs}` / POST custom / PATCH override / DELETE hide\|show\|remove |
 | `/api/notices` | GET public, POST/DELETE requireAdmin | |
@@ -123,23 +127,60 @@ Auth guard uses `GET /api/admin/session` (cookie-based). `AdminSidebar` logout c
 
 ### Customer auth (`app/auth/page.tsx`)
 
-Registration: name, phone, Daum Postcode address, password (SHA-256 via `lib/crypto.ts`). Social login (Kakao/Naver) via OAuth 2.0 implicit grant; keys in `.env.local` as `NEXT_PUBLIC_KAKAO_APP_KEY` and `NEXT_PUBLIC_NAVER_CLIENT_ID`.
+**All customer auth goes through Supabase Auth** — `pilmart_users`/`pilmart_session` localStorage are not used.
+
+- **Login**: `supabase.auth.signInWithPassword({ email: '${phone}@pilmart.com', password })`
+- **Registration**: `POST /api/auth/signup` (server creates user via `admin.createUser` + `profiles.upsert`) → client calls `signInWithPassword()`
+- **Kakao**: OAuth implicit grant → `accessToken` → `/kakao-callback` → email `${phone}@kakao.pilmart.com`, password `kko_${id}_pilmart`
+- **Naver**: OAuth implicit grant → `accessToken` → `/naver-callback` → email `${phone}@naver.pilmart.com`, password `nv_${id}_pilmart`
+
+Social callbacks try `signInWithPassword` first; on failure `signUp` then `signInWithPassword`. `profiles.id` = `auth.users.id` (UUID, FK cascade).
+
+`StoreProvider` Auth watches `supabase.auth.onAuthStateChange()` and exposes a `Session { name, phone, loginAt, provider }` derived from `user.user_metadata`.
 
 ### Payment flow
 
-1. `checkout/page.tsx` writes `pilmart_pending_order` (includes address, memo, customerName, customerPhone).
-2. Toss Payments SDK → `success.html` or direct redirect for 만나서 payment.
-3. `success/page.tsx` reads pending order → appends to orders → `clearCart()`.
+1. `checkout/page.tsx` calls `POST /api/orders/pending` → creates an `orders` row with `status: '결제대기'` and `pending_expires_at: now + 30min`. Writes snapshot to `pilmart_pending_order` localStorage.
+2. Toss widget → redirects to `/success?paymentKey=…&orderId=…&amount=…` (online) or `/success?method=meet-card|meet-cash&orderId=…&amount=…` (만나서).
+3. `success/page.tsx` calls `POST /api/payments/confirm` → server confirms with Toss API → updates `orders.status` to `'주문완료'`. Clears cart and `pilmart_pending_order` on success.
 
-Toss key: `NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
+**Confirm API (`app/api/payments/confirm/route.ts`) details:**
+- Optimistic lock: `UPDATE orders SET payment_key='__confirming__' WHERE payment_key IS NULL` — prevents duplicate confirm.
+- Meet payments (`meet-card`, `meet-cash`) skip Toss API entirely.
+- `ALREADY_PAID_CODES = ['ALREADY_PROCESSED_PAYMENT']` — Toss "already processed" codes fall through to success (fill from sandbox double-confirm test if different).
+- On network timeout: releases lock (`payment_key = null`). On Toss failure: sets `status = '취소완료'`.
+
+**`success/page.tsx`:** Shows guest vs member CTA. Guests see order key + link to `/orders/lookup`. Members see "주문내역 보기".
+
+Toss keys: `NEXT_PUBLIC_TOSS_CLIENT_KEY` (client), `TOSS_SECRET_KEY` (server confirm) — both currently test keys.
+
+### Orders table
+
+Columns: `id` (UUID PK), `order_key` (TEXT UNIQUE — human-readable `pilmart_…` key), `payment_key` (TEXT — Toss paymentKey or `__confirming__` sentinel or meet method name), `pending_expires_at` (TIMESTAMPTZ — cleared on confirm), `status` CHECK `('결제대기'|'주문완료'|'배송준비중'|'배송중'|'배송완료'|'취소완료'|'삭제됨')`.
+
+Admin orders `GET` lazy-expires `결제대기` rows past `pending_expires_at` before returning the list.
+
+**Partial cancel** (`orders/page.tsx` → `doCancel()`): client-side Supabase UPDATE `{ cancelled_items, total_amount }` via anon key + RLS. No Toss refund API called. Blocked on `'배송완료'` and `'취소완료'`.
 
 ### Flash sale
 
 `FlashSaleConfig = { startHour, endHour, products: FlashProduct[] }`. Section hidden outside active hours. `maxPerCustomer: 0` = unlimited.
 
+### Customer API routes
+
+| Route | Auth | Methods |
+|---|---|---|
+| `/api/auth/signup` | public | POST — server creates Supabase user + profile |
+| `/api/orders/pending` | Supabase session | POST — creates `결제대기` order row, returns `{ orderId }` |
+| `/api/payments/confirm` | public (orderId in body) | POST — confirms Toss or meet payment, updates status to `주문완료` |
+| `/api/orders/lookup` | public (rate-limited) | POST — guest order lookup by `{ order_key, phone_last4 }` |
+| `/api/wishlist` | Supabase session | GET / POST `{ product_id }` / DELETE `{ product_id }` |
+
 ### Supabase tables
 
-`product_overrides` (TEXT PK: product_id), `custom_products`, `admin_accounts` (bcrypt, `__super__` row always present), `audit_logs` (auto-trimmed to 1000 rows via trigger), `orders`, `profiles`, `notices`, `flash_sale`, `store_info`.
+`product_overrides` (TEXT PK: product_id), `custom_products`, `admin_accounts` (bcrypt, `__super__` row always present), `audit_logs` (auto-trimmed to 1000 rows via trigger), `orders`, `profiles`, `notices`, `flash_sale`, `store_info`, `wishlists`.
+
+`profiles` columns: `id` (uuid = auth.users.id), `phone`, `name`, `address`, `user_type` (`'personal'|'business'`), `business_no`, `business_name`, `business_type`, `business_category`, `provider`, `created_at`.
 
 `createServiceClient()` from `lib/supabase-server.ts` — server-side only, never import in client components.
 
@@ -154,6 +195,8 @@ Toss key: `NEXT_PUBLIC_TOSS_CLIENT_KEY` (currently test key).
 | `/cart` | Cart with 면세/과세 breakdown |
 | `/checkout` | Checkout with address selector and tax breakdown |
 | `/orders` | Order history with partial cancel |
+| `/orders/lookup` | Guest order lookup by order key + phone last 4 digits |
+| `/success` | Payment result: guest CTA (order key + lookup link) or member CTA |
 | `/admin` | Admin overlay (all tabs) |
 | `/admin/member/[phone]` | Member detail: info card + daily order summaries |
 | `/admin/member/[phone]/day/[date]` | Day detail: expandable order cards |
