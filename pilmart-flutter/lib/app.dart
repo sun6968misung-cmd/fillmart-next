@@ -9,6 +9,7 @@ import 'features/home/customer_shell.dart';
 import 'features/home/home_page.dart';
 import 'features/product/category_page.dart';
 import 'features/product/product_detail_page.dart';
+import 'features/cart/cart_page.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -85,7 +86,7 @@ class PilmartApp extends ConsumerWidget {
             ),
             GoRoute(
               path: '/cart',
-              builder: (_, __) => const _PlaceholderPage('장바구니'),
+              builder: (_, __) => const CartPage(),
             ),
             GoRoute(
               path: '/checkout',

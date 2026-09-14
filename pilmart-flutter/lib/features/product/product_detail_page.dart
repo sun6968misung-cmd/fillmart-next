@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pilmart_flutter/core/supabase_client.dart';
+import 'package:pilmart_flutter/features/cart/cart_provider.dart';
 import 'package:pilmart_flutter/features/home/providers/products_provider.dart';
+import 'package:pilmart_flutter/shared/models/cart_item.dart';
 import 'package:pilmart_flutter/shared/theme/app_theme.dart';
 
 class ProductDetailPage extends ConsumerStatefulWidget {
@@ -177,7 +179,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                 minimumSize: const Size.fromHeight(52),
               ),
               onPressed: () {
-                // Task 4에서 cart_provider 연결 예정
+                ref.read(cartProvider.notifier).add(CartItem(
+                      productId: product.id,
+                      name: product.name,
+                      taxType: product.taxType,
+                      price: product.price,
+                      qty: _qty,
+                      imageUrl: product.imageUrl,
+                    ));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('${product.name} $_qty개를 장바구니에 담았습니다'),
