@@ -7,6 +7,8 @@ import 'features/auth/auth_page.dart';
 import 'features/auth/admin_login_page.dart';
 import 'features/home/customer_shell.dart';
 import 'features/home/home_page.dart';
+import 'features/product/category_page.dart';
+import 'features/product/product_detail_page.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -63,17 +65,18 @@ class PilmartApp extends ConsumerWidget {
             ),
             GoRoute(
               path: '/category',
-              builder: (_, __) => const _PlaceholderPage('카테고리'),
+              builder: (_, __) =>
+                  const CategoryPage(slug: '야채/채소'),
             ),
             GoRoute(
               path: '/category/:slug',
               builder: (_, s) =>
-                  _PlaceholderPage('카테고리: ${s.pathParameters['slug']}'),
+                  CategoryPage(slug: s.pathParameters['slug']!),
             ),
             GoRoute(
               path: '/product/:id',
               builder: (_, s) =>
-                  _PlaceholderPage('상품: ${s.pathParameters['id']}'),
+                  ProductDetailPage(productId: s.pathParameters['id']!),
             ),
             GoRoute(
               path: '/flash-product/:idx',
