@@ -36,8 +36,14 @@ class AdminAuthNotifier extends StateNotifier<AdminSession?> {
       options: Options(validateStatus: (s) => s != null && s < 500),
     );
     if (res.statusCode == 200) {
-      final cookie = await _storage.getAdminCookie();
       final data = res.data as Map<String, dynamic>;
+      // Android에서 Set-Cookie 헤더가 Dio에 노출되지 않는 문제 대응:
+      // 응답 body의 session_token을 직접 저장
+      final tokenFromBody = data['session_token'] as String?;
+      if (tokenFromBody != null) {
+        await _storage.saveAdminCookie('admin_session=$tokenFromBody');
+      }
+      final cookie = await _storage.getAdminCookie();
       state = AdminSession(
         username: data['username'] as String? ?? username,
         role: data['role'] as String? ?? 'order',

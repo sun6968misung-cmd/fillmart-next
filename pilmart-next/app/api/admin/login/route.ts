@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
     ok: true,
     username: account.username,
     role: account.role,
+    session_token: token,
   })
   res.cookies.set('admin_session', token, sessionCookieOptions())
   return res
