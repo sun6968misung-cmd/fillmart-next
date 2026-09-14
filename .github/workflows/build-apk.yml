@@ -1,0 +1,55 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      nextjs_base_url:
+        description: 'Next.js 서버 URL (예: https://your-app.vercel.app 또는 http://YOUR_IP:3000)'
+        required: false
+        default: 'http://10.0.2.2:3000'
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17 설정
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Flutter 설정
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.4'
+          channel: stable
+          cache: true
+
+      - name: 의존성 설치
+        working-directory: pilmart-flutter
+        run: flutter pub get
+
+      - name: APK 빌드
+        working-directory: pilmart-flutter
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          KAKAO_APP_KEY: ${{ secrets.KAKAO_APP_KEY }}
+        run: |
+          flutter build apk --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
+            --dart-define=NEXTJS_BASE_URL=${{ github.event.inputs.nextjs_base_url || 'http://10.0.2.2:3000' }} \
+            --dart-define=KAKAO_APP_KEY=${{ secrets.KAKAO_APP_KEY }}
+
+      - name: APK 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilmart-release-${{ github.run_number }}
+          path: pilmart-flutter/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
