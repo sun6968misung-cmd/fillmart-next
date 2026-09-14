@@ -27,18 +27,10 @@ import 'features/admin/store/admin_store_info_page.dart';
 import 'features/admin/members/admin_members_page.dart';
 import 'features/admin/accounts/admin_accounts_page.dart';
 import 'features/admin/logs/admin_logs_page.dart';
+import 'features/admin/members/admin_member_detail_page.dart';
+import 'features/admin/members/admin_member_day_page.dart';
+import 'features/orders/lookup_page.dart';
 import 'shared/theme/app_theme.dart';
-
-class _PlaceholderPage extends StatelessWidget {
-  final String title;
-  const _PlaceholderPage(this.title);
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: Center(child: Text(title)),
-      );
-}
 
 class PilmartApp extends ConsumerWidget {
   const PilmartApp({super.key});
@@ -131,7 +123,7 @@ class PilmartApp extends ConsumerWidget {
             ),
             GoRoute(
               path: '/orders/lookup',
-              builder: (_, __) => const _PlaceholderPage('비회원 주문조회'),
+              builder: (_, __) => const LookupPage(),
             ),
             GoRoute(
               path: '/wishlist',
@@ -179,12 +171,14 @@ class PilmartApp extends ConsumerWidget {
             GoRoute(
               path: '/admin/member/:phone',
               builder: (_, s) =>
-                  _PlaceholderPage('회원: ${s.pathParameters['phone']}'),
+                  AdminMemberDetailPage(phone: s.pathParameters['phone']!),
             ),
             GoRoute(
               path: '/admin/member/:phone/day/:date',
-              builder: (_, s) =>
-                  _PlaceholderPage('일별 주문: ${s.pathParameters['date']}'),
+              builder: (_, s) => AdminMemberDayPage(
+                phone: s.pathParameters['phone']!,
+                date: s.pathParameters['date']!,
+              ),
             ),
             GoRoute(
               path: '/admin/accounts',
