@@ -15,6 +15,8 @@ import 'features/checkout/toss_webview_page.dart';
 import 'features/checkout/success_page.dart';
 import 'features/orders/orders_page.dart';
 import 'features/wishlist/wishlist_page.dart';
+import 'features/profile/profile_page.dart';
+import 'features/notice/notice_page.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -129,11 +131,11 @@ class PilmartApp extends ConsumerWidget {
             ),
             GoRoute(
               path: '/profile',
-              builder: (_, __) => const _PlaceholderPage('마이페이지'),
+              builder: (_, __) => const ProfilePage(),
             ),
             GoRoute(
               path: '/notice',
-              builder: (_, __) => const _PlaceholderPage('공지사항'),
+              builder: (_, __) => const NoticePage(),
             ),
           ],
         ),
