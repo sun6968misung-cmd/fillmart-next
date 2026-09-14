@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pilmart_flutter/features/home/providers/products_provider.dart';
+import 'package:pilmart_flutter/features/search/product_search_delegate.dart';
 import 'widgets/hero_banner.dart';
 import 'widgets/flash_sale_section.dart';
 import 'widgets/product_grid.dart';
@@ -16,7 +17,16 @@ class HomePage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('필마트'),
         actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              final products = asyncProducts.valueOrNull ?? [];
+              showSearch(
+                context: context,
+                delegate: ProductSearchDelegate(products),
+              );
+            },
+          ),
         ],
       ),
       body: RefreshIndicator(
