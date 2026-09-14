@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'features/auth/customer_auth_provider.dart';
 import 'features/auth/admin_auth_provider.dart';
 import 'features/auth/auth_page.dart';
+import 'features/auth/admin_login_page.dart';
 import 'features/home/customer_shell.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
@@ -48,7 +49,7 @@ class PilmartApp extends ConsumerWidget {
         ),
         GoRoute(
           path: '/admin/login',
-          builder: (_, __) => const _PlaceholderPage('관리자 로그인'),
+          builder: (_, __) => const AdminLoginPage(),
         ),
 
         // 고객 쉘

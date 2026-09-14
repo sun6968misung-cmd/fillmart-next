@@ -55,9 +55,9 @@ class AdminShell extends ConsumerWidget {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: () {
-                        ref.read(adminSessionProvider.notifier).state = null;
-                        context.go('/admin/login');
+                      onPressed: () async {
+                        await ref.read(adminSessionProvider.notifier).logout();
+                        if (context.mounted) context.go('/admin/login');
                       },
                       child: const Text(
                         '로그아웃',
