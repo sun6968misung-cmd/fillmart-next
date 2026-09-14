@@ -24,7 +24,7 @@ class Product {
         category: j['category'] as String? ?? '',
         unit: j['unit'] as String? ?? '',
         taxType: j['tax_type'] as String? ?? 'taxFree',
-        price: j['price'] as int,
+        price: (j['price'] as num).toInt(),
         imageUrl: j['image_url'] as String?,
         description: j['description'] as String?,
         isHidden: j['is_hidden'] as bool? ?? false,

@@ -27,6 +27,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["KAKAO_APP_KEY"] = System.getenv("KAKAO_APP_KEY") ?: (project.findProperty("KAKAO_APP_KEY") as? String ?: "")
     }
 
     buildTypes {

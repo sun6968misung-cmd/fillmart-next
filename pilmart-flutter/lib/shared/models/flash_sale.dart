@@ -15,9 +15,9 @@ class FlashProduct {
 
   factory FlashProduct.fromJson(Map<String, dynamic> j) => FlashProduct(
         name: j['name'] as String,
-        price: j['price'] as int,
-        stock: j['stock'] as int?,
-        maxPerCustomer: j['maxPerCustomer'] as int?,
+        price: (j['price'] as num).toInt(),
+        stock: (j['stock'] as num?)?.toInt(),
+        maxPerCustomer: (j['maxPerCustomer'] as num?)?.toInt(),
         imageUrl: j['imageUrl'] as String?,
       );
 

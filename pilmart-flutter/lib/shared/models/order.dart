@@ -14,8 +14,8 @@ class OrderItem {
   factory OrderItem.fromJson(Map<String, dynamic> j) => OrderItem(
         id: j['id'] as String,
         name: j['name'] as String,
-        price: j['price'] as int,
-        qty: j['qty'] as int,
+        price: (j['price'] as num).toInt(),
+        qty: (j['qty'] as num).toInt(),
         taxType: j['tax_type'] as String? ?? 'taxFree',
       );
 
@@ -59,9 +59,9 @@ class Order {
         customerName: j['customer_name'] as String?,
         deliveryAddress: j['delivery_address'] as String?,
         paymentMethod: j['payment_method'] as String?,
-        totalAmount: j['total_amount'] as int? ?? 0,
-        vatAmount: j['vat_amount'] as int? ?? 0,
-        items: (j['items'] as List<dynamic>)
+        totalAmount: (j['total_amount'] as num?)?.toInt() ?? 0,
+        vatAmount: (j['vat_amount'] as num?)?.toInt() ?? 0,
+        items: (j['items'] as List<dynamic>? ?? [])
             .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
             .toList(),
         createdAt: DateTime.parse(j['created_at'] as String),
