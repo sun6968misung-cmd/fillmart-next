@@ -10,6 +10,10 @@ import 'features/home/home_page.dart';
 import 'features/product/category_page.dart';
 import 'features/product/product_detail_page.dart';
 import 'features/cart/cart_page.dart';
+import 'features/checkout/checkout_page.dart';
+import 'features/checkout/toss_webview_page.dart';
+import 'features/checkout/success_page.dart';
+import 'features/orders/orders_page.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -90,19 +94,29 @@ class PilmartApp extends ConsumerWidget {
             ),
             GoRoute(
               path: '/checkout',
-              builder: (_, __) => const _PlaceholderPage('결제'),
+              builder: (_, __) => const CheckoutPage(),
             ),
             GoRoute(
               path: '/checkout/payment',
-              builder: (_, __) => const _PlaceholderPage('Toss 결제'),
+              builder: (_, s) {
+                final orderId = s.uri.queryParameters['orderId']!;
+                final amount =
+                    int.tryParse(s.uri.queryParameters['amount'] ?? '0') ?? 0;
+                return TossWebViewPage(orderId: orderId, amount: amount);
+              },
             ),
             GoRoute(
               path: '/success',
-              builder: (_, __) => const _PlaceholderPage('결제완료'),
+              builder: (_, s) => SuccessPage(
+                paymentKey: s.uri.queryParameters['paymentKey'],
+                orderId: s.uri.queryParameters['orderId'] ?? '',
+                amount: s.uri.queryParameters['amount'] ?? '0',
+                method: s.uri.queryParameters['method'],
+              ),
             ),
             GoRoute(
               path: '/orders',
-              builder: (_, __) => const _PlaceholderPage('주문내역'),
+              builder: (_, __) => const OrdersPage(),
             ),
             GoRoute(
               path: '/orders/lookup',
