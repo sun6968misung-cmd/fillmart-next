@@ -22,15 +22,25 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
   }
 
   Future<void> _login() async {
+    if (_userCtrl.text.trim().isEmpty || _pwCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('아이디와 비밀번호를 입력해주세요')));
+      return;
+    }
     setState(() => _loading = true);
     try {
       await ref.read(adminSessionProvider.notifier)
           .login(_userCtrl.text.trim(), _pwCtrl.text.trim());
       if (mounted) context.go('/admin/orders');
-    } catch (e) {
+    } on Exception catch (e) {
       if (mounted) {
+        final msg = e.toString().contains('401')
+            ? '아이디 또는 비밀번호가 올바르지 않습니다'
+            : e.toString().contains('connection')
+                ? '서버에 연결할 수 없습니다 (${e.toString().split(':').last.trim()})'
+                : '로그인 실패: ${e.toString().replaceAll('Exception: ', '')}';
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString())));
+            SnackBar(content: Text(msg), duration: const Duration(seconds: 4)));
       }
     } finally {
       if (mounted) setState(() => _loading = false);

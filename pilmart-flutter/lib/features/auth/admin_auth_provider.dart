@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api_client.dart';
 import '../../core/secure_storage.dart';
@@ -29,10 +30,13 @@ class AdminAuthNotifier extends StateNotifier<AdminSession?> {
   }
 
   Future<void> login(String username, String password) async {
-    final res = await ApiClient.instance.post('/api/admin/login',
-        data: {'username': username, 'password': password});
+    final res = await ApiClient.instance.post(
+      '/api/admin/login',
+      data: {'username': username, 'password': password},
+      options: Options(validateStatus: (s) => s != null && s < 500),
+    );
     if (res.statusCode == 200) {
-      final cookie = await _storage.getAdminCookie(); // 인터셉터가 저장
+      final cookie = await _storage.getAdminCookie();
       final data = res.data as Map<String, dynamic>;
       state = AdminSession(
         username: data['username'] as String? ?? username,

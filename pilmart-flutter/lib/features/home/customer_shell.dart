@@ -8,6 +8,7 @@ class CustomerShell extends StatelessWidget {
   static const _tabs = [
     (icon: Icons.home_outlined, label: '홈', path: '/home'),
     (icon: Icons.grid_view_outlined, label: '카테고리', path: '/category'),
+    (icon: Icons.shopping_cart_outlined, label: '장바구니', path: '/cart'),
     (icon: Icons.favorite_border, label: '찜', path: '/wishlist'),
     (icon: Icons.receipt_long_outlined, label: '주문', path: '/orders'),
     (icon: Icons.person_outline, label: '마이', path: '/profile'),

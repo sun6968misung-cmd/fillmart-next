@@ -17,7 +17,8 @@ class AdminCookieInterceptor extends Interceptor {
   @override
   void onResponse(
       Response response, ResponseInterceptorHandler handler) async {
-    final setCookieList = response.headers['set-cookie'];
+    final setCookieList = response.headers['set-cookie']
+        ?? response.headers['Set-Cookie'];
     if (setCookieList != null) {
       for (final raw in setCookieList) {
         final cookiePart = raw.split(';').first.trim();
