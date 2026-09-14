@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'customer_auth_provider.dart';
+import 'kakao_auth.dart';
+import 'naver_auth_webview.dart';
 
 class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
@@ -89,13 +91,16 @@ class _AuthPageState extends ConsumerState<AuthPage> {
             OutlinedButton.icon(
               icon: const Icon(Icons.chat_bubble),
               label: const Text('카카오로 시작하기'),
-              onPressed: () {}, // Task 6에서 구현
+              onPressed: () => KakaoAuth.signIn(context, ref),
             ),
             const SizedBox(height: 8),
             OutlinedButton.icon(
               icon: const Icon(Icons.search),
               label: const Text('네이버로 시작하기'),
-              onPressed: () {}, // Task 6에서 구현
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NaverAuthWebView()),
+              ),
             ),
             const Spacer(),
             TextButton(
