@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Settings, KeyRound,
   LogOut, Store, Trash2, Search, RotateCcw, X, ChevronDown,
-  Bell, Zap, Plus, Printer, ImageIcon, Upload, Download, ClipboardList, Users,
+  Bell, BellRing, Zap, Plus, Printer, ImageIcon, Upload, Download, ClipboardList, Users, Send,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -22,11 +22,11 @@ import { getProducts, getAllProductsAdmin, getProductImage } from '@/lib/product
 import { formatPrice } from '@/lib/utils';
 import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole, AuditLog, StoredUser } from '@/types';
 
-type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account' | 'logs' | 'members';
+type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account' | 'logs' | 'members' | 'push';
 type OrderStatus = '결제완료' | '준비중' | '배송중' | '완료' | '취소';
 
 const ROLE_TABS: Record<AdminRole, Tab[]> = {
-  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'members', 'account', 'logs'],
+  super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'members', 'account', 'push', 'logs'],
   product: ['dashboard', 'products', 'deals'],
   order:   ['dashboard', 'orders'],
 };
@@ -63,6 +63,9 @@ export default function AdminPage() {
   const [migrating, setMigrating] = useState(false);
   const [migrated, setMigrated] = useState(false);
   const [confirmClearLogs, setConfirmClearLogs] = useState(false);
+  const [pushForm, setPushForm] = useState({ title: '', body: '' });
+  const [pushLoading, setPushLoading] = useState(false);
+  const [pushResult, setPushResult] = useState<{ sent: number; total: number; failed: number; message?: string } | null>(null);
   const [confirmDeleteAllOrders, setConfirmDeleteAllOrders] = useState(false);
   const [confirmDeleteAllOrdersInput, setConfirmDeleteAllOrdersInput] = useState('');
   const [confirmResetKey, setConfirmResetKey] = useState<string | null>(null);
@@ -835,6 +838,7 @@ export default function AdminPage() {
     { id: 'site', icon: <Store className="h-4 w-4" />, label: '사이트 설정' },
     { id: 'members', icon: <Users className="h-4 w-4" />, label: '회원 관리' },
     { id: 'account', icon: <Settings className="h-4 w-4" />, label: '계정/데이터' },
+    { id: 'push', icon: <BellRing className="h-4 w-4" />, label: '앱 푸시 알림' },
     { id: 'logs', icon: <ClipboardList className="h-4 w-4" />, label: '관리 로그' },
   ];
   const NAV = ALL_NAV.filter(n => allowedTabs.includes(n.id));
@@ -842,7 +846,7 @@ export default function AdminPage() {
   const tabTitle: Record<Tab, string> = {
     dashboard: '대시보드', orders: '주문 관리', products: '상품 관리',
     deals: '오늘만 특가', notices: '공지사항', site: '사이트 설정',
-    members: '회원 관리', account: '계정/데이터', logs: '관리 로그',
+    members: '회원 관리', account: '계정/데이터', push: '앱 푸시 알림', logs: '관리 로그',
   };
 
   /* ── 비밀번호 게이트 ── */
@@ -2071,6 +2075,87 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── 앱 푸시 알림 ── */}
+          {tab === 'push' && myRole === 'super' && (
+            <div className="p-8 max-w-2xl space-y-6">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <BellRing className="h-5 w-5 text-primary" />
+                  <h3 className="font-bold text-gray-800">푸시 알림 전송</h3>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-xs text-gray-500 font-medium block mb-1">제목</label>
+                    <input
+                      value={pushForm.title}
+                      onChange={e => setPushForm(f => ({ ...f, title: e.target.value }))}
+                      placeholder="알림 제목"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 font-medium block mb-1">내용</label>
+                    <textarea
+                      value={pushForm.body}
+                      onChange={e => setPushForm(f => ({ ...f, body: e.target.value }))}
+                      placeholder="알림 내용"
+                      rows={4}
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <p className="text-xs text-gray-400">앱을 설치한 모든 회원에게 전송됩니다</p>
+                  <button
+                    onClick={async () => {
+                      if (!pushForm.title.trim() || !pushForm.body.trim()) return;
+                      setPushLoading(true);
+                      setPushResult(null);
+                      try {
+                        const res = await fetch('/api/admin/push', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ title: pushForm.title, body: pushForm.body }),
+                        });
+                        const data = await res.json();
+                        setPushResult(data);
+                        if (res.ok && data.sent > 0) setPushForm({ title: '', body: '' });
+                      } catch {
+                        setPushResult({ sent: 0, total: 0, failed: 0, message: '전송 실패' });
+                      } finally {
+                        setPushLoading(false);
+                      }
+                    }}
+                    disabled={pushLoading || !pushForm.title.trim() || !pushForm.body.trim()}
+                    className="flex items-center gap-2 bg-primary text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {pushLoading ? (
+                      <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                    전체 발송
+                  </button>
+                </div>
+                {pushResult && (
+                  <div className={`mt-4 px-4 py-3 rounded-xl text-sm font-medium ${
+                    pushResult.sent > 0 ? 'bg-green-50 text-green-700' : 'bg-orange-50 text-orange-700'
+                  }`}>
+                    {pushResult.message ?? `전송 완료: ${pushResult.sent}/${pushResult.total}명 성공${pushResult.failed > 0 ? ` (실패 ${pushResult.failed}명)` : ''}`}
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+                <p className="text-sm font-bold text-amber-800 mb-2">설정 필요</p>
+                <p className="text-xs text-amber-700 leading-relaxed">
+                  앱 푸시를 사용하려면 Firebase 프로젝트의 서비스 계정 JSON을 Vercel 환경변수
+                  <code className="bg-amber-100 px-1 rounded font-mono">FIREBASE_SERVICE_ACCOUNT_JSON</code>에 등록해야 합니다.
+                </p>
               </div>
             </div>
           )}
