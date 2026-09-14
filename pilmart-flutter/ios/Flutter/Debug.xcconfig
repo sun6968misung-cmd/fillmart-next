@@ -1,0 +1,3 @@
+#include "Generated.xcconfig"
+// Replace YOUR_KAKAO_NATIVE_KEY with the actual key before building
+KAKAO_APP_KEY = YOUR_KAKAO_NATIVE_KEY
