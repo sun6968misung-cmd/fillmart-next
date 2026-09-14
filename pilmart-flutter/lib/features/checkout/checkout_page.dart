@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,12 @@ import 'package:pilmart_flutter/features/cart/cart_provider.dart';
 import 'package:pilmart_flutter/shared/theme/app_theme.dart';
 
 enum _PaymentMethod { card, transfer, meetCard, meetCash }
+
+String _generateOrderKey() {
+  final ts = DateTime.now().millisecondsSinceEpoch;
+  final rand = Random().nextInt(9000) + 1000;
+  return 'pilmart_${ts}_$rand';
+}
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -51,13 +58,15 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final notifier = ref.read(cartProvider.notifier);
     final total = notifier.totalAmount;
     final vat = notifier.taxAmount;
+    final orderKey = _generateOrderKey();
 
     try {
       final res = await http.post(
         Uri.parse('${AppConstants.nextJsBaseUrl}/api/orders/pending'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'userId': uid,
+          'order_key': orderKey,
+          'user_id': uid,
           'items': cart
               .map((c) => {
                     'productId': c.productId,
@@ -67,11 +76,11 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                     'qty': c.qty,
                   })
               .toList(),
-          'totalAmount': total,
-          'vatAmount': vat,
-          'deliveryAddress': _address,
-          'deliveryMemo': _memo,
-          'paymentMethod': switch (_method) {
+          'total_amount': total,
+          'vat_amount': vat,
+          'delivery_address': _address,
+          'delivery_memo': _memo,
+          'payment_method': switch (_method) {
             _PaymentMethod.card => '카드',
             _PaymentMethod.transfer => '계좌이체',
             _PaymentMethod.meetCard => 'meet-card',
@@ -81,13 +90,20 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       );
 
       if (!mounted) return;
-      if (res.statusCode != 200) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('주문 생성 실패')));
+      if (res.statusCode != 200 && res.statusCode != 201) {
+        final body = res.body.isNotEmpty ? res.body : '알 수 없는 오류';
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('주문 생성 실패 (${res.statusCode}): $body')));
         return;
       }
 
-      final orderId = (jsonDecode(res.body) as Map)['orderId'] as String;
+      final orderId =
+          (jsonDecode(res.body) as Map)['order_id'] as String? ?? '';
+      if (orderId.isEmpty) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('주문 ID를 받지 못했습니다')));
+        return;
+      }
 
       if (_method == _PaymentMethod.meetCard ||
           _method == _PaymentMethod.meetCash) {
@@ -98,7 +114,6 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'orderId': orderId,
-            'method': meetMethod,
             'amount': total,
           }),
         );
@@ -108,8 +123,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           context.go(
               '/success?orderId=$orderId&amount=$total&method=$meetMethod');
         } else {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('결제 처리 실패')));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('결제 처리 실패 (${confirmRes.statusCode})')));
         }
       } else {
         if (!mounted) return;
@@ -137,20 +152,16 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '배송지',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            const Text('배송지',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Text(
-              _address.isEmpty ? '배송지를 설정해주세요' : _address,
+              _address.isEmpty ? '마이페이지에서 배송지를 등록해주세요' : _address,
               style: TextStyle(color: Colors.grey[700]),
             ),
             const Divider(height: 32),
-            const Text(
-              '배송 메모',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            const Text('배송 메모',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
               decoration: const InputDecoration(
@@ -160,15 +171,11 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               onChanged: (v) => _memo = v,
             ),
             const Divider(height: 32),
-            const Text(
-              '결제 수단',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            const Text('결제 수단',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             RadioGroup<_PaymentMethod>(
               groupValue: _method,
-              onChanged: (v) {
-                if (v != null) setState(() => _method = v);
-              },
+              onChanged: (v) => setState(() => _method = v!),
               child: const Column(
                 children: [
                   RadioListTile<_PaymentMethod>(
@@ -194,10 +201,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '총 결제금액',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                const Text('총 결제금액',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 Text(
                   '$total원',
                   style: const TextStyle(
@@ -222,7 +228,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           onPressed: _loading || cart.isEmpty ? null : _submit,
           child: _loading
               ? const CircularProgressIndicator(color: Colors.white)
-              : const Text('결제하기'),
+              : Text('결제하기  |  $total원'),
         ),
       ),
     );

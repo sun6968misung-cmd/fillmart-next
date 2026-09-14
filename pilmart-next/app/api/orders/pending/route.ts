@@ -17,10 +17,10 @@ export async function POST(req: NextRequest) {
   if (!total_amount || total_amount <= 0)
     return NextResponse.json({ error: 'invalid total_amount' }, { status: 400 })
 
-  // user_id 추출 — 세션 없으면 null (비회원 허용)
+  // user_id 추출 — 세션 우선, 없으면 body.user_id fallback (앱 클라이언트용)
   const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const user_id = user?.id ?? null
+  const user_id = user?.id ?? (body.user_id as string | null) ?? null
 
   const service = createServiceClient()
   const { data, error } = await service
