@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'features/auth/customer_auth_provider.dart';
 import 'features/auth/admin_auth_provider.dart';
+import 'features/auth/auth_page.dart';
 import 'features/home/customer_shell.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
@@ -43,7 +44,7 @@ class PilmartApp extends ConsumerWidget {
       routes: [
         GoRoute(
           path: '/auth',
-          builder: (_, __) => const _PlaceholderPage('로그인'),
+          builder: (_, __) => const AuthPage(),
         ),
         GoRoute(
           path: '/admin/login',
