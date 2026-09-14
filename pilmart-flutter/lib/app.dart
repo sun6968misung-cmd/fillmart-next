@@ -6,6 +6,7 @@ import 'features/auth/admin_auth_provider.dart';
 import 'features/auth/auth_page.dart';
 import 'features/auth/admin_login_page.dart';
 import 'features/home/customer_shell.dart';
+import 'features/home/home_page.dart';
 import 'features/admin/admin_shell.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -58,7 +59,7 @@ class PilmartApp extends ConsumerWidget {
           routes: [
             GoRoute(
               path: '/home',
-              builder: (_, __) => const _PlaceholderPage('홈'),
+              builder: (_, __) => const HomePage(),
             ),
             GoRoute(
               path: '/category',
