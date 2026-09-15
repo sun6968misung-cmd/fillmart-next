@@ -7,7 +7,8 @@ export const runtime = 'nodejs'
 // 실제 샌드박스 이중호출 응답에서 다른 코드가 나오면 여기에 추가할 것.
 const ALREADY_PAID_CODES = ['ALREADY_PROCESSED_PAYMENT']
 
-const MEET_METHODS = ['meet-card', 'meet-cash']
+// PG 연동 없이 수동 확인으로 처리하는 결제수단 — Toss confirm API를 호출하지 않는다.
+const MANUAL_METHODS = ['meet-card', 'meet-cash', '계좌이체']
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -78,25 +79,27 @@ export async function POST(req: NextRequest) {
     if (current?.payment_key === '__confirming__')
       return NextResponse.json({ error: 'confirm_in_progress' }, { status: 409 })
 
-    // 실제 키 기록됨 → 이미 confirm 완료, 멱등 응답
+    // 실제 키 기록됨 → 이미 confirm 완료, 멱등 응답 (실제 DB 상태를 그대로 반환)
     return NextResponse.json({
       order_id:     orderId,
       order_key:    current?.order_key,
-      status:       '주문완료',
+      status:       current?.status ?? '주문완료',
       total_amount: current?.total_amount,
     })
   }
 
-  // 6. 만나서 결제 — Toss API 호출 없음
-  if (MEET_METHODS.includes(order.payment_method)) {
+  // 6. 수동 확인 결제수단 (만나서카드/만나서현금/계좌이체) — Toss API 호출 없음.
+  // 자동으로 '주문완료' 처리하지 않고 '결제대기' 상태를 유지해 관리자가 입금·수령을 수동 확인한다.
+  // payment_key는 null로 되돌려 재확인 요청도 동일하게(멱등) 처리되도록 한다.
+  if (MANUAL_METHODS.includes(order.payment_method)) {
     await service
       .from('orders')
-      .update({ payment_key: order.payment_method, status: '주문완료', pending_expires_at: null })
+      .update({ payment_key: null, pending_expires_at: null })
       .eq('id', orderId)
     return NextResponse.json({
       order_id:     orderId,
       order_key:    claimed[0].order_key,
-      status:       '주문완료',
+      status:       '결제대기',
       total_amount: amount,
     })
   }

@@ -26,7 +26,7 @@ declare global {
 
 const METHODS = [
   { value: '카드',      label: '온라인 카드',     icon: CreditCard, toss: true },
-  { value: '계좌이체',  label: '온라인 계좌이체', icon: Banknote,   toss: true },
+  { value: '계좌이체',  label: '온라인 계좌이체', icon: Banknote,   toss: false },
   { value: 'meet-card', label: '만나서 카드결제', icon: CreditCard, toss: false },
   { value: 'meet-cash', label: '만나서 현금결제', icon: Handshake,  toss: false },
 ];

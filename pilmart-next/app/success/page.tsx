@@ -11,7 +11,7 @@ import Link from 'next/link';
 
 type ConfirmState =
   | { status: 'loading' }
-  | { status: 'success'; orderKey: string; totalAmount: number }
+  | { status: 'success'; orderKey: string; totalAmount: number; manual: boolean }
   | { status: 'error'; message: string };
 
 function SuccessContent() {
@@ -48,6 +48,7 @@ function SuccessContent() {
             status: 'success',
             orderKey: json.order_key,
             totalAmount: json.total_amount,
+            manual: json.status !== '주문완료',
           });
           return;
         }
@@ -94,13 +95,17 @@ function SuccessContent() {
   return (
     <div className="container mx-auto px-4 py-16 max-w-md text-center space-y-6">
       <CheckCircle2 className="h-16 w-16 text-primary mx-auto" />
-      <h1 className="text-2xl font-bold">결제 완료</h1>
+      <h1 className="text-2xl font-bold">{state.manual ? '주문 접수 완료' : '결제 완료'}</h1>
       <p className="text-muted-foreground">
-        결제 금액: <span className="font-semibold text-foreground">{formatPrice(state.totalAmount)}</span>
+        {state.manual ? '주문 금액' : '결제 금액'}: <span className="font-semibold text-foreground">{formatPrice(state.totalAmount)}</span>
       </p>
       <Card>
         <CardContent className="pt-6 space-y-2 text-sm text-muted-foreground">
-          <p>오후 3시 이전 주문 시 당일 배송됩니다.</p>
+          {state.manual ? (
+            <p>입금·수령 확인 후 처리됩니다. 확인이 완료되면 별도로 안내드립니다.</p>
+          ) : (
+            <p>오후 3시 이전 주문 시 당일 배송됩니다.</p>
+          )}
           <p className="font-mono text-xs text-gray-500 break-all">주문번호: {state.orderKey}</p>
           {!isLoggedIn && (
             <p className="text-xs text-amber-600 mt-1">

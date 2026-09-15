@@ -28,6 +28,7 @@ class SuccessPage extends ConsumerStatefulWidget {
 class _SuccessPageState extends ConsumerState<SuccessPage> {
   bool _loading = true;
   bool _success = false;
+  bool _manual = false;
   String _error = '';
 
   @override
@@ -58,10 +59,13 @@ class _SuccessPageState extends ConsumerState<SuccessPage> {
 
       if (!mounted) return;
       if (res.statusCode == 200) {
+        final resStatus =
+            (jsonDecode(res.body) as Map)['status'] as String?;
         ref.read(cartProvider.notifier).clear();
         setState(() {
           _loading = false;
           _success = true;
+          _manual = resStatus != '주문완료';
         });
       } else {
         setState(() {
@@ -133,13 +137,20 @@ class _SuccessPageState extends ConsumerState<SuccessPage> {
                   color: AppColors.primary,
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  '결제 완료!',
-                  style: TextStyle(
+                Text(
+                  _manual ? '주문 접수 완료!' : '결제 완료!',
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                if (_manual) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    '입금·수령 확인 후 처리됩니다',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ],
                 const SizedBox(height: 8),
                 Text(
                   '주문번호: ${widget.orderId}',

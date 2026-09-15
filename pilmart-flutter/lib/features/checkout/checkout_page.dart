@@ -59,6 +59,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final total = notifier.totalAmount;
     final vat = notifier.taxAmount;
     final orderKey = _generateOrderKey();
+    final paymentMethod = switch (_method) {
+      _PaymentMethod.card => '카드',
+      _PaymentMethod.transfer => '계좌이체',
+      _PaymentMethod.meetCard => 'meet-card',
+      _PaymentMethod.meetCash => 'meet-cash',
+    };
 
     try {
       final res = await http.post(
@@ -80,12 +86,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           'vat_amount': vat,
           'delivery_address': _address,
           'delivery_memo': _memo,
-          'payment_method': switch (_method) {
-            _PaymentMethod.card => '카드',
-            _PaymentMethod.transfer => '계좌이체',
-            _PaymentMethod.meetCard => 'meet-card',
-            _PaymentMethod.meetCash => 'meet-cash',
-          },
+          'payment_method': paymentMethod,
         }),
       );
 
@@ -105,10 +106,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         return;
       }
 
+      // 만나서카드/만나서현금/계좌이체 — PG 없이 서버에 접수만 하고 관리자가 수동 확인
       if (_method == _PaymentMethod.meetCard ||
-          _method == _PaymentMethod.meetCash) {
-        final meetMethod =
-            _method == _PaymentMethod.meetCard ? 'meet-card' : 'meet-cash';
+          _method == _PaymentMethod.meetCash ||
+          _method == _PaymentMethod.transfer) {
         final confirmRes = await http.post(
           Uri.parse('${AppConstants.nextJsBaseUrl}/api/payments/confirm'),
           headers: {'Content-Type': 'application/json'},
@@ -120,8 +121,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         if (!mounted) return;
         if (confirmRes.statusCode == 200) {
           notifier.clear();
+          final encodedMethod = Uri.encodeComponent(paymentMethod);
           context.go(
-              '/success?orderId=$orderId&amount=$total&method=$meetMethod');
+              '/success?orderId=$orderId&amount=$total&method=$encodedMethod');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('결제 처리 실패 (${confirmRes.statusCode})')));

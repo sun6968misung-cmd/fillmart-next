@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api_client.dart';
 import '../../core/secure_storage.dart';
@@ -23,6 +27,7 @@ class AdminAuthNotifier extends StateNotifier<AdminSession?> {
           role: data['role'] as String,
           cookie: cookie,
         );
+        unawaited(_registerFcmToken());
       }
     } catch (_) {
       await _storage.deleteAdminCookie();
@@ -49,8 +54,24 @@ class AdminAuthNotifier extends StateNotifier<AdminSession?> {
         role: data['role'] as String? ?? 'order',
         cookie: cookie ?? '',
       );
+      unawaited(_registerFcmToken());
     } else {
       throw Exception('로그인 실패: ${res.statusCode}');
+    }
+  }
+
+  // 주문 접수 알림 수신용 — 로그인된 관리자 계정에 FCM 토큰을 등록한다.
+  // Firebase 미설정(google-services.json 없음) 환경에서도 조용히 무시한다.
+  Future<void> _registerFcmToken() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token == null) return;
+      await ApiClient.instance.post(
+        '/api/admin/fcm-token',
+        data: {'token': token},
+      );
+    } catch (e) {
+      debugPrint('[Admin FCM] 토큰 등록 실패: $e');
     }
   }
 
