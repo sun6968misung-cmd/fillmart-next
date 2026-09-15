@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
 import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Settings, KeyRound,
-  LogOut, Store, Trash2, Search, RotateCcw, X, ChevronDown,
+  LogOut, Store, Trash2, Search, RotateCcw, X, ChevronDown, Menu,
   Bell, BellRing, Zap, Plus, Printer, ImageIcon, Upload, Download, ClipboardList, Users, Send,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -23,7 +23,7 @@ import { formatPrice } from '@/lib/utils';
 import { Order, Product, ProductOverride, StoreInfo, Notice, FlashSaleConfig, FlashProduct, AdminAccount, AdminRole, AuditLog, StoredUser } from '@/types';
 
 type Tab = 'dashboard' | 'orders' | 'products' | 'notices' | 'deals' | 'site' | 'account' | 'logs' | 'members' | 'push';
-type OrderStatus = '결제완료' | '준비중' | '배송중' | '완료' | '취소';
+type OrderStatus = '입금확인대기' | '결제완료' | '준비중' | '배송중' | '완료' | '취소';
 
 const ROLE_TABS: Record<AdminRole, Tab[]> = {
   super:   ['dashboard', 'orders', 'products', 'deals', 'notices', 'site', 'members', 'account', 'push', 'logs'],
@@ -40,6 +40,7 @@ const METHOD: Record<string, string> = {
   'meet-card': '만나서(카드)', 'meet-cash': '만나서(현금)',
 };
 const STATUS_STYLE: Record<string, string> = {
+  '입금확인대기': 'bg-yellow-50 text-yellow-700',
   '결제완료': 'bg-blue-50 text-blue-700',
   '준비중': 'bg-orange-50 text-orange-700',
   '배송중': 'bg-purple-50 text-purple-700',
@@ -53,6 +54,7 @@ export default function AdminPage() {
   const [loginUser, setLoginUser] = useState('');
   const [pwError, setPwError] = useState(false);
   const [tab, setTab] = useState<Tab>('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState<AdminAccount | null>(null);
   const [adminAccounts, setAdminAccounts] = useState<AdminAccount[]>([]);
   const [newAdminForm, setNewAdminForm] = useState<{ username: string; password: string; role: AdminRole; error: string }>(
@@ -63,9 +65,12 @@ export default function AdminPage() {
   const [migrating, setMigrating] = useState(false);
   const [migrated, setMigrated] = useState(false);
   const [confirmClearLogs, setConfirmClearLogs] = useState(false);
-  const [pushForm, setPushForm] = useState({ title: '', body: '' });
+  const [pushForm, setPushForm] = useState({ title: '', body: '', url: '', scheduledAt: '' });
+  const [pushMode, setPushMode] = useState<'immediate' | 'scheduled'>('immediate');
   const [pushLoading, setPushLoading] = useState(false);
-  const [pushResult, setPushResult] = useState<{ sent: number; total: number; failed: number; message?: string } | null>(null);
+  const [pushResult, setPushResult] = useState<{ sent: number; total: number; failed: number; message?: string; scheduled?: boolean } | null>(null);
+  const [schedules, setSchedules] = useState<{ id: string; title: string; body: string; url?: string; scheduled_at: string; status: string }[]>([]);
+  const [schedulesLoading, setSchedulesLoading] = useState(false);
   const [confirmDeleteAllOrders, setConfirmDeleteAllOrders] = useState(false);
   const [confirmDeleteAllOrdersInput, setConfirmDeleteAllOrdersInput] = useState('');
   const [confirmResetKey, setConfirmResetKey] = useState<string | null>(null);
@@ -96,6 +101,7 @@ export default function AdminPage() {
 
   const [newNotice, setNewNotice] = useState({ title: '', content: '' });
   const [siteSaved, setSiteSaved] = useState(false);
+  const [apkCopied, setApkCopied] = useState(false);
   const [logoUrl, setLogoUrl] = useState('');
   const logoInputRef = useRef<HTMLInputElement>(null);
 
@@ -111,10 +117,10 @@ export default function AdminPage() {
   });
 
   const DB_TO_ADMIN: Record<string, OrderStatus> = {
-    '주문완료': '결제완료', '배송준비중': '준비중', '배송중': '배송중', '배송완료': '완료', '취소완료': '취소',
+    '결제대기': '입금확인대기', '주문완료': '결제완료', '배송준비중': '준비중', '배송중': '배송중', '배송완료': '완료', '취소완료': '취소',
   };
   const ADMIN_TO_DB: Record<OrderStatus, string> = {
-    '결제완료': '주문완료', '준비중': '배송준비중', '배송중': '배송중', '완료': '배송완료', '취소': '취소완료',
+    '입금확인대기': '결제대기', '결제완료': '주문완료', '준비중': '배송준비중', '배송중': '배송중', '완료': '배송완료', '취소': '취소완료',
   };
 
   useEffect(() => {
@@ -899,25 +905,47 @@ export default function AdminPage() {
     <>
     <div className="fixed inset-0 z-[9999] flex bg-gray-50">
 
-      {/* 사이드바 */}
-      <aside className="w-56 bg-white border-r border-gray-100 flex flex-col shrink-0">
-        <div className="px-5 py-5 border-b border-gray-100">
-          <p className="text-xl font-extrabold text-primary">필마트</p>
-          <p className="text-xs font-medium mt-1">
-            <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
-              myRole === 'super' ? 'bg-blue-100 text-blue-700' :
-              myRole === 'product' ? 'bg-green-100 text-green-700' :
-              'bg-orange-100 text-orange-700'
-            }`}>{ROLE_LABEL[myRole]}</span>
-            {currentAdmin && <span className="ml-1.5 text-gray-400">{currentAdmin.username}</span>}
-          </p>
+      {/* 모바일 사이드바 배경 오버레이 */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-gray-900/40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* 사이드바 — 모바일: 오프캔버스, md 이상: 항상 표시 */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-56 bg-white border-r border-gray-100 flex flex-col shrink-0
+        transform transition-transform duration-200 md:static md:translate-x-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="px-5 py-5 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <p className="text-xl font-extrabold text-primary">필마트</p>
+            <p className="text-xs font-medium mt-1">
+              <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                myRole === 'super' ? 'bg-blue-100 text-blue-700' :
+                myRole === 'product' ? 'bg-green-100 text-green-700' :
+                'bg-orange-100 text-orange-700'
+              }`}>{ROLE_LABEL[myRole]}</span>
+              {currentAdmin && <span className="ml-1.5 text-gray-400">{currentAdmin.username}</span>}
+            </p>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="text-gray-400 hover:text-gray-700 md:hidden">
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {NAV.map(n => (
             <button
               key={n.id}
-              onClick={() => setTab(n.id)}
+              onClick={() => {
+                setTab(n.id);
+                setSidebarOpen(false);
+                if (n.id === 'push') {
+                  setSchedulesLoading(true);
+                  fetch('/api/admin/push').then(r => r.json()).then(d => setSchedules(Array.isArray(d) ? d : [])).finally(() => setSchedulesLoading(false));
+                }
+              }}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                 tab === n.id ? 'bg-blue-50 text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
               }`}
@@ -946,16 +974,21 @@ export default function AdminPage() {
       </aside>
 
       {/* 메인 */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* 헤더 */}
-        <header className="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between shrink-0">
-          <div>
-            <h1 className="text-lg font-black text-gray-800">{tabTitle[tab]}</h1>
-            <p className="text-xs text-gray-400">
-              {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
-            </p>
+        <header className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <button onClick={() => setSidebarOpen(true)} className="text-gray-500 hover:text-gray-800 md:hidden shrink-0">
+              <Menu className="h-5 w-5" />
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-lg font-black text-gray-800 truncate">{tabTitle[tab]}</h1>
+              <p className="text-xs text-gray-400 hidden sm:block">
+                {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
+              </p>
+            </div>
           </div>
-          <span className="text-sm text-gray-500 flex items-center gap-1.5">
+          <span className="text-sm text-gray-500 items-center gap-1.5 hidden sm:flex shrink-0">
             <span className="w-2 h-2 bg-green-400 rounded-full inline-block" />관리자
           </span>
         </header>
@@ -1124,7 +1157,7 @@ export default function AdminPage() {
                                 value={order.status || '결제완료'}
                                 onChange={e => updateStatus(order.orderId, e.target.value as OrderStatus)}
                                 className={`text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none cursor-pointer ${STATUS_STYLE[order.status || '결제완료']}`}>
-                                {['결제완료', '준비중', '배송중', '완료', '취소'].map(s => (
+                                {['입금확인대기', '결제완료', '준비중', '배송중', '완료', '취소'].map(s => (
                                   <option key={s} value={s}>{s}</option>
                                 ))}
                               </select>
@@ -1660,6 +1693,32 @@ export default function AdminPage() {
                 </div>
               </div>
 
+              {/* APK 다운로드 */}
+              {(() => {
+                const APK_URL = 'https://github.com/sun6968misung-cmd/fillmart-next/releases/latest/download/pilmart-latest.apk';
+                return (
+                  <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                    <h3 className="font-bold text-gray-800 mb-1">앱 APK 다운로드</h3>
+                    <p className="text-xs text-gray-400 mb-4">
+                      PC에서 <code className="bg-gray-100 px-1 rounded">.\upload-apk.ps1</code> 실행 후 폰에서 아래 버튼으로 직접 다운로드하세요.
+                    </p>
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 mb-3 overflow-hidden">
+                      <span className="text-xs text-gray-500 flex-1 truncate">{APK_URL}</span>
+                      <button
+                        onClick={() => { navigator.clipboard.writeText(APK_URL); setApkCopied(true); setTimeout(() => setApkCopied(false), 2000); }}
+                        className="text-xs font-bold text-primary shrink-0 ml-1">
+                        {apkCopied ? '✓ 복사됨' : '복사'}
+                      </button>
+                    </div>
+                    <a href={APK_URL} download="pilmart-latest.apk" target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-primary text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-primary/90 transition-colors">
+                      <Download className="w-4 h-4" />
+                      APK 다운로드
+                    </a>
+                  </div>
+                );
+              })()}
+
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h3 className="font-bold text-gray-800 mb-1">매장 정보</h3>
                 <p className="text-xs text-gray-400 mb-5">푸터에 표시되는 매장 정보입니다.</p>
@@ -2082,6 +2141,7 @@ export default function AdminPage() {
           {/* ── 앱 푸시 알림 ── */}
           {tab === 'push' && myRole === 'super' && (
             <div className="p-8 max-w-2xl space-y-6">
+              {/* 발송 폼 */}
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-center gap-2 mb-5">
                   <BellRing className="h-5 w-5 text-primary" />
@@ -2103,34 +2163,77 @@ export default function AdminPage() {
                       value={pushForm.body}
                       onChange={e => setPushForm(f => ({ ...f, body: e.target.value }))}
                       placeholder="알림 내용"
-                      rows={4}
+                      rows={3}
                       className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
                     />
                   </div>
+                  <div>
+                    <label className="text-xs text-gray-500 font-medium block mb-1">클릭 링크 <span className="text-gray-400">(선택)</span></label>
+                    <input
+                      value={pushForm.url}
+                      onChange={e => setPushForm(f => ({ ...f, url: e.target.value }))}
+                      placeholder="https://pilmart-next.vercel.app/notice"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
+                    />
+                    <p className="text-[11px] text-gray-400 mt-1">알림 클릭 시 열릴 URL (비우면 앱 홈으로 이동)</p>
+                  </div>
+                  {/* 즉시/예약 토글 */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setPushMode('immediate')}
+                      className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-colors ${pushMode === 'immediate' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-500 border-gray-200 hover:border-primary'}`}
+                    >즉시 발송</button>
+                    <button
+                      onClick={() => setPushMode('scheduled')}
+                      className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-colors ${pushMode === 'scheduled' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-500 border-gray-200 hover:border-primary'}`}
+                    >예약 발송</button>
+                  </div>
+                  {pushMode === 'scheduled' && (
+                    <div>
+                      <label className="text-xs text-gray-500 font-medium block mb-1">발송 일시</label>
+                      <input
+                        type="datetime-local"
+                        value={pushForm.scheduledAt}
+                        onChange={e => setPushForm(f => ({ ...f, scheduledAt: e.target.value }))}
+                        min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                        className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                   <p className="text-xs text-gray-400">앱을 설치한 모든 회원에게 전송됩니다</p>
                   <button
                     onClick={async () => {
                       if (!pushForm.title.trim() || !pushForm.body.trim()) return;
+                      if (pushMode === 'scheduled' && !pushForm.scheduledAt) return;
                       setPushLoading(true);
                       setPushResult(null);
                       try {
+                        const body: Record<string, string> = { title: pushForm.title, body: pushForm.body };
+                        if (pushForm.url.trim()) body.url = pushForm.url.trim();
+                        if (pushMode === 'scheduled') body.scheduledAt = new Date(pushForm.scheduledAt).toISOString();
                         const res = await fetch('/api/admin/push', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ title: pushForm.title, body: pushForm.body }),
+                          body: JSON.stringify(body),
                         });
-                        const data = await res.json();
+                        let data: { sent: number; total: number; failed: number; message?: string; scheduled?: boolean };
+                        try { data = await res.json(); } catch { data = { sent: 0, total: 0, failed: 0, message: `서버 오류 (${res.status})` }; }
                         setPushResult(data);
-                        if (res.ok && data.sent > 0) setPushForm({ title: '', body: '' });
+                        if (res.ok && (data.sent > 0 || data.scheduled)) {
+                          setPushForm({ title: '', body: '', url: '', scheduledAt: '' });
+                          if (data.scheduled) {
+                            fetch('/api/admin/push').then(r => r.json()).then(d => setSchedules(Array.isArray(d) ? d : []));
+                          }
+                        }
                       } catch {
-                        setPushResult({ sent: 0, total: 0, failed: 0, message: '전송 실패' });
+                        setPushResult({ sent: 0, total: 0, failed: 0, message: '네트워크 오류 — 전송 실패' });
                       } finally {
                         setPushLoading(false);
                       }
                     }}
-                    disabled={pushLoading || !pushForm.title.trim() || !pushForm.body.trim()}
+                    disabled={pushLoading || !pushForm.title.trim() || !pushForm.body.trim() || (pushMode === 'scheduled' && !pushForm.scheduledAt)}
                     className="flex items-center gap-2 bg-primary text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {pushLoading ? (
@@ -2138,24 +2241,53 @@ export default function AdminPage() {
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    전체 발송
+                    {pushMode === 'immediate' ? '전체 발송' : '예약 등록'}
                   </button>
                 </div>
                 {pushResult && (
                   <div className={`mt-4 px-4 py-3 rounded-xl text-sm font-medium ${
-                    pushResult.sent > 0 ? 'bg-green-50 text-green-700' : 'bg-orange-50 text-orange-700'
+                    pushResult.sent > 0 || pushResult.scheduled ? 'bg-green-50 text-green-700' : 'bg-orange-50 text-orange-700'
                   }`}>
-                    {pushResult.message ?? `전송 완료: ${pushResult.sent}/${pushResult.total}명 성공${pushResult.failed > 0 ? ` (실패 ${pushResult.failed}명)` : ''}`}
+                    {pushResult.scheduled
+                      ? '예약이 등록됐습니다'
+                      : pushResult.message ?? `전송 완료: ${pushResult.sent}/${pushResult.total}명 성공${pushResult.failed > 0 ? ` (실패 ${pushResult.failed}명)` : ''}`}
                   </div>
                 )}
               </div>
 
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-                <p className="text-sm font-bold text-amber-800 mb-2">설정 필요</p>
-                <p className="text-xs text-amber-700 leading-relaxed">
-                  앱 푸시를 사용하려면 Firebase 프로젝트의 서비스 계정 JSON을 Vercel 환경변수
-                  <code className="bg-amber-100 px-1 rounded font-mono">FIREBASE_SERVICE_ACCOUNT_JSON</code>에 등록해야 합니다.
-                </p>
+              {/* 예약 목록 */}
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-gray-800 text-sm">예약 발송 목록</h3>
+                  <button onClick={() => { setSchedulesLoading(true); fetch('/api/admin/push').then(r => r.json()).then(d => setSchedules(Array.isArray(d) ? d : [])).finally(() => setSchedulesLoading(false)); }} className="text-xs text-primary hover:underline">새로고침</button>
+                </div>
+                {schedulesLoading ? (
+                  <p className="text-sm text-gray-400 text-center py-4">불러오는 중...</p>
+                ) : schedules.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-4">예약된 발송이 없습니다</p>
+                ) : (
+                  <div className="space-y-3">
+                    {schedules.map(s => (
+                      <div key={s.id} className="flex items-start justify-between gap-3 p-3 bg-gray-50 rounded-xl">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-800 truncate">{s.title}</p>
+                          <p className="text-xs text-gray-500 truncate">{s.body}</p>
+                          {s.url && <p className="text-[11px] text-blue-500 truncate">{s.url}</p>}
+                          <p className="text-[11px] text-gray-400 mt-1">
+                            {new Date(s.scheduled_at).toLocaleString('ko-KR')} 발송 예정
+                          </p>
+                        </div>
+                        <button
+                          onClick={async () => {
+                            await fetch('/api/admin/push', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: s.id }) });
+                            setSchedules(prev => prev.filter(x => x.id !== s.id));
+                          }}
+                          className="text-xs text-red-500 hover:text-red-700 font-medium shrink-0"
+                        >취소</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -2308,7 +2440,7 @@ export default function AdminPage() {
                   }}
                   className={`flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none cursor-pointer ${STATUS_STYLE[o.status || '결제완료']}`}
                 >
-                  {['결제완료', '준비중', '배송중', '완료', '취소'].map(s => (
+                  {['입금확인대기', '결제완료', '준비중', '배송중', '완료', '취소'].map(s => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>

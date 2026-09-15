@@ -22,9 +22,10 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
   }
 
   Future<void> _login() async {
-    if (_userCtrl.text.trim().isEmpty || _pwCtrl.text.trim().isEmpty) {
+    // 아이디는 비워두면 최고관리자(__super__) 로그인으로 처리된다 (서버 규칙과 동일).
+    if (_pwCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('아이디와 비밀번호를 입력해주세요')));
+          const SnackBar(content: Text('비밀번호를 입력해주세요')));
       return;
     }
     setState(() => _loading = true);
@@ -55,7 +56,9 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
           child: Column(children: [
             const SizedBox(height: 48),
             TextField(controller: _userCtrl,
-                decoration: const InputDecoration(labelText: '계정 ID')),
+                decoration: const InputDecoration(
+                    labelText: '계정 ID',
+                    hintText: '최고관리자는 비워두세요')),
             const SizedBox(height: 12),
             TextField(controller: _pwCtrl,
                 decoration: const InputDecoration(labelText: '비밀번호'),

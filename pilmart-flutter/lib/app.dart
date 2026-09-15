@@ -42,15 +42,18 @@ class PilmartApp extends ConsumerWidget {
       redirect: (context, state) {
         final loc = state.matchedLocation;
         final isAdminArea = loc.startsWith('/admin') && loc != '/admin/login';
-        final isPublicArea = loc == '/auth' || loc == '/admin/login';
+
+        // 웹 버전과 동일하게 홈/카테고리/상품/장바구니/결제는 비회원도 이용 가능.
+        // 회원 전용(찜/마이페이지/주문내역)만 로그인 필요. '/orders/lookup'(비회원 조회)은 제외.
+        final requiresLogin = loc == '/wishlist' ||
+            loc == '/profile' ||
+            loc == '/orders';
 
         final adminSession = ref.read(adminSessionProvider);
         final customerUser = ref.read(customerAuthProvider).valueOrNull;
 
         if (isAdminArea && adminSession == null) return '/admin/login';
-        if (!isPublicArea && !loc.startsWith('/admin') && customerUser == null) {
-          return '/auth';
-        }
+        if (requiresLogin && customerUser == null) return '/auth';
         return null;
       },
       routes: [

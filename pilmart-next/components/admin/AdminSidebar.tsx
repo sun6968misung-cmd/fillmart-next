@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Zap, Bell, Store,
-  Settings, Users, ClipboardList, LogOut,
+  Settings, Users, ClipboardList, LogOut, Menu, X,
 } from 'lucide-react';
 import { KEYS, lsGet } from '@/lib/storage';
 import { AdminAccount, AdminRole } from '@/types';
@@ -36,6 +36,7 @@ export function AdminSidebar({ activeTab = 'members' }: Props) {
   const [myRole, setMyRole] = useState<AdminRole>('super');
   const [currentAdmin, setCurrentAdmin] = useState<AdminAccount | null>(null);
   const [orderCount, setOrderCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/admin/session')
@@ -58,56 +59,83 @@ export function AdminSidebar({ activeTab = 'members' }: Props) {
   }
 
   return (
-    <aside className="w-56 bg-white border-r border-gray-100 flex flex-col shrink-0">
-      <div className="px-5 py-5 border-b border-gray-100">
-        <p className="text-xl font-extrabold text-primary">필마트</p>
-        <p className="text-xs font-medium mt-1">
-          <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
-            myRole === 'super'   ? 'bg-blue-100 text-blue-700' :
-            myRole === 'product' ? 'bg-green-100 text-green-700' :
-                                   'bg-orange-100 text-orange-700'
-          }`}>{ROLE_LABEL[myRole]}</span>
-          {currentAdmin && <span className="ml-1.5 text-gray-400">{currentAdmin.username}</span>}
-        </p>
-      </div>
+    <>
+      {/* 모바일 사이드바 배경 오버레이 */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-gray-900/40 md:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
 
-      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        {NAV_ITEMS.map(n => (
+      {/* 모바일 전용 햄버거 토글 — 각 페이지 헤더(뒤로가기 버튼 등)와 겹치지 않도록 헤더 아래쪽에 배치.
+          md 이상에서는 사이드바가 항상 보이므로 숨김 */}
+      <button
+        onClick={() => setOpen(true)}
+        className="fixed top-20 left-3 z-30 bg-white border border-gray-200 rounded-lg p-2 text-gray-600 shadow-md md:hidden"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      <aside className={`fixed inset-y-0 left-0 z-50 w-56 bg-white border-r border-gray-100 flex flex-col shrink-0
+        transform transition-transform duration-200 md:static md:translate-x-0
+        ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="px-5 py-5 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <p className="text-xl font-extrabold text-primary">필마트</p>
+            <p className="text-xs font-medium mt-1">
+              <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                myRole === 'super'   ? 'bg-blue-100 text-blue-700' :
+                myRole === 'product' ? 'bg-green-100 text-green-700' :
+                                       'bg-orange-100 text-orange-700'
+              }`}>{ROLE_LABEL[myRole]}</span>
+              {currentAdmin && <span className="ml-1.5 text-gray-400">{currentAdmin.username}</span>}
+            </p>
+          </div>
+          <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-700 md:hidden">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+          {NAV_ITEMS.map(n => (
+            <Link
+              key={n.id}
+              href={`/admin#${n.id}`}
+              onClick={() => setOpen(false)}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                activeTab === n.id
+                  ? 'bg-blue-50 text-primary font-bold'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              {n.icon}
+              {n.label}
+              {n.id === 'orders' && orderCount > 0 && (
+                <span className="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {orderCount}
+                </span>
+              )}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="p-3 border-t border-gray-100 space-y-0.5">
           <Link
-            key={n.id}
-            href={`/admin#${n.id}`}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-              activeTab === n.id
-                ? 'bg-blue-50 text-primary font-bold'
-                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
-            }`}
+            href="/"
+            target="_blank"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
           >
-            {n.icon}
-            {n.label}
-            {n.id === 'orders' && orderCount > 0 && (
-              <span className="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {orderCount}
-              </span>
-            )}
+            <Store className="h-4 w-4" /> 쇼핑몰 보기
           </Link>
-        ))}
-      </nav>
-
-      <div className="p-3 border-t border-gray-100 space-y-0.5">
-        <Link
-          href="/"
-          target="_blank"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
-        >
-          <Store className="h-4 w-4" /> 쇼핑몰 보기
-        </Link>
-        <button
-          onClick={logout}
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
-        >
-          <LogOut className="h-4 w-4" /> 로그아웃
-        </button>
-      </div>
-    </aside>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="h-4 w-4" /> 로그아웃
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
