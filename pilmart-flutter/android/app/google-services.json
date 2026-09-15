@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1032765688422",
+    "project_id": "pilmart-32f85",
+    "storage_bucket": "pilmart-32f85.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032765688422:android:c58487e63a898aaee43ba7",
+        "android_client_info": {
+          "package_name": "com.pilmart.pilmart_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj02a3ulSToiHTR7H-qMMt611UdjTT2RA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
