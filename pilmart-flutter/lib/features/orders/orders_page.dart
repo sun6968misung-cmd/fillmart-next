@@ -46,13 +46,13 @@ class _OrderCardState extends State<_OrderCard> {
       widget.order.status != '배송완료' && widget.order.status != '취소완료';
 
   Future<void> _cancelItem(OrderItem item) async {
-    final cancelled = [...(widget.order.cancelledItems ?? []), item];
+    final cancelled = [...(widget.order.cancelledItems ?? []), item.id];
     final remaining = widget.order.items
-        .where((i) => !cancelled.any((ci) => ci.id == i.id))
+        .where((i) => !cancelled.contains(i.id))
         .toList();
     final newTotal = remaining.fold(0, (s, i) => s + i.price * i.qty);
     await supabase.from('orders').update({
-      'cancelled_items': cancelled.map((c) => c.toJson()).toList(),
+      'cancelled_items': cancelled,
       'total_amount': newTotal,
     }).eq('id', widget.order.id);
   }
@@ -89,7 +89,7 @@ class _OrderCardState extends State<_OrderCard> {
                 const Divider(height: 16),
                 ...o.items.map((item) {
                   final cancelled =
-                      o.cancelledItems?.any((ci) => ci.id == item.id) ?? false;
+                      o.cancelledItems?.contains(item.id) ?? false;
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(

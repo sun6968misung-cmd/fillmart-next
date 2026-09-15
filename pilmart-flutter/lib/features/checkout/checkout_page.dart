@@ -75,11 +75,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           'user_id': uid,
           'items': cart
               .map((c) => {
-                    'productId': c.productId,
+                    'id': c.productId,
                     'name': c.name,
                     'taxType': c.taxType,
                     'price': c.price,
                     'qty': c.qty,
+                    'imageUrl': c.imageUrl,
                   })
               .toList(),
           'total_amount': total,

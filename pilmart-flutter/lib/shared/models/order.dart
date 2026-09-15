@@ -12,7 +12,8 @@ class OrderItem {
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> j) => OrderItem(
-        id: j['id'] as String,
+        // 'productId' fallback — 과거 앱 버전이 'id' 대신 'productId'로 저장한 주문 호환용
+        id: j['id'] as String? ?? j['productId'] as String? ?? '',
         name: j['name'] as String,
         price: (j['price'] as num).toInt(),
         qty: (j['qty'] as num).toInt(),
@@ -34,7 +35,7 @@ class Order {
   final int totalAmount, vatAmount;
   final List<OrderItem> items;
   final DateTime createdAt;
-  final List<OrderItem>? cancelledItems;
+  final List<String>? cancelledItems; // 취소된 상품의 item id 목록 (웹과 동일한 스키마)
 
   const Order({
     required this.id,
@@ -65,9 +66,8 @@ class Order {
             .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
             .toList(),
         createdAt: DateTime.parse(j['created_at'] as String),
-        cancelledItems: (j['cancelled_items'] as List<dynamic>?)
-            ?.map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        cancelledItems:
+            (j['cancelled_items'] as List<dynamic>?)?.cast<String>(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -82,6 +82,6 @@ class Order {
         'vat_amount': vatAmount,
         'items': items.map((e) => e.toJson()).toList(),
         'created_at': createdAt.toIso8601String(),
-        'cancelled_items': cancelledItems?.map((e) => e.toJson()).toList(),
+        'cancelled_items': cancelledItems,
       };
 }

@@ -167,8 +167,7 @@ class _OrderCardState extends State<_OrderCard> {
   @override
   Widget build(BuildContext context) {
     final o = widget.order;
-    final cancelledIds =
-        o.cancelledItems?.map((i) => i.id).toSet() ?? <String>{};
+    final cancelledIds = o.cancelledItems?.toSet() ?? <String>{};
     final allCancelled =
         o.items.isNotEmpty && o.items.every((i) => cancelledIds.contains(i.id));
     final statusLabel = allCancelled ? '취소완료' : o.status;
